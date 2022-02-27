@@ -57,11 +57,10 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-const WrapperPage = ({ activeMenu, children }: Props): JSX.Element => {
+const WrapperPage = ({ children }: Props): JSX.Element => {
   const [opened, setOpened] = useState(false);
   const theme = useMantineTheme();
   const { classes } = useStyles();
-  const [active, setActive] = useState("");
 
   const location = useLocation();
 
@@ -124,7 +123,7 @@ const WrapperPage = ({ activeMenu, children }: Props): JSX.Element => {
                 <ThemeIcon variant="light">
                   <DashboardIcon />
                 </ThemeIcon>
-                <Text size="sm">Dashboard {active}</Text>
+                <Text size="sm">Dashboard</Text>
               </Group>
             </Link>
           </UnstyledButton>
