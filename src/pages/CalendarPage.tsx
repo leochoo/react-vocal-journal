@@ -1,3 +1,4 @@
+import { Container, Text, Grid } from "@mantine/core";
 import React from "react";
 import CardSample from "../components/CardSample";
 import WrapperPage from "./WrapperPage";
@@ -5,8 +6,26 @@ import WrapperPage from "./WrapperPage";
 const CalendarPage = () => {
   return (
     <WrapperPage>
-      <CardSample />
-      <div>CalendarPage</div>
+      <Container>
+        <Text>CalendarPage</Text>
+        <Grid grow>
+          <Grid.Col span={4}>
+            <CardSample />
+          </Grid.Col>
+          <Grid.Col span={4}>
+            <CardSample />
+          </Grid.Col>
+          <Grid.Col span={4}>
+            <CardSample />
+          </Grid.Col>
+          <Grid.Col span={4}>
+            <CardSample />
+          </Grid.Col>
+          <Grid.Col span={4}>
+            <CardSample />
+          </Grid.Col>
+        </Grid>
+      </Container>
     </WrapperPage>
   );
 };
