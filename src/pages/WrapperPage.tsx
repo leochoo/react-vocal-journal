@@ -22,7 +22,6 @@ import {
 import { useLocation, Link } from "react-router-dom";
 
 interface Props {
-  activeMenu: string;
   children: boolean | ReactChild | ReactFragment | ReactPortal;
 }
 
