@@ -1,7 +1,12 @@
 import React from "react";
+import WrapperPage from "./WrapperPage";
 
 const CalendarPage = () => {
-  return <div>CalendarPage</div>;
+  return (
+    <WrapperPage>
+      <div>CalendarPage</div>
+    </WrapperPage>
+  );
 };
 
 export default CalendarPage;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState, ReactChild, ReactFragment, ReactPortal } from "react";
 import {
   AppShell,
@@ -19,8 +19,10 @@ import {
   RadiobuttonIcon,
   RocketIcon,
 } from "@radix-ui/react-icons";
+import { Link } from "react-router-dom";
 
 interface Props {
+  activeMenu: string;
   children: boolean | ReactChild | ReactFragment | ReactPortal;
 }
 
@@ -39,12 +41,25 @@ const useStyles = createStyles((theme) => ({
           : theme.colors.gray[0],
     },
   },
+  link: {
+    textDecoration: "none",
+    color: theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
+  },
+  active: {
+    backgroundColor: theme.colors.orange[0],
+  },
 }));
 
-const WrapperPage = ({ children }: Props): JSX.Element => {
+const WrapperPage = ({ activeMenu, children }: Props): JSX.Element => {
   const [opened, setOpened] = useState(false);
   const theme = useMantineTheme();
   const { classes } = useStyles();
+  const [active, setActive] = useState("dashboard");
+
+  useEffect(() => {
+    activeMenu ? setActive(activeMenu) : setActive("dashboard");
+    console.log(active);
+  }, []);
 
   return (
     <AppShell
@@ -90,36 +105,43 @@ const WrapperPage = ({ children }: Props): JSX.Element => {
           width={{ sm: 300, lg: 400 }}
         >
           <UnstyledButton className={classes.button}>
-            <Group>
-              <ThemeIcon variant="light">
-                <DashboardIcon />
-              </ThemeIcon>
-
-              <Text size="sm">Dashboard</Text>
-            </Group>
+            <Link
+              to="/dashboard"
+              className={active === "dashboard" ? classes.link : classes.active}
+            >
+              <Group>
+                <ThemeIcon variant="light">
+                  <DashboardIcon />
+                </ThemeIcon>
+                <Text size="sm">Dashboard</Text>
+              </Group>
+            </Link>
           </UnstyledButton>
           <UnstyledButton className={classes.button}>
-            <Group>
-              <ThemeIcon variant="light" color="red">
-                <RadiobuttonIcon />
-              </ThemeIcon>
+            <Link to="/new-recording" className={classes.link}>
+              <Group>
+                <ThemeIcon variant="light" color="red">
+                  <RadiobuttonIcon />
+                </ThemeIcon>
 
-              <Text size="sm">New Recording</Text>
-            </Group>
+                <Text size="sm">New Recording</Text>
+              </Group>
+            </Link>
           </UnstyledButton>
           <UnstyledButton className={classes.button}>
-            <Group>
-              <ThemeIcon variant="light" color="orange">
-                <CalendarIcon />
-              </ThemeIcon>
+            <Link to="/calendar" className={classes.link}>
+              <Group>
+                <ThemeIcon variant="light" color="orange">
+                  <CalendarIcon />
+                </ThemeIcon>
 
-              <Text size="sm">Calendar</Text>
-            </Group>
+                <Text size="sm">Calendar</Text>
+              </Group>
+            </Link>
           </UnstyledButton>
         </Navbar>
       }
     >
-      <Text>Resize app to see responsive navbar in action</Text>
       {children}
     </AppShell>
   );

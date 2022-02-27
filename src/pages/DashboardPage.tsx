@@ -1,7 +1,11 @@
 import React from "react";
-
+import WrapperPage from "./WrapperPage";
 const DashboardPage = () => {
-  return <div>DashboardPage</div>;
+  return (
+    <WrapperPage>
+      <div>DashboardPage</div>
+    </WrapperPage>
+  );
 };
 
 export default DashboardPage;
