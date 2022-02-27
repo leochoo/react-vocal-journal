@@ -19,7 +19,7 @@ import {
   RadiobuttonIcon,
   RocketIcon,
 } from "@radix-ui/react-icons";
-import { Link } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 
 interface Props {
   activeMenu: string;
@@ -41,12 +41,19 @@ const useStyles = createStyles((theme) => ({
           : theme.colors.gray[0],
     },
   },
+  button_active: {
+    display: "block",
+    width: "100%",
+    padding: theme.spacing.xs,
+    borderRadius: theme.radius.sm,
+    color: theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
+    // color: theme.colors.orange[6],
+    backgroundColor: theme.colors.orange[0],
+  },
+
   link: {
     textDecoration: "none",
     color: theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
-  },
-  active: {
-    backgroundColor: theme.colors.orange[0],
   },
 }));
 
@@ -54,11 +61,12 @@ const WrapperPage = ({ activeMenu, children }: Props): JSX.Element => {
   const [opened, setOpened] = useState(false);
   const theme = useMantineTheme();
   const { classes } = useStyles();
-  const [active, setActive] = useState("dashboard");
+  const [active, setActive] = useState("");
+
+  const location = useLocation();
 
   useEffect(() => {
-    activeMenu ? setActive(activeMenu) : setActive("dashboard");
-    console.log(active);
+    console.log(location.pathname);
   }, []);
 
   return (
@@ -104,20 +112,29 @@ const WrapperPage = ({ activeMenu, children }: Props): JSX.Element => {
           // viewport size > theme.breakpoints.lg – width is 400px
           width={{ sm: 300, lg: 400 }}
         >
-          <UnstyledButton className={classes.button}>
-            <Link
-              to="/dashboard"
-              className={active === "dashboard" ? classes.link : classes.active}
-            >
+          <UnstyledButton
+            className={
+              location.pathname === "/dashboard"
+                ? classes.button_active
+                : classes.button
+            }
+          >
+            <Link to="/dashboard" className={classes.link}>
               <Group>
                 <ThemeIcon variant="light">
                   <DashboardIcon />
                 </ThemeIcon>
-                <Text size="sm">Dashboard</Text>
+                <Text size="sm">Dashboard {active}</Text>
               </Group>
             </Link>
           </UnstyledButton>
-          <UnstyledButton className={classes.button}>
+          <UnstyledButton
+            className={
+              location.pathname === "/new-recording"
+                ? classes.button_active
+                : classes.button
+            }
+          >
             <Link to="/new-recording" className={classes.link}>
               <Group>
                 <ThemeIcon variant="light" color="red">
@@ -128,7 +145,13 @@ const WrapperPage = ({ activeMenu, children }: Props): JSX.Element => {
               </Group>
             </Link>
           </UnstyledButton>
-          <UnstyledButton className={classes.button}>
+          <UnstyledButton
+            className={
+              location.pathname === "/calendar"
+                ? classes.button_active
+                : classes.button
+            }
+          >
             <Link to="/calendar" className={classes.link}>
               <Group>
                 <ThemeIcon variant="light" color="orange">
