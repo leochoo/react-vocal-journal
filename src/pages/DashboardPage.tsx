@@ -1,6 +1,6 @@
 import React from "react";
 import { Container, Text, Grid } from "@mantine/core";
-import CardSample from "../components/CardSample";
+import CardSample from "../components/samples/CardSample";
 import WrapperPage from "./WrapperPage";
 const DashboardPage = () => {
   return (

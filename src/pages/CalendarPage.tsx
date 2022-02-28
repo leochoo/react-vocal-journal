@@ -1,6 +1,7 @@
 import { Container, Text, Grid } from "@mantine/core";
 import React from "react";
-import CardSample from "../components/CardSample";
+import CardSample from "../components/samples/CardSample";
+import TableSample from "../components/samples/TableSample";
 import WrapperPage from "./WrapperPage";
 
 const CalendarPage = () => {
@@ -8,6 +9,7 @@ const CalendarPage = () => {
     <WrapperPage>
       <Container>
         <Text>CalendarPage</Text>
+        <TableSample />
         <Grid grow>
           <Grid.Col span={4}>
             <CardSample />
