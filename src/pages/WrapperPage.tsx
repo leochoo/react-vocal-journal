@@ -111,32 +111,32 @@ const WrapperPage = ({ children }: Props): JSX.Element => {
           // viewport size > theme.breakpoints.lg – width is 400px
           width={{ sm: 300, lg: 400 }}
         >
-          <UnstyledButton
-            onClick={() => console.log("clicked dashboard")}
-            className={
-              location.pathname === "/dashboard"
-                ? classes.button_active
-                : classes.button
-            }
-          >
-            <Link to="/dashboard" className={classes.link}>
+          <Link to="/dashboard" className={classes.link}>
+            <UnstyledButton
+              onClick={() => console.log("clicked dashboard")}
+              className={
+                location.pathname === "/dashboard"
+                  ? classes.button_active
+                  : classes.button
+              }
+            >
               <Group>
                 <ThemeIcon variant="light">
                   <DashboardIcon />
                 </ThemeIcon>
                 <Text size="sm">Dashboard</Text>
               </Group>
-            </Link>
-          </UnstyledButton>
-          <UnstyledButton
-            onClick={() => console.log("clicked new-recording")}
-            className={
-              location.pathname === "/new-recording"
-                ? classes.button_active
-                : classes.button
-            }
-          >
-            <Link to="/new-recording" className={classes.link}>
+            </UnstyledButton>
+          </Link>
+          <Link to="/new-recording" className={classes.link}>
+            <UnstyledButton
+              onClick={() => console.log("clicked new-recording")}
+              className={
+                location.pathname === "/new-recording"
+                  ? classes.button_active
+                  : classes.button
+              }
+            >
               <Group>
                 <ThemeIcon variant="light" color="red">
                   <RadiobuttonIcon />
@@ -144,17 +144,17 @@ const WrapperPage = ({ children }: Props): JSX.Element => {
 
                 <Text size="sm">New Recording</Text>
               </Group>
-            </Link>
-          </UnstyledButton>
-          <UnstyledButton
-            onClick={() => console.log("clicked calendar")}
-            className={
-              location.pathname === "/calendar"
-                ? classes.button_active
-                : classes.button
-            }
-          >
-            <Link to="/calendar" className={classes.link}>
+            </UnstyledButton>
+          </Link>
+          <Link to="/calendar" className={classes.link}>
+            <UnstyledButton
+              onClick={() => console.log("clicked calendar")}
+              className={
+                location.pathname === "/calendar"
+                  ? classes.button_active
+                  : classes.button
+              }
+            >
               <Group>
                 <ThemeIcon variant="light" color="orange">
                   <CalendarIcon />
@@ -162,8 +162,8 @@ const WrapperPage = ({ children }: Props): JSX.Element => {
 
                 <Text size="sm">Calendar</Text>
               </Group>
-            </Link>
-          </UnstyledButton>
+            </UnstyledButton>
+          </Link>
         </Navbar>
       }
     >
