@@ -23,15 +23,18 @@ import { Redirect, Route, Switch } from "react-router-dom";
 import DashboardPage from "./pages/DashboardPage";
 import CalendarPage from "./pages/CalendarPage";
 import NewRecordingPage from "./pages/NewRecordingPage";
+import WrapperPage from "./pages/WrapperPage";
 
 function App() {
   return (
-    <Switch>
-      <Route exact path="/" component={Sample} />
-      <Route exact path="/dashboard" component={DashboardPage} />
-      <Route exact path="/new-recording" component={NewRecordingPage} />
-      <Route exact path="/calendar" component={CalendarPage} />
-    </Switch>
+    <WrapperPage>
+      <Switch>
+        <Route exact path="/" component={Sample} />
+        <Route exact path="/dashboard" component={DashboardPage} />
+        <Route exact path="/new-recording" component={NewRecordingPage} />
+        <Route exact path="/calendar" component={CalendarPage} />
+      </Switch>
+    </WrapperPage>
   );
 }
 

@@ -64,7 +64,7 @@ const WrapperPage = ({ children }: Props): JSX.Element => {
   const location = useLocation();
 
   useEffect(() => {
-    console.log(location.pathname);
+    // console.log(location.pathname);
   }, []);
 
   return (
@@ -88,13 +88,14 @@ const WrapperPage = ({ children }: Props): JSX.Element => {
                 mr="xl"
               />
             </MediaQuery>
-
-            <Group>
-              <ThemeIcon variant="light" color="orange">
-                🎙
-              </ThemeIcon>
-              <Text>Vocal Journal</Text>
-            </Group>
+            <Link to="/" className={classes.link}>
+              <Group>
+                <ThemeIcon variant="light" color="orange">
+                  🎙
+                </ThemeIcon>
+                <Text>Vocal Journal</Text>
+              </Group>
+            </Link>
           </div>
         </Header>
       }
@@ -111,6 +112,7 @@ const WrapperPage = ({ children }: Props): JSX.Element => {
           width={{ sm: 300, lg: 400 }}
         >
           <UnstyledButton
+            onClick={() => console.log("clicked dashboard")}
             className={
               location.pathname === "/dashboard"
                 ? classes.button_active
@@ -127,6 +129,7 @@ const WrapperPage = ({ children }: Props): JSX.Element => {
             </Link>
           </UnstyledButton>
           <UnstyledButton
+            onClick={() => console.log("clicked new-recording")}
             className={
               location.pathname === "/new-recording"
                 ? classes.button_active
@@ -144,6 +147,7 @@ const WrapperPage = ({ children }: Props): JSX.Element => {
             </Link>
           </UnstyledButton>
           <UnstyledButton
+            onClick={() => console.log("clicked calendar")}
             className={
               location.pathname === "/calendar"
                 ? classes.button_active
