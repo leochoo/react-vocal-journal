@@ -20,6 +20,7 @@ import {
   RocketIcon,
 } from "@radix-ui/react-icons";
 import { useLocation, Link } from "react-router-dom";
+import { CustomNavBar } from "../components/CustomNavBar";
 
 interface Props {
   children: boolean | ReactChild | ReactFragment | ReactPortal;
@@ -74,7 +75,7 @@ const WrapperPage = ({ children }: Props): JSX.Element => {
       // fixed prop on AppShell will be automatically added to Header and Navbar
       fixed
       header={
-        <Header height={70} padding="md">
+        <Header height={70} p="md">
           {/* Handle other responsive styles with MediaQuery component or createStyles function */}
           <div
             style={{ display: "flex", alignItems: "center", height: "100%" }}
@@ -100,71 +101,72 @@ const WrapperPage = ({ children }: Props): JSX.Element => {
         </Header>
       }
       navbar={
-        <Navbar
-          padding="md"
-          // Breakpoint at which navbar will be hidden if hidden prop is true
-          hiddenBreakpoint="sm"
-          // Hides navbar when viewport size is less than value specified in hiddenBreakpoint
-          hidden={!opened}
-          // when viewport size is less than theme.breakpoints.sm navbar width is 100%
-          // viewport size > theme.breakpoints.sm – width is 300px
-          // viewport size > theme.breakpoints.lg – width is 400px
-          width={{ sm: 300, lg: 400 }}
-        >
-          <Link to="/dashboard" className={classes.link}>
-            <UnstyledButton
-              onClick={() => console.log("clicked dashboard")}
-              className={
-                location.pathname === "/dashboard"
-                  ? classes.button_active
-                  : classes.button
-              }
-            >
-              <Group>
-                <ThemeIcon variant="light">
-                  <DashboardIcon />
-                </ThemeIcon>
-                <Text size="sm">Dashboard</Text>
-              </Group>
-            </UnstyledButton>
-          </Link>
-          <Link to="/new-recording" className={classes.link}>
-            <UnstyledButton
-              onClick={() => console.log("clicked new-recording")}
-              className={
-                location.pathname === "/new-recording"
-                  ? classes.button_active
-                  : classes.button
-              }
-            >
-              <Group>
-                <ThemeIcon variant="light" color="red">
-                  <RadiobuttonIcon />
-                </ThemeIcon>
+        <CustomNavBar />
+        // <Navbar
+        //   padding="md"
+        //   // Breakpoint at which navbar will be hidden if hidden prop is true
+        //   hiddenBreakpoint="sm"
+        //   // Hides navbar when viewport size is less than value specified in hiddenBreakpoint
+        //   hidden={!opened}
+        //   // when viewport size is less than theme.breakpoints.sm navbar width is 100%
+        //   // viewport size > theme.breakpoints.sm – width is 300px
+        //   // viewport size > theme.breakpoints.lg – width is 400px
+        //   width={{ sm: 300, lg: 400 }}
+        // >
+        //   <Link to="/dashboard" className={classes.link}>
+        //     <UnstyledButton
+        //       onClick={() => console.log("clicked dashboard")}
+        //       className={
+        //         location.pathname === "/dashboard"
+        //           ? classes.button_active
+        //           : classes.button
+        //       }
+        //     >
+        //       <Group>
+        //         <ThemeIcon variant="light">
+        //           <DashboardIcon />
+        //         </ThemeIcon>
+        //         <Text size="sm">Dashboard</Text>
+        //       </Group>
+        //     </UnstyledButton>
+        //   </Link>
+        //   <Link to="/new-recording" className={classes.link}>
+        //     <UnstyledButton
+        //       onClick={() => console.log("clicked new-recording")}
+        //       className={
+        //         location.pathname === "/new-recording"
+        //           ? classes.button_active
+        //           : classes.button
+        //       }
+        //     >
+        //       <Group>
+        //         <ThemeIcon variant="light" color="red">
+        //           <RadiobuttonIcon />
+        //         </ThemeIcon>
 
-                <Text size="sm">New Recording</Text>
-              </Group>
-            </UnstyledButton>
-          </Link>
-          <Link to="/calendar" className={classes.link}>
-            <UnstyledButton
-              onClick={() => console.log("clicked calendar")}
-              className={
-                location.pathname === "/calendar"
-                  ? classes.button_active
-                  : classes.button
-              }
-            >
-              <Group>
-                <ThemeIcon variant="light" color="orange">
-                  <CalendarIcon />
-                </ThemeIcon>
+        //         <Text size="sm">New Recording</Text>
+        //       </Group>
+        //     </UnstyledButton>
+        //   </Link>
+        //   <Link to="/calendar" className={classes.link}>
+        //     <UnstyledButton
+        //       onClick={() => console.log("clicked calendar")}
+        //       className={
+        //         location.pathname === "/calendar"
+        //           ? classes.button_active
+        //           : classes.button
+        //       }
+        //     >
+        //       <Group>
+        //         <ThemeIcon variant="light" color="orange">
+        //           <CalendarIcon />
+        //         </ThemeIcon>
 
-                <Text size="sm">Calendar</Text>
-              </Group>
-            </UnstyledButton>
-          </Link>
-        </Navbar>
+        //         <Text size="sm">Calendar</Text>
+        //       </Group>
+        //     </UnstyledButton>
+        //   </Link>
+        // </Navbar>
       }
     >
       {children}
