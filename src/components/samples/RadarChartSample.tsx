@@ -33,5 +33,16 @@ export const data = {
 };
 
 export function RadarChartSample() {
-  return <Radar data={data} />;
+  return (
+    <div
+      style={{
+        position: "relative",
+        margin: "auto",
+        width: "30vw",
+        height: "30vw",
+      }}
+    >
+      <Radar data={data} />
+    </div>
+  );
 }

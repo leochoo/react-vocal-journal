@@ -10,11 +10,7 @@ const DashboardPage = () => {
         <Grid.Col md={6} lg={3}>
           <CardSample />
         </Grid.Col>
-        <Grid.Col
-          style={{ position: "relative", margin: "auto" }}
-          md={6}
-          lg={3}
-        >
+        <Grid.Col md={6} lg={3}>
           <RadarChartSample />
         </Grid.Col>
         <Grid.Col md={6} lg={3}>
