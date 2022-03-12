@@ -253,50 +253,50 @@ const WrapperPage = ({ children }: Props): JSX.Element => {
         </Header>
       }
       navbar={
-        <Navbar
-          p="md"
-          // Breakpoint at which navbar will be hidden if hidden prop is true
-          hiddenBreakpoint="sm"
-          // Hides navbar when viewport size is less than value specified in hiddenBreakpoint
-          hidden={!opened}
-          // when viewport size is less than theme.breakpoints.sm navbar width is 100%
-          // viewport size > theme.breakpoints.sm – width is 300px
-          // viewport size > theme.breakpoints.lg – width is 400px
-          width={{ sm: 300, lg: 400 }}
-        >
-          <Navbar.Section grow>
-            <Group className={classes.header} position="apart">
-              <Image
-                width={150}
-                src={VocalJournalDarkLogo}
-                alt="Vocal Journal"
-              />
-              <Code sx={{ fontWeight: 700 }}>v0.1.0</Code>
-            </Group>
-            {links}
-          </Navbar.Section>
+        // <Navbar
+        //   p="md"
+        //   // Breakpoint at which navbar will be hidden if hidden prop is true
+        //   hiddenBreakpoint="sm"
+        //   // Hides navbar when viewport size is less than value specified in hiddenBreakpoint
+        //   hidden={!opened}
+        //   // when viewport size is less than theme.breakpoints.sm navbar width is 100%
+        //   // viewport size > theme.breakpoints.sm – width is 300px
+        //   // viewport size > theme.breakpoints.lg – width is 400px
+        //   width={{ sm: 300, lg: 400 }}
+        // >
+        //   <Navbar.Section grow>
+        //     <Group className={classes.header} position="apart">
+        //       <Image
+        //         width={150}
+        //         src={VocalJournalDarkLogo}
+        //         alt="Vocal Journal"
+        //       />
+        //       <Code sx={{ fontWeight: 700 }}>v0.1.0</Code>
+        //     </Group>
+        //     {links}
+        //   </Navbar.Section>
 
-          <Navbar.Section className={classes.footer}>
-            <a
-              href="#"
-              className={classes.link}
-              onClick={(event) => event.preventDefault()}
-            >
-              <SwitchHorizontal className={classes.linkIcon} />
-              <span>Change account</span>
-            </a>
+        //   <Navbar.Section className={classes.footer}>
+        //     <a
+        //       href="#"
+        //       className={classes.link}
+        //       onClick={(event) => event.preventDefault()}
+        //     >
+        //       <SwitchHorizontal className={classes.linkIcon} />
+        //       <span>Change account</span>
+        //     </a>
 
-            <a
-              href="#"
-              className={classes.link}
-              onClick={(event) => event.preventDefault()}
-            >
-              <Logout className={classes.linkIcon} />
-              <span>Logout</span>
-            </a>
-          </Navbar.Section>
-        </Navbar>
-        // <CustomNavBar opened={opened} />
+        //     <a
+        //       href="#"
+        //       className={classes.link}
+        //       onClick={(event) => event.preventDefault()}
+        //     >
+        //       <Logout className={classes.linkIcon} />
+        //       <span>Logout</span>
+        //     </a>
+        //   </Navbar.Section>
+        // </Navbar>
+        <CustomNavBar width={{ sm: 300, lg: 400 }} opened={opened} />
         // <Navbar
         //   padding="md"
         //   // Breakpoint at which navbar will be hidden if hidden prop is true

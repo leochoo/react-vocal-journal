@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { createStyles, Navbar, Group, Code, Image } from "@mantine/core";
+import {
+  createStyles,
+  Navbar,
+  Group,
+  Code,
+  Image,
+  NavbarProps,
+} from "@mantine/core";
 import {
   BellRinging,
   Fingerprint,
@@ -98,11 +105,13 @@ const data = [
   { link: "", label: "Other Settings", icon: Settings },
 ];
 
-interface Props {
+interface CustomNavBarProps extends NavbarProps {
   opened: boolean;
 }
 
-export function CustomNavBar({ opened }: Props): JSX.Element {
+export function CustomNavBar(
+  props: Omit<CustomNavBarProps, "children">
+): JSX.Element {
   const { classes, cx } = useStyles();
   const [active, setActive] = useState("Billing");
 
@@ -127,15 +136,16 @@ export function CustomNavBar({ opened }: Props): JSX.Element {
   return (
     // <Navbar height={700} width={{ sm: 300 }} p="md">
     <Navbar
+      {...props}
       p="md"
       // Breakpoint at which navbar will be hidden if hidden prop is true
       hiddenBreakpoint="sm"
       // Hides navbar when viewport size is less than value specified in hiddenBreakpoint
-      hidden={!opened}
+      hidden={!props.opened}
       // when viewport size is less than theme.breakpoints.sm navbar width is 100%
       // viewport size > theme.breakpoints.sm – width is 300px
       // viewport size > theme.breakpoints.lg – width is 400px
-      width={{ sm: 300, lg: 400 }}
+      // width={{ sm: 300, lg: 400 }}
     >
       <Navbar.Section grow>
         <Group className={classes.header} position="apart">
