@@ -17,6 +17,10 @@ import {
   Receipt2,
   SwitchHorizontal,
   Logout,
+  PlayerRecord,
+  Microphone2,
+  Calendar,
+  Dashboard,
 } from "tabler-icons-react";
 import { Link } from "react-router-dom";
 import VocalJournalDarkLogo from "../assets/logo-light.png";
@@ -96,13 +100,13 @@ const useStyles = createStyles((theme, _params, getRef) => {
 });
 
 const data = [
-  { link: "/dashboard", label: "Dahsboard", icon: BellRinging },
-  { link: "/new-recording", label: "New Recording", icon: Receipt2 },
-  { link: "/calendar", label: "Calendar", icon: Fingerprint },
-  { link: "", label: "SSH Keys", icon: Key },
-  { link: "", label: "Databases", icon: DatabaseImport },
-  { link: "", label: "Authentication", icon: TwoFA },
-  { link: "", label: "Other Settings", icon: Settings },
+  { link: "/dashboard", label: "Dashboard", icon: Dashboard },
+  { link: "/new-recording", label: "New Recording", icon: Microphone2 },
+  { link: "/calendar", label: "Calendar", icon: Calendar },
+  // { link: "", label: "SSH Keys", icon: Key },
+  // { link: "", label: "Databases", icon: DatabaseImport },
+  // { link: "", label: "Authentication", icon: TwoFA },
+  // { link: "", label: "Other Settings", icon: Settings },
 ];
 
 interface CustomNavBarProps extends NavbarProps {
