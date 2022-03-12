@@ -56,5 +56,16 @@ export const data = {
 };
 
 export function LineChartSample() {
-  return <Line options={options} data={data} />;
+  return (
+    <div
+      style={{
+        position: "relative",
+        margin: "auto",
+        width: "30vw",
+        height: "30vw",
+      }}
+    >
+      <Line options={options} data={data} />
+    </div>
+  );
 }

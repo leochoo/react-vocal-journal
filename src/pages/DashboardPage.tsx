@@ -7,10 +7,10 @@ const DashboardPage = () => {
   return (
     <Container>
       <Grid grow>
-        <Grid.Col md={6} lg={3}>
+        <Grid.Col style={{ border: "1px solid" }} md={6} lg={3}>
           <CardSample />
         </Grid.Col>
-        <Grid.Col md={6} lg={3}>
+        <Grid.Col style={{ border: "1px solid" }} md={6} lg={3}>
           <RadarChartSample />
         </Grid.Col>
         <Grid.Col md={6} lg={3}>
