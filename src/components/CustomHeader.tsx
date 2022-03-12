@@ -6,29 +6,26 @@ import {
   ThemeIcon,
   Text,
   NavbarProps,
+  HeaderProps,
 } from "@mantine/core";
 import { useMantineTheme } from "@mantine/core";
 
-export const CustomHeader = (
-  props: Omit<NavbarProps, "children">,
-  {
-    opened,
-    setOpened,
-  }: {
-    opened: boolean;
-    setOpened: React.Dispatch<React.SetStateAction<boolean>>;
-  }
-) => {
+interface CUstomHeaderProps extends HeaderProps {
+  opened: boolean;
+  setOpened: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export const CustomHeader = (props: Omit<CUstomHeaderProps, "children">) => {
   const theme = useMantineTheme();
 
   return (
-    <Header height={70} p="md">
+    <Header {...props}>
       {/* Handle other responsive styles with MediaQuery component or createStyles function */}
       <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
         <MediaQuery largerThan="sm" styles={{ display: "none" }}>
           <Burger
-            opened={opened}
-            onClick={() => setOpened((o) => !o)}
+            opened={props.opened}
+            onClick={() => props.setOpened((o) => !o)}
             size="sm"
             color={theme.colors.gray[6]}
             mr="xl"

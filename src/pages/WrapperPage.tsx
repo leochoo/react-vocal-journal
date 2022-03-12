@@ -224,143 +224,40 @@ const WrapperPage = ({ children }: Props): JSX.Element => {
         //     </Group>
         //   </div>
         // </Header>
-        // <CustomHeader opened={opened} setOpened={setOpened} />
-        <Header height={70} p="md">
-          {/* Handle other responsive styles with MediaQuery component or createStyles function */}
-          <div
-            style={{ display: "flex", alignItems: "center", height: "100%" }}
-          >
-            <MediaQuery largerThan="sm" styles={{ display: "none" }}>
-              <Burger
-                opened={opened}
-                onClick={() => setOpened((o) => !o)}
-                size="sm"
-                color={theme.colors.gray[6]}
-                mr="xl"
-              />
-            </MediaQuery>
-            <Link to="/" className={classes.link}>
-              <Group className={classes.header} position="apart">
-                <Image
-                  width={150}
-                  src={VocalJournalDarkLogo}
-                  alt="Vocal Journal"
-                />
-                <Code sx={{ fontWeight: 700 }}>v0.1.0</Code>
-              </Group>
-            </Link>
-          </div>
-        </Header>
-      }
-      navbar={
-        // <Navbar
-        //   p="md"
-        //   // Breakpoint at which navbar will be hidden if hidden prop is true
-        //   hiddenBreakpoint="sm"
-        //   // Hides navbar when viewport size is less than value specified in hiddenBreakpoint
-        //   hidden={!opened}
-        //   // when viewport size is less than theme.breakpoints.sm navbar width is 100%
-        //   // viewport size > theme.breakpoints.sm – width is 300px
-        //   // viewport size > theme.breakpoints.lg – width is 400px
-        //   width={{ sm: 300, lg: 400 }}
-        // >
-        //   <Navbar.Section grow>
-        //     <Group className={classes.header} position="apart">
-        //       <Image
-        //         width={150}
-        //         src={VocalJournalDarkLogo}
-        //         alt="Vocal Journal"
+        <CustomHeader
+          height={70}
+          p="md"
+          opened={opened}
+          setOpened={setOpened}
+        />
+        // <Header height={70} p="md">
+        //   {/* Handle other responsive styles with MediaQuery component or createStyles function */}
+        //   <div
+        //     style={{ display: "flex", alignItems: "center", height: "100%" }}
+        //   >
+        //     <MediaQuery largerThan="sm" styles={{ display: "none" }}>
+        //       <Burger
+        //         opened={opened}
+        //         onClick={() => setOpened((o) => !o)}
+        //         size="sm"
+        //         color={theme.colors.gray[6]}
+        //         mr="xl"
         //       />
-        //       <Code sx={{ fontWeight: 700 }}>v0.1.0</Code>
-        //     </Group>
-        //     {links}
-        //   </Navbar.Section>
-
-        //   <Navbar.Section className={classes.footer}>
-        //     <a
-        //       href="#"
-        //       className={classes.link}
-        //       onClick={(event) => event.preventDefault()}
-        //     >
-        //       <SwitchHorizontal className={classes.linkIcon} />
-        //       <span>Change account</span>
-        //     </a>
-
-        //     <a
-        //       href="#"
-        //       className={classes.link}
-        //       onClick={(event) => event.preventDefault()}
-        //     >
-        //       <Logout className={classes.linkIcon} />
-        //       <span>Logout</span>
-        //     </a>
-        //   </Navbar.Section>
-        // </Navbar>
-        <CustomNavBar width={{ sm: 300, lg: 400 }} opened={opened} />
-        // <Navbar
-        //   padding="md"
-        //   // Breakpoint at which navbar will be hidden if hidden prop is true
-        //   hiddenBreakpoint="sm"
-        //   // Hides navbar when viewport size is less than value specified in hiddenBreakpoint
-        //   hidden={!opened}
-        //   // when viewport size is less than theme.breakpoints.sm navbar width is 100%
-        //   // viewport size > theme.breakpoints.sm – width is 300px
-        //   // viewport size > theme.breakpoints.lg – width is 400px
-        //   width={{ sm: 300, lg: 400 }}
-        // >
-        //   <Link to="/dashboard" className={classes.link}>
-        //     <UnstyledButton
-        //       onClick={() => console.log("clicked dashboard")}
-        //       className={
-        //         location.pathname === "/dashboard"
-        //           ? classes.button_active
-        //           : classes.button
-        //       }
-        //     >
-        //       <Group>
-        //         <ThemeIcon variant="light">
-        //           <DashboardIcon />
-        //         </ThemeIcon>
-        //         <Text size="sm">Dashboard</Text>
+        //     </MediaQuery>
+        //     <Link to="/" className={classes.link}>
+        //       <Group className={classes.header} position="apart">
+        //         <Image
+        //           width={150}
+        //           src={VocalJournalDarkLogo}
+        //           alt="Vocal Journal"
+        //         />
+        //         <Code sx={{ fontWeight: 700 }}>v0.1.0</Code>
         //       </Group>
-        //     </UnstyledButton>
-        //   </Link>
-        //   <Link to="/new-recording" className={classes.link}>
-        //     <UnstyledButton
-        //       onClick={() => console.log("clicked new-recording")}
-        //       className={
-        //         location.pathname === "/new-recording"
-        //           ? classes.button_active
-        //           : classes.button
-        //       }
-        //     >
-        //       <Group>
-        //         <ThemeIcon variant="light" color="red">
-        //           <RadiobuttonIcon />
-        //         </ThemeIcon>
-        //         <Text size="sm">New Recording</Text>
-        //       </Group>
-        //     </UnstyledButton>
-        //   </Link>
-        //   <Link to="/calendar" className={classes.link}>
-        //     <UnstyledButton
-        //       onClick={() => console.log("clicked calendar")}
-        //       className={
-        //         location.pathname === "/calendar"
-        //           ? classes.button_active
-        //           : classes.button
-        //       }
-        //     >
-        //       <Group>
-        //         <ThemeIcon variant="light" color="orange">
-        //           <CalendarIcon />
-        //         </ThemeIcon>
-        //         <Text size="sm">Calendar</Text>
-        //       </Group>
-        //     </UnstyledButton>
-        //   </Link>
-        // </Navbar>
+        //     </Link>
+        //   </div>
+        // </Header>
       }
+      navbar={<CustomNavBar width={{ sm: 300, lg: 400 }} opened={opened} />}
     >
       {children}
     </AppShell>
