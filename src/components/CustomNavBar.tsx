@@ -11,6 +11,7 @@ import {
   SwitchHorizontal,
   Logout,
 } from "tabler-icons-react";
+import { Link } from "react-router-dom";
 import VocalJournalDarkLogo from "../assets/logo-light.png";
 
 const useStyles = createStyles((theme, _params, getRef) => {
@@ -25,7 +26,6 @@ const useStyles = createStyles((theme, _params, getRef) => {
           : theme.colors.gray[2]
       }`,
     },
-
     footer: {
       paddingTop: theme.spacing.md,
       marginTop: theme.spacing.md,
@@ -77,16 +77,11 @@ const useStyles = createStyles((theme, _params, getRef) => {
         backgroundColor:
           theme.colorScheme === "dark"
             ? theme.fn.rgba(theme.colors[theme.primaryColor][8], 0.25)
-            : theme.colors[theme.primaryColor][0],
+            : theme.colors.orange[0],
         color:
-          theme.colorScheme === "dark"
-            ? theme.white
-            : theme.colors[theme.primaryColor][7],
+          theme.colorScheme === "dark" ? theme.white : theme.colors.orange[7],
         [`& .${icon}`]: {
-          color:
-            theme.colors[theme.primaryColor][
-              theme.colorScheme === "dark" ? 5 : 7
-            ],
+          color: theme.colors.orange[theme.colorScheme === "dark" ? 5 : 7],
         },
       },
     },
@@ -94,38 +89,54 @@ const useStyles = createStyles((theme, _params, getRef) => {
 });
 
 const data = [
-  { link: "", label: "Notifications", icon: BellRinging },
-  { link: "", label: "Billing", icon: Receipt2 },
-  { link: "", label: "Security", icon: Fingerprint },
+  { link: "/dashboard", label: "Dahsboard", icon: BellRinging },
+  { link: "/new-recording", label: "New Recording", icon: Receipt2 },
+  { link: "/calendar", label: "Calendar", icon: Fingerprint },
   { link: "", label: "SSH Keys", icon: Key },
   { link: "", label: "Databases", icon: DatabaseImport },
   { link: "", label: "Authentication", icon: TwoFA },
   { link: "", label: "Other Settings", icon: Settings },
 ];
 
-export function CustomNavBar() {
+interface Props {
+  opened: boolean;
+}
+
+export function CustomNavBar({ opened }: Props): JSX.Element {
   const { classes, cx } = useStyles();
   const [active, setActive] = useState("Billing");
 
   const links = data.map((item) => (
-    <a
+    <Link
+      to={item.link}
       className={cx(classes.link, {
         [classes.linkActive]: item.label === active,
       })}
       href={item.link}
       key={item.label}
       onClick={(event) => {
-        event.preventDefault();
+        // event.preventDefault();
         setActive(item.label);
       }}
     >
       <item.icon className={classes.linkIcon} />
       <span>{item.label}</span>
-    </a>
+    </Link>
   ));
 
   return (
-    <Navbar height={700} width={{ sm: 300 }} p="md">
+    // <Navbar height={700} width={{ sm: 300 }} p="md">
+    <Navbar
+      p="md"
+      // Breakpoint at which navbar will be hidden if hidden prop is true
+      hiddenBreakpoint="sm"
+      // Hides navbar when viewport size is less than value specified in hiddenBreakpoint
+      hidden={!opened}
+      // when viewport size is less than theme.breakpoints.sm navbar width is 100%
+      // viewport size > theme.breakpoints.sm – width is 300px
+      // viewport size > theme.breakpoints.lg – width is 400px
+      width={{ sm: 300, lg: 400 }}
+    >
       <Navbar.Section grow>
         <Group className={classes.header} position="apart">
           <Image width={150} src={VocalJournalDarkLogo} alt="Vocal Journal" />

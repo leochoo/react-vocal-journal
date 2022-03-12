@@ -12,6 +12,8 @@ import {
   ThemeIcon,
   UnstyledButton,
   useMantineTheme,
+  Image,
+  Code,
 } from "@mantine/core";
 import {
   CalendarIcon,
@@ -20,13 +22,22 @@ import {
   RocketIcon,
 } from "@radix-ui/react-icons";
 import { useLocation, Link } from "react-router-dom";
+import { CustomHeader } from "../components/CustomHeader";
 import { CustomNavBar } from "../components/CustomNavBar";
+import VocalJournalDarkLogo from "../assets/logo-light.png";
 
 interface Props {
   children: boolean | ReactChild | ReactFragment | ReactPortal;
 }
 
 const useStyles = createStyles((theme) => ({
+  header: {
+    paddingBottom: theme.spacing.md,
+    marginBottom: theme.spacing.md * 1.5,
+    borderBottom: `1px solid ${
+      theme.colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[2]
+    }`,
+  },
   button: {
     display: "block",
     width: "100%",
@@ -75,33 +86,59 @@ const WrapperPage = ({ children }: Props): JSX.Element => {
       // fixed prop on AppShell will be automatically added to Header and Navbar
       fixed
       header={
-        <Header height={70} p="md">
-          {/* Handle other responsive styles with MediaQuery component or createStyles function */}
-          <div
-            style={{ display: "flex", alignItems: "center", height: "100%" }}
-          >
-            <MediaQuery largerThan="sm" styles={{ display: "none" }}>
-              <Burger
-                opened={opened}
-                onClick={() => setOpened((o) => !o)}
-                size="sm"
-                color={theme.colors.gray[6]}
-                mr="xl"
-              />
-            </MediaQuery>
-            <Link to="/" className={classes.link}>
-              <Group>
-                <ThemeIcon variant="light" color="orange">
-                  🎙
-                </ThemeIcon>
-                <Text>Vocal Journal</Text>
-              </Group>
-            </Link>
-          </div>
-        </Header>
+        // <Header height={70} p="md">
+        //   {/* Handle other responsive styles with MediaQuery component or createStyles function */}
+        //   <div
+        //     style={{ display: "flex", alignItems: "center", height: "100%" }}
+        //   >
+        //     <MediaQuery largerThan="sm" styles={{ display: "none" }}>
+        //       <Burger
+        //         opened={opened}
+        //         onClick={() => setOpened((o) => !o)}
+        //         size="sm"
+        //         color={theme.colors.gray[6]}
+        //         mr="xl"
+        //       />
+        //     </MediaQuery>
+
+        //     <Group>
+        //       <ThemeIcon variant="light" color="orange">
+        //         🎙
+        //       </ThemeIcon>
+        //       <Text>Mantine AppShell with React Router</Text>
+        //     </Group>
+        //   </div>
+        // </Header>
+        <CustomHeader opened={opened} setOpened={setOpened} />
+        // <Header height={70} p="md">
+        //   {/* Handle other responsive styles with MediaQuery component or createStyles function */}
+        //   <div
+        //     style={{ display: "flex", alignItems: "center", height: "100%" }}
+        //   >
+        //     <MediaQuery largerThan="sm" styles={{ display: "none" }}>
+        //       <Burger
+        //         opened={opened}
+        //         onClick={() => setOpened((o) => !o)}
+        //         size="sm"
+        //         color={theme.colors.gray[6]}
+        //         mr="xl"
+        //       />
+        //     </MediaQuery>
+        //     <Link to="/" className={classes.link}>
+        //       <Group className={classes.header} position="apart">
+        //         <Image
+        //           width={150}
+        //           src={VocalJournalDarkLogo}
+        //           alt="Vocal Journal"
+        //         />
+        //         <Code sx={{ fontWeight: 700 }}>v0.1.0</Code>
+        //       </Group>
+        //     </Link>
+        //   </div>
+        // </Header>
       }
       navbar={
-        <CustomNavBar />
+        <CustomNavBar opened={opened} />
         // <Navbar
         //   padding="md"
         //   // Breakpoint at which navbar will be hidden if hidden prop is true
@@ -143,7 +180,6 @@ const WrapperPage = ({ children }: Props): JSX.Element => {
         //         <ThemeIcon variant="light" color="red">
         //           <RadiobuttonIcon />
         //         </ThemeIcon>
-
         //         <Text size="sm">New Recording</Text>
         //       </Group>
         //     </UnstyledButton>
@@ -161,7 +197,6 @@ const WrapperPage = ({ children }: Props): JSX.Element => {
         //         <ThemeIcon variant="light" color="orange">
         //           <CalendarIcon />
         //         </ThemeIcon>
-
         //         <Text size="sm">Calendar</Text>
         //       </Group>
         //     </UnstyledButton>
