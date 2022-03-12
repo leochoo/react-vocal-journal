@@ -17,7 +17,7 @@ function CardSample() {
 
   return (
     <div style={{ width: 340, margin: "auto" }}>
-      <Card shadow="sm" padding="lg">
+      <Card shadow="sm" p="lg">
         <Card.Section>
           <Image src={Norway} height={160} alt="Norway" />
         </Card.Section>

@@ -6,21 +6,24 @@ import { LineChartSample } from "../components/samples/LineChartSample";
 const DashboardPage = () => {
   return (
     <Container>
-      <div>DashboardPage</div>
       <Grid grow>
-        <Grid.Col span={4}>
+        <Grid.Col md={6} lg={3}>
           <CardSample />
         </Grid.Col>
-        <Grid.Col span={4}>
+        <Grid.Col
+          style={{ position: "relative", margin: "auto" }}
+          md={6}
+          lg={3}
+        >
           <RadarChartSample />
         </Grid.Col>
-        <Grid.Col span={4}>
+        <Grid.Col md={6} lg={3}>
           <CardSample />
         </Grid.Col>
-        <Grid.Col span={4}>
+        <Grid.Col md={6} lg={3}>
           <LineChartSample />
         </Grid.Col>
-        <Grid.Col span={4}>
+        <Grid.Col md={6} lg={3}>
           <CardSample />
         </Grid.Col>
       </Grid>

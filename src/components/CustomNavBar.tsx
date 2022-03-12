@@ -24,6 +24,8 @@ import {
 } from "tabler-icons-react";
 import { Link } from "react-router-dom";
 import VocalJournalDarkLogo from "../assets/logo-light.png";
+import { UserButton } from "./UserButton";
+import { MoonIcon } from "@radix-ui/react-icons";
 
 const useStyles = createStyles((theme, _params, getRef) => {
   const icon = getRef("icon");
@@ -154,6 +156,11 @@ export function CustomNavBar(
       <Navbar.Section grow>{links}</Navbar.Section>
 
       <Navbar.Section className={classes.footer}>
+        <UserButton
+          name={"John Doe"}
+          email={"test@test.com"}
+          // icon={<MoonIcon />}
+        />
         <a
           href="#"
           className={classes.link}
