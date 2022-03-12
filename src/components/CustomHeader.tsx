@@ -7,15 +7,36 @@ import {
   Text,
   NavbarProps,
   HeaderProps,
+  createStyles,
+  Navbar,
+  Code,
+  Image,
 } from "@mantine/core";
 import { useMantineTheme } from "@mantine/core";
+import VocalJournalDarkLogo from "../assets/logo-light.png";
 
 interface CUstomHeaderProps extends HeaderProps {
   opened: boolean;
   setOpened: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+const useStyles = createStyles((theme, _params, getRef) => {
+  const icon = getRef("icon");
+  return {
+    header: {
+      // paddingBottom: theme.spacing.md,
+      // marginBottom: theme.spacing.md,
+      // borderBottom: `1px solid ${
+      //   theme.colorScheme === "dark"
+      //     ? theme.colors.dark[4]
+      //     : theme.colors.gray[2]
+      // }`,
+    },
+  };
+});
 export const CustomHeader = (props: Omit<CUstomHeaderProps, "children">) => {
+  const { classes, cx } = useStyles();
+
   const theme = useMantineTheme();
 
   return (
@@ -31,12 +52,9 @@ export const CustomHeader = (props: Omit<CUstomHeaderProps, "children">) => {
             mr="xl"
           />
         </MediaQuery>
-
-        <Group>
-          <ThemeIcon variant="light" color="orange">
-            🎙
-          </ThemeIcon>
-          <Text>Mantine AppShell with React Router</Text>
+        <Group className={classes.header} position="apart">
+          <Image width={150} src={VocalJournalDarkLogo} alt="Vocal Journal" />
+          <Code sx={{ fontWeight: 700 }}>v0.1.0</Code>
         </Group>
       </div>
     </Header>

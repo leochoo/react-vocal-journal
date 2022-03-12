@@ -201,61 +201,14 @@ const WrapperPage = ({ children }: Props): JSX.Element => {
       // fixed prop on AppShell will be automatically added to Header and Navbar
       fixed
       header={
-        // <Header height={70} p="md">
-        //   {/* Handle other responsive styles with MediaQuery component or createStyles function */}
-        //   <div
-        //     style={{ display: "flex", alignItems: "center", height: "100%" }}
-        //   >
-        //     <MediaQuery largerThan="sm" styles={{ display: "none" }}>
-        //       <Burger
-        //         opened={opened}
-        //         onClick={() => setOpened((o) => !o)}
-        //         size="sm"
-        //         color={theme.colors.gray[6]}
-        //         mr="xl"
-        //       />
-        //     </MediaQuery>
-
-        //     <Group>
-        //       <ThemeIcon variant="light" color="orange">
-        //         🎙
-        //       </ThemeIcon>
-        //       <Text>Mantine AppShell with React Router</Text>
-        //     </Group>
-        //   </div>
-        // </Header>
+        // <MediaQuery largerThan="sm" styles={{ display: "none" }}>
         <CustomHeader
           height={70}
           p="md"
           opened={opened}
           setOpened={setOpened}
         />
-        // <Header height={70} p="md">
-        //   {/* Handle other responsive styles with MediaQuery component or createStyles function */}
-        //   <div
-        //     style={{ display: "flex", alignItems: "center", height: "100%" }}
-        //   >
-        //     <MediaQuery largerThan="sm" styles={{ display: "none" }}>
-        //       <Burger
-        //         opened={opened}
-        //         onClick={() => setOpened((o) => !o)}
-        //         size="sm"
-        //         color={theme.colors.gray[6]}
-        //         mr="xl"
-        //       />
-        //     </MediaQuery>
-        //     <Link to="/" className={classes.link}>
-        //       <Group className={classes.header} position="apart">
-        //         <Image
-        //           width={150}
-        //           src={VocalJournalDarkLogo}
-        //           alt="Vocal Journal"
-        //         />
-        //         <Code sx={{ fontWeight: 700 }}>v0.1.0</Code>
-        //       </Group>
-        //     </Link>
-        //   </div>
-        // </Header>
+        // </MediaQuery>
       }
       navbar={<CustomNavBar width={{ sm: 300, lg: 400 }} opened={opened} />}
     >

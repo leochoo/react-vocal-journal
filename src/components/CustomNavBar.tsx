@@ -147,13 +147,7 @@ export function CustomNavBar(
       // viewport size > theme.breakpoints.lg – width is 400px
       // width={{ sm: 300, lg: 400 }}
     >
-      <Navbar.Section grow>
-        <Group className={classes.header} position="apart">
-          <Image width={150} src={VocalJournalDarkLogo} alt="Vocal Journal" />
-          <Code sx={{ fontWeight: 700 }}>v0.1.0</Code>
-        </Group>
-        {links}
-      </Navbar.Section>
+      <Navbar.Section grow>{links}</Navbar.Section>
 
       <Navbar.Section className={classes.footer}>
         <a
