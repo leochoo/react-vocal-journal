@@ -49,7 +49,7 @@ function getActiveColor(status: DropzoneStatus, theme: MantineTheme) {
 export function DropzoneButton() {
   const theme = useMantineTheme();
   const { classes } = useStyles();
-  const openRef = useRef<() => void>(null);
+  const openRef = useRef<() => void>(() => {});
 
   return (
     <div className={classes.wrapper}>
@@ -76,12 +76,12 @@ export function DropzoneButton() {
               {status.accepted
                 ? "Drop files here"
                 : status.rejected
-                ? "Pdf file less that 30mb"
-                : "Upload resume"}
+                ? ".wav, .mp3, .m4a file less than 30mb"
+                : "Upload audio"}
             </Text>
             <Text align="center" size="sm" mt="xs" color="dimmed">
               Drag&apos;n&apos;drop files here to upload. We can accept only{" "}
-              <i>.pdf</i> files that are less than 30mb in size.
+              <i>wav, .mp3, .m4a</i> files that are less than 30mb in size.
             </Text>
           </div>
         )}

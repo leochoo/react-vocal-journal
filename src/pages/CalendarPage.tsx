@@ -7,7 +7,7 @@ import TableSample from "../components/samples/TableSample";
 const CalendarPage = () => {
   return (
     <Container>
-      <Text>CalendarPage</Text>
+      <Text size="xl">CalendarPage</Text>
       <CalendarSample />
       <TableSample />
       <Grid grow>

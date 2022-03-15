@@ -210,7 +210,7 @@ const WrapperPage = ({ children }: Props): JSX.Element => {
         />
         // </MediaQuery>
       }
-      navbar={<CustomNavBar width={{ sm: 300, lg: 400 }} opened={opened} />}
+      navbar={<CustomNavBar width={{ sm: 300, lg: 300 }} opened={opened} />}
     >
       {children}
     </AppShell>
