@@ -111,13 +111,7 @@ const data = [
   // { link: "", label: "Other Settings", icon: Settings },
 ];
 
-interface CustomNavBarProps extends NavbarProps {
-  opened: boolean;
-}
-
-export function CustomNavBar(
-  props: Omit<CustomNavBarProps, "children">
-): JSX.Element {
+export function CustomNavBar(opened: { opened: boolean }): JSX.Element {
   const { classes, cx } = useStyles();
   const [active, setActive] = useState("Billing");
 
@@ -142,12 +136,12 @@ export function CustomNavBar(
   return (
     // <Navbar height={700} width={{ sm: 300 }} p="md">
     <Navbar
-      {...props}
+      width={{ sm: 300, lg: 300 }}
       p="md"
       // Breakpoint at which navbar will be hidden if hidden prop is true
       hiddenBreakpoint="sm"
       // Hides navbar when viewport size is less than value specified in hiddenBreakpoint
-      hidden={!props.opened}
+      hidden={!opened}
       // when viewport size is less than theme.breakpoints.sm navbar width is 100%
       // viewport size > theme.breakpoints.sm – width is 300px
       // viewport size > theme.breakpoints.lg – width is 400px

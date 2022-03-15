@@ -19,6 +19,11 @@ ChartJS.register(
   Legend
 );
 
+export const options = {
+  responsive: true,
+  maintainAspectRatio: false,
+};
+
 export const data = {
   labels: ["Thing 1", "Thing 2", "Thing 3", "Thing 4", "Thing 5", "Thing 6"],
   datasets: [
@@ -33,16 +38,5 @@ export const data = {
 };
 
 export function RadarChartSample() {
-  return (
-    <div
-      style={{
-        position: "relative",
-        margin: "auto",
-        width: "30vw",
-        height: "30vw",
-      }}
-    >
-      <Radar data={data} />
-    </div>
-  );
+  return <Radar options={options} data={data} />;
 }

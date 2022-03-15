@@ -202,15 +202,10 @@ const WrapperPage = ({ children }: Props): JSX.Element => {
       fixed
       header={
         // <MediaQuery largerThan="sm" styles={{ display: "none" }}>
-        <CustomHeader
-          height={70}
-          p="md"
-          opened={opened}
-          setOpened={setOpened}
-        />
+        <CustomHeader opened={opened} setOpened={setOpened} />
         // </MediaQuery>
       }
-      navbar={<CustomNavBar width={{ sm: 300, lg: 300 }} opened={opened} />}
+      navbar={<CustomNavBar opened={opened} />}
     >
       {children}
     </AppShell>

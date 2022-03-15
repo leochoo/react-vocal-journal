@@ -15,11 +15,6 @@ import {
 import { useMantineTheme } from "@mantine/core";
 import VocalJournalDarkLogo from "../assets/logo-light.png";
 
-interface CUstomHeaderProps extends HeaderProps {
-  opened: boolean;
-  setOpened: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
 const useStyles = createStyles((theme, _params, getRef) => {
   const icon = getRef("icon");
   return {
@@ -34,19 +29,25 @@ const useStyles = createStyles((theme, _params, getRef) => {
     },
   };
 });
-export const CustomHeader = (props: Omit<CUstomHeaderProps, "children">) => {
+export const CustomHeader = ({
+  opened,
+  setOpened,
+}: {
+  opened: boolean;
+  setOpened: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   const { classes, cx } = useStyles();
 
   const theme = useMantineTheme();
 
   return (
-    <Header {...props}>
+    <Header height={70} p="md">
       {/* Handle other responsive styles with MediaQuery component or createStyles function */}
       <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
         <MediaQuery largerThan="sm" styles={{ display: "none" }}>
           <Burger
-            opened={props.opened}
-            onClick={() => props.setOpened((o) => !o)}
+            opened={opened}
+            onClick={() => setOpened((o) => !o)}
             size="sm"
             color={theme.colors.gray[6]}
             mr="xl"
