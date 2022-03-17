@@ -6,7 +6,7 @@ import { LineChartSample } from "../components/samples/LineChartSample";
 const DashboardPage = () => {
   return (
     <Container size="xl" px="xs">
-      <Text size="xl">CalendarPage</Text>
+      <Text size="xl">Dashboard</Text>
 
       <Grid grow>
         <Grid.Col sm={12} lg={6}>

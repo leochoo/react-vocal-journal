@@ -111,7 +111,11 @@ const data = [
   // { link: "", label: "Other Settings", icon: Settings },
 ];
 
-export function CustomNavBar(opened: { opened: boolean }): JSX.Element {
+interface Props {
+  opened: boolean;
+}
+
+export function CustomNavBar({ opened }: Props): JSX.Element {
   const { classes, cx } = useStyles();
   const [active, setActive] = useState("Billing");
 

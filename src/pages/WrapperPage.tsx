@@ -41,45 +41,6 @@ interface Props {
   children: boolean | ReactChild | ReactFragment | ReactPortal;
 }
 
-// const useStyles = createStyles((theme) => ({
-//   header: {
-//     paddingBottom: theme.spacing.md,
-//     marginBottom: theme.spacing.md * 1.5,
-//     borderBottom: `1px solid ${
-//       theme.colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[2]
-//     }`,
-//   },
-//   button: {
-//     display: "block",
-//     width: "100%",
-//     padding: theme.spacing.xs,
-//     borderRadius: theme.radius.sm,
-//     color: theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
-
-//     "&:hover": {
-//       backgroundColor:
-//         theme.colorScheme === "dark"
-//           ? theme.colors.dark[6]
-//           : theme.colors.gray[0],
-//     },
-//   },
-//   button_active: {
-//     display: "block",
-//     width: "100%",
-//     padding: theme.spacing.xs,
-//     borderRadius: theme.radius.sm,
-//     color: theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
-//     // color: theme.colors.orange[6],
-//     backgroundColor: theme.colors.orange[0],
-//   },
-
-//   link: {
-//     textDecoration: "none",
-//     color: theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
-//   },
-
-// }));
-
 const useStyles = createStyles((theme, _params, getRef) => {
   const icon = getRef("icon");
   return {
@@ -170,42 +131,33 @@ const WrapperPage = ({ children }: Props): JSX.Element => {
   const { classes, cx } = useStyles();
   const [active, setActive] = useState("");
 
-  const location = useLocation();
-
-  useEffect(() => {
-    // console.log(location.pathname);
-  }, []);
-
-  const links = data.map((item) => (
-    <Link
-      to={item.link}
-      className={cx(classes.link, {
-        [classes.linkActive]: item.label === active,
-      })}
-      href={item.link}
-      key={item.label}
-      onClick={(event) => {
-        // event.preventDefault();
-        setActive(item.label);
-      }}
-    >
-      <item.icon className={classes.linkIcon} />
-      <span>{item.label}</span>
-    </Link>
-  ));
-
   return (
     <AppShell
       // navbarOffsetBreakpoint controls when navbar should no longer be offset with padding-left
       navbarOffsetBreakpoint="sm"
       // fixed prop on AppShell will be automatically added to Header and Navbar
       fixed
+      navbar={<CustomNavBar opened={opened} />}
+      // navbar={
+      //   <Navbar
+      //     p="md"
+      //     // Breakpoint at which navbar will be hidden if hidden prop is true
+      //     hiddenBreakpoint="sm"
+      //     // Hides navbar when viewport size is less than value specified in hiddenBreakpoint
+      //     hidden={!opened}
+      //     // when viewport size is less than theme.breakpoints.sm navbar width is 100%
+      //     // viewport size > theme.breakpoints.sm – width is 300px
+      //     // viewport size > theme.breakpoints.lg – width is 400px
+      //     width={{ sm: 300, lg: 400 }}
+      //   >
+      //     <Text>Application navbar</Text>
+      //   </Navbar>
+      // }
       header={
         // <MediaQuery largerThan="sm" styles={{ display: "none" }}>
         <CustomHeader opened={opened} setOpened={setOpened} />
         // </MediaQuery>
       }
-      navbar={<CustomNavBar opened={opened} />}
     >
       {children}
     </AppShell>
