@@ -113,9 +113,10 @@ const data = [
 
 interface Props {
   opened: boolean;
+  setOpened: (opened: boolean) => void;
 }
 
-export function CustomNavBar({ opened }: Props): JSX.Element {
+export function CustomNavBar({ opened, setOpened }: Props): JSX.Element {
   const { classes, cx } = useStyles();
   const [active, setActive] = useState("Billing");
 
@@ -130,6 +131,7 @@ export function CustomNavBar({ opened }: Props): JSX.Element {
       onClick={(event) => {
         // event.preventDefault();
         setActive(item.label);
+        setOpened(false);
       }}
     >
       <item.icon className={classes.linkIcon} />

@@ -137,7 +137,7 @@ const WrapperPage = ({ children }: Props): JSX.Element => {
       navbarOffsetBreakpoint="sm"
       // fixed prop on AppShell will be automatically added to Header and Navbar
       fixed
-      navbar={<CustomNavBar opened={opened} />}
+      navbar={<CustomNavBar opened={opened} setOpened={setOpened} />}
       // navbar={
       //   <Navbar
       //     p="md"
