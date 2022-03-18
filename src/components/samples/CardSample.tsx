@@ -16,7 +16,7 @@ function CardSample() {
     theme.colorScheme === "dark" ? theme.colors.dark[1] : theme.colors.gray[7];
 
   return (
-    <div style={{ width: 340, margin: "auto" }}>
+    <div style={{ width: 400, margin: "auto" }}>
       <Card shadow="sm" p="lg">
         <Card.Section>
           <Image src={Norway} height={160} alt="Norway" />
