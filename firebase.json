@@ -1,7 +1,7 @@
 {
   "hosting": {
     "site": "react-voice",
-    "public": "public",
+    "public": "dist",
     "ignore": [
       "firebase.json",
       "**/.*",
