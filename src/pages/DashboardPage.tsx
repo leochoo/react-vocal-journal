@@ -82,9 +82,9 @@ const data = [
 const DashboardPage = () => {
   return (
     <Container size="xl" px="xs">
-      <Text size="xl">Dashboard</Text>
+      <Text style={{ marginBottom: "3vh", fontSize: "2rem" }}>Dashboard</Text>
 
-      {/* <TableReviews data={data} /> */}
+      <TableReviews data={data} />
 
       <Grid grow style={{ border: "red solid 1px" }}>
         <Grid.Col style={{ border: "orange solid 1px" }} sm={12} lg={4}>

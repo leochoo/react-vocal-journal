@@ -88,10 +88,10 @@ export function TableReviews({ data }: TableReviewsProps) {
       <Table sx={{ minWidth: 800 }} verticalSpacing="xs">
         <thead>
           <tr>
-            <th>Book title</th>
-            <th>Year</th>
-            <th>Author</th>
-            <th>Reviews</th>
+            <th>Time</th>
+            <th>Jitter</th>
+            <th>Shimmer</th>
+            <th>HNR</th>
             <th>Reviews distribution</th>
           </tr>
         </thead>
