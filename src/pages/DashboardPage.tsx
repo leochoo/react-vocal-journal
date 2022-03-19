@@ -6,8 +6,8 @@ import { LineChartSample } from "../components/samples/LineChartSample";
 import { StatsRingCard } from "../components/samples/StatsRingCard";
 import { TableReviews } from "../components/samples/TableReviews";
 
-const statsRingCardData = {
-  title: "Vocal Practice",
+const jitter_statsRingCardData = {
+  title: "Jitter Practice",
   completed: 81,
   total: 100,
   stats: [
@@ -88,7 +88,39 @@ const DashboardPage = () => {
 
       <Grid grow style={{ border: "red solid 1px" }}>
         <Grid.Col style={{ border: "orange solid 1px" }} sm={12} lg={4}>
-          <StatsRingCard {...statsRingCardData} />
+          <StatsRingCard {...jitter_statsRingCardData} />
+        </Grid.Col>
+        <Grid.Col
+          sm={12}
+          lg={8}
+          style={{
+            position: "relative",
+            margin: "auto",
+            width: "35vw",
+            height: "45vh",
+            border: "orange solid 1px",
+          }}
+        >
+          <LineChartSample />
+        </Grid.Col>
+        <Grid.Col style={{ border: "orange solid 1px" }} sm={12} lg={4}>
+          <StatsRingCard {...jitter_statsRingCardData} />
+        </Grid.Col>
+        <Grid.Col
+          sm={12}
+          lg={8}
+          style={{
+            position: "relative",
+            margin: "auto",
+            width: "35vw",
+            height: "45vh",
+            border: "orange solid 1px",
+          }}
+        >
+          <LineChartSample />
+        </Grid.Col>
+        <Grid.Col style={{ border: "orange solid 1px" }} sm={12} lg={4}>
+          <StatsRingCard {...jitter_statsRingCardData} />
         </Grid.Col>
         <Grid.Col
           sm={12}
