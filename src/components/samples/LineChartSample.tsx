@@ -24,7 +24,7 @@ ChartJS.register(
 
 export const options = {
   responsive: true,
-  // maintainAspectRatio: false,
+  maintainAspectRatio: false,
 
   plugins: {
     legend: {

@@ -24,7 +24,7 @@ const statsRingCardData = {
 
 const data = [
   {
-    title: "Foundation",
+    title: "Jitter",
     author: "Isaac Asimov",
     year: 1951,
     reviews: {
@@ -84,36 +84,21 @@ const DashboardPage = () => {
     <Container size="xl" px="xs">
       <Text size="xl">Dashboard</Text>
 
-      <TableReviews data={data} />
+      {/* <TableReviews data={data} /> */}
 
       <Grid grow style={{ border: "red solid 1px" }}>
-        <Grid.Col style={{ border: "orange solid 1px" }} sm={12} lg={6}>
+        <Grid.Col style={{ border: "orange solid 1px" }} sm={12} lg={4}>
           <StatsRingCard {...statsRingCardData} />
         </Grid.Col>
         <Grid.Col
           sm={12}
-          lg={6}
+          lg={8}
           style={{
             position: "relative",
             margin: "auto",
             width: "35vw",
-            height: "60vh",
+            height: "45vh",
             border: "orange solid 1px",
-          }}
-        >
-          <LineChartSample />
-        </Grid.Col>
-        <Grid.Col style={{ border: "orange solid 1px" }} sm={12} lg={3}>
-          <CardSample />
-        </Grid.Col>
-        <Grid.Col
-          sm={12}
-          lg={3}
-          style={{
-            position: "relative",
-            margin: "auto",
-            width: "35vw",
-            height: "60vh",
           }}
         >
           <LineChartSample />
