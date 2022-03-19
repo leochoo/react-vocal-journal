@@ -21,9 +21,11 @@ const useStyles = createStyles((theme) => ({
 
 interface TableReviewsProps {
   data: {
-    title: string;
-    author: string;
-    year: number;
+    datetime: string;
+    name: string;
+    jitter: number;
+    shimmer: number;
+    hnr: number;
     reviews: { positive: number; negative: number };
   }[];
 }
@@ -37,18 +39,16 @@ export function TableReviews({ data }: TableReviewsProps) {
     const negativeReviews = (row.reviews.negative / totalReviews) * 100;
 
     return (
-      <tr key={row.title}>
+      <tr key={row.datetime}>
+        <td>{row.datetime}</td>
         <td>
           <Anchor<"a"> size="sm" onClick={(event) => event.preventDefault()}>
-            {row.title}
+            {row.name}
           </Anchor>
         </td>
-        <td>{row.year}</td>
-        <td>
-          <Anchor<"a"> size="sm" onClick={(event) => event.preventDefault()}>
-            {row.author}
-          </Anchor>
-        </td>
+        <td>{row.jitter}</td>
+        <td>{row.shimmer}</td>
+        <td>{row.hnr}</td>
         <td>{Intl.NumberFormat().format(totalReviews)}</td>
         <td>
           <Group position="apart">
@@ -85,14 +85,20 @@ export function TableReviews({ data }: TableReviewsProps) {
 
   return (
     <ScrollArea>
-      <Table sx={{ minWidth: 800 }} verticalSpacing="xs">
+      <Table
+        style={{ marginBottom: "1rem" }}
+        sx={{ minWidth: 800 }}
+        verticalSpacing="xs"
+      >
         <thead>
           <tr>
             <th>Time</th>
+            <th>Name</th>
             <th>Jitter</th>
             <th>Shimmer</th>
             <th>HNR</th>
             <th>Reviews distribution</th>
+            <th>Progress</th>
           </tr>
         </thead>
         <tbody>{rows}</tbody>
