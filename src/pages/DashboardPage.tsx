@@ -6,21 +6,26 @@ import { LineChartSample } from "../components/samples/LineChartSample";
 import { StatsRingCard } from "../components/samples/StatsRingCard";
 import { TableReviews } from "../components/samples/TableReviews";
 import { LineChart } from "../components/LineChart";
+import { CardGradient } from "../components/samples/CardGradient";
 
-const jitter_statsRingCardData = {
-  title: "Jitter Practice",
-  completed: 81,
-  total: 100,
-  stats: [
-    {
-      value: 19,
-      label: "Remaining",
-    },
-    {
-      value: 2,
-      label: "In progress",
-    },
-  ],
+// Vocal Acoustic Analysis - Jitter, Shimmer and HNR Parameters
+// João Paulo Teixeira*, Carla Oliveira, Carla Lopes
+const jitterDescription = {
+  title: "Pitch Stability (Jitter)",
+  description:
+    "Jitter is defined as the parameter of frequency variation from cycle to cycle. Lower jitter means the pitch is stable.",
+};
+
+const shimmerDescription = {
+  title: "Volume Stability (Shimmer)",
+  description:
+    "Shimmer (local, dB): Represents the average absolute difference of the base 10 logarithm of the difference  between two consecutive periods and it is call ShdB. The limit to detect pathologies is 0.350 dB.",
+};
+
+const hnrDescription = {
+  title: "Harmonics to Noise Ratio (HNR)",
+  description:
+    "Harmonic to Noise Ratio (HNR) measures the ratio between periodic and non-periodic components of a speech sound. It has become more and more important in the vocal acoustic analysis to diagnose pathologic voices.",
 };
 
 const data = [
@@ -73,7 +78,7 @@ const DashboardPage = () => {
 
       <Grid grow style={{ border: "red solid 1px" }}>
         <Grid.Col style={{ border: "orange solid 1px" }} sm={12} lg={4}>
-          <StatsRingCard {...jitter_statsRingCardData} />
+          <CardGradient {...jitterDescription} />
         </Grid.Col>
         <Grid.Col
           sm={12}
@@ -93,8 +98,9 @@ const DashboardPage = () => {
           />
         </Grid.Col>
         <Grid.Col style={{ border: "orange solid 1px" }} sm={12} lg={4}>
-          <StatsRingCard {...jitter_statsRingCardData} />
+          <CardGradient {...shimmerDescription} />
         </Grid.Col>
+
         <Grid.Col
           sm={12}
           lg={8}
@@ -113,7 +119,7 @@ const DashboardPage = () => {
           />
         </Grid.Col>
         <Grid.Col style={{ border: "orange solid 1px" }} sm={12} lg={4}>
-          <StatsRingCard {...jitter_statsRingCardData} />
+          <CardGradient {...hnrDescription} />
         </Grid.Col>
         <Grid.Col
           sm={12}
