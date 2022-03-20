@@ -29,6 +29,7 @@ const useStyles = createStyles((theme) => ({
   },
 
   control: {
+    backgroundColor: theme.colors.orange[5],
     position: "absolute",
     width: 250,
     left: "calc(50% - 125px)",

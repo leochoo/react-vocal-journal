@@ -5,7 +5,7 @@ import { RadarChartSample } from "../components/samples/RadarChartSample";
 import { LineChartSample } from "../components/samples/LineChartSample";
 import { StatsRingCard } from "../components/samples/StatsRingCard";
 import { TableReviews } from "../components/samples/TableReviews";
-import { ParamLineChart } from "../components/ParamLineChart";
+import { LineChart } from "../components/LineChart";
 
 const jitter_statsRingCardData = {
   title: "Jitter Practice",
@@ -61,6 +61,8 @@ const data = [
 
 const datetime_list = data.map((item) => item.datetime);
 const jitter_list = data.map((item) => item.jitter);
+const shimmer_list = data.map((item) => item.shimmer);
+const hnr_list = data.map((item) => item.hnr);
 
 const DashboardPage = () => {
   return (
@@ -84,7 +86,11 @@ const DashboardPage = () => {
             border: "orange solid 1px",
           }}
         >
-          <ParamLineChart datetime={datetime_list} dataset={jitter_list} />
+          <LineChart
+            titleText={"Jitter"}
+            datetime={datetime_list}
+            dataset={jitter_list}
+          />
         </Grid.Col>
         <Grid.Col style={{ border: "orange solid 1px" }} sm={12} lg={4}>
           <StatsRingCard {...jitter_statsRingCardData} />
@@ -100,7 +106,11 @@ const DashboardPage = () => {
             border: "orange solid 1px",
           }}
         >
-          <LineChartSample />
+          <LineChart
+            titleText={"Shimmer"}
+            datetime={datetime_list}
+            dataset={shimmer_list}
+          />
         </Grid.Col>
         <Grid.Col style={{ border: "orange solid 1px" }} sm={12} lg={4}>
           <StatsRingCard {...jitter_statsRingCardData} />
@@ -116,7 +126,11 @@ const DashboardPage = () => {
             border: "orange solid 1px",
           }}
         >
-          <LineChartSample />
+          <LineChart
+            titleText={"HNR"}
+            datetime={datetime_list}
+            dataset={hnr_list}
+          />
         </Grid.Col>
       </Grid>
     </Container>
