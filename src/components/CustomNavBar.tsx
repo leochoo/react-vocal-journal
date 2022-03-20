@@ -6,6 +6,7 @@ import {
   Code,
   Image,
   NavbarProps,
+  Anchor,
 } from "@mantine/core";
 import {
   BellRinging,
@@ -121,7 +122,8 @@ export function CustomNavBar({ opened, setOpened }: Props): JSX.Element {
   const [active, setActive] = useState("Billing");
 
   const links = data.map((item) => (
-    <Link
+    <Anchor
+      component={Link}
       to={item.link}
       className={cx(classes.link, {
         [classes.linkActive]: item.label === active,
@@ -136,7 +138,7 @@ export function CustomNavBar({ opened, setOpened }: Props): JSX.Element {
     >
       <item.icon className={classes.linkIcon} />
       <span>{item.label}</span>
-    </Link>
+    </Anchor>
   ));
 
   return (
@@ -156,11 +158,7 @@ export function CustomNavBar({ opened, setOpened }: Props): JSX.Element {
       <Navbar.Section grow>{links}</Navbar.Section>
 
       <Navbar.Section className={classes.footer}>
-        <UserButton
-          name={"John Doe"}
-          email={"test@test.com"}
-          // icon={<MoonIcon />}
-        />
+        <UserButton name={"John Lennon"} email={"test@test.com"} />
         <a
           href="#"
           className={classes.link}

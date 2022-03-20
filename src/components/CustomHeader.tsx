@@ -11,8 +11,11 @@ import {
   Navbar,
   Code,
   Image,
+  Anchor,
 } from "@mantine/core";
 import { useMantineTheme } from "@mantine/core";
+import { Link } from "react-router-dom";
+
 import VocalJournalDarkLogo from "../assets/logo-light.png";
 
 const useStyles = createStyles((theme, _params, getRef) => {
@@ -53,10 +56,12 @@ export const CustomHeader = ({
             mr="xl"
           />
         </MediaQuery>
-        <Group className={classes.header} position="apart">
-          <Image width={150} src={VocalJournalDarkLogo} alt="Vocal Journal" />
-          <Code sx={{ fontWeight: 700 }}>v0.1.0</Code>
-        </Group>
+        <Anchor component={Link} to="/">
+          <Group className={classes.header} position="apart">
+            <Image width={150} src={VocalJournalDarkLogo} alt="Vocal Journal" />
+            <Code sx={{ fontWeight: 700 }}>v0.1.0</Code>
+          </Group>
+        </Anchor>
       </div>
     </Header>
   );

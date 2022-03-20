@@ -7,6 +7,9 @@ import { StatsRingCard } from "../components/samples/StatsRingCard";
 import { TableReviews } from "../components/samples/TableReviews";
 import { LineChart } from "../components/LineChart";
 import { CardGradient } from "../components/samples/CardGradient";
+import { Stats } from "fs";
+import { StatsControls } from "../components/samples/StatsControls";
+import { StatsGridIcons } from "../components/samples/StatsGridIcons";
 
 // Vocal Acoustic Analysis - Jitter, Shimmer and HNR Parameters
 // João Paulo Teixeira*, Carla Oliveira, Carla Lopes
@@ -69,11 +72,32 @@ const jitter_list = data.map((item) => item.jitter);
 const shimmer_list = data.map((item) => item.shimmer);
 const hnr_list = data.map((item) => item.hnr);
 
+const statsGridData = {
+  data: [
+    {
+      title: "Revenue",
+      value: "$13,456",
+      diff: 34,
+    },
+    {
+      title: "Profit",
+      value: "$4,145",
+      diff: -13,
+    },
+    {
+      title: "Coupons usage",
+      value: "745",
+      diff: 18,
+    },
+  ],
+};
+
 const DashboardPage = () => {
   return (
     <Container size="xl" px="xs">
       <Text style={{ marginBottom: "3vh", fontSize: "2rem" }}>Dashboard</Text>
-
+      <StatsGridIcons {...statsGridData} />
+      <StatsControls />
       <TableReviews data={data} />
 
       <Grid grow>
