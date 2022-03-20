@@ -76,8 +76,8 @@ const DashboardPage = () => {
 
       <TableReviews data={data} />
 
-      <Grid grow style={{ border: "red solid 1px" }}>
-        <Grid.Col style={{ border: "orange solid 1px" }} sm={12} lg={4}>
+      <Grid grow>
+        <Grid.Col sm={12} lg={4}>
           <CardGradient {...jitterDescription} />
         </Grid.Col>
         <Grid.Col
@@ -88,7 +88,6 @@ const DashboardPage = () => {
             margin: "auto",
             width: "35vw",
             height: "45vh",
-            border: "orange solid 1px",
           }}
         >
           <LineChart
@@ -97,7 +96,7 @@ const DashboardPage = () => {
             dataset={jitter_list}
           />
         </Grid.Col>
-        <Grid.Col style={{ border: "orange solid 1px" }} sm={12} lg={4}>
+        <Grid.Col sm={12} lg={4}>
           <CardGradient {...shimmerDescription} />
         </Grid.Col>
 
@@ -109,7 +108,6 @@ const DashboardPage = () => {
             margin: "auto",
             width: "35vw",
             height: "45vh",
-            border: "orange solid 1px",
           }}
         >
           <LineChart
@@ -118,7 +116,7 @@ const DashboardPage = () => {
             dataset={shimmer_list}
           />
         </Grid.Col>
-        <Grid.Col style={{ border: "orange solid 1px" }} sm={12} lg={4}>
+        <Grid.Col sm={12} lg={4}>
           <CardGradient {...hnrDescription} />
         </Grid.Col>
         <Grid.Col
@@ -129,7 +127,6 @@ const DashboardPage = () => {
             margin: "auto",
             width: "35vw",
             height: "45vh",
-            border: "orange solid 1px",
           }}
         >
           <LineChart
