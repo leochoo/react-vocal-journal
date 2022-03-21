@@ -96,8 +96,8 @@ const DashboardPage = () => {
   return (
     <Container size="xl" px="xs">
       <Text style={{ marginBottom: "3vh", fontSize: "2rem" }}>Dashboard</Text>
-      <StatsGridIcons {...statsGridData} />
       <StatsControls />
+      {/* <StatsGridIcons {...statsGridData} />  */}
       <TableReviews data={data} />
 
       <Grid grow>

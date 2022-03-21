@@ -86,7 +86,7 @@ export function TableReviews({ data }: TableReviewsProps) {
   return (
     <ScrollArea>
       <Table
-        style={{ marginBottom: "1rem" }}
+        style={{ marginBottom: "5rem", marginTop: "4rem" }}
         sx={{ minWidth: 800 }}
         verticalSpacing="xs"
       >
