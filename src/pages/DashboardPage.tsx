@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Text, Grid, createStyles } from "@mantine/core";
+import { Container, Text, Grid, createStyles, Center } from "@mantine/core";
 import CardSample from "../components/samples/CardSample";
 import { RadarChartSample } from "../components/samples/RadarChartSample";
 import { LineChartSample } from "../components/samples/LineChartSample";
@@ -100,9 +100,15 @@ const DashboardPage = () => {
       {/* <StatsGridIcons {...statsGridData} />  */}
       <TableReviews data={data} />
 
-      <Grid grow>
-        <Grid.Col sm={12} lg={4}>
-          <CardGradient {...jitterDescription} />
+      <Grid>
+        <Grid.Col
+          style={{ boxShadow: "0px 0px 10px palegreen" }}
+          sm={12}
+          lg={4}
+        >
+          <Center>
+            <CardGradient {...jitterDescription} />
+          </Center>
         </Grid.Col>
         <Grid.Col
           sm={12}
