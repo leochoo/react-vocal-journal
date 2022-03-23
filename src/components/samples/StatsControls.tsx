@@ -51,7 +51,6 @@ const useStyles = createStyles((theme) => ({
   },
 
   label: {
-    textTransform: "uppercase",
     fontWeight: 700,
     fontSize: theme.fontSizes.md,
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
@@ -136,8 +135,8 @@ const useStyles = createStyles((theme) => ({
 
 const data = [
   { icon: ArrowAutofitWidth, label: "Pitch Stability (Jitter)" },
-  { icon: ArrowAutofitHeight, label: "Volumen Stability (Shimmer)" },
-  { icon: Music, label: "Harmonics (HNR)" },
+  { icon: ArrowAutofitHeight, label: "Volume Stability (Shimmer)" },
+  { icon: Music, label: "Harmonics to Noise Ratio (HNR)" },
 ];
 
 export function StatsControls() {
