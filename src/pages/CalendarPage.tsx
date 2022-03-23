@@ -1,33 +1,27 @@
-import { Container, Text, Grid } from "@mantine/core";
+import { Container, Text, Grid, Center } from "@mantine/core";
 import React from "react";
-import CalendarSample from "../components/samples/CalendarSample";
+import RangeCalendarSample from "../components/samples/RangeCalendarSample";
 import CardSample from "../components/samples/CardSample";
 import TableSample from "../components/samples/TableSample";
-
+import { UnderConstructionPage } from "./UnderConstructionPage";
 const CalendarPage = () => {
   return (
-    <Container size="xl" px="xs">
+    <>
+      <UnderConstructionPage></UnderConstructionPage>
+      {/* <Container size="xl" px="xs">
       <Text style={{ marginBottom: "3vh", fontSize: "2rem" }}>Calendar</Text>
-      <CalendarSample />
-      <TableSample />
+      <Center>
+        <RangeCalendarSample />
+      </Center>
       <Grid grow>
-        <Grid.Col span={4}>
-          <CardSample />
-        </Grid.Col>
-        <Grid.Col span={4}>
-          <CardSample />
-        </Grid.Col>
-        <Grid.Col span={4}>
-          <CardSample />
-        </Grid.Col>
-        <Grid.Col span={4}>
-          <CardSample />
-        </Grid.Col>
-        <Grid.Col span={4}>
-          <CardSample />
-        </Grid.Col>
+        <Grid.Col span={4}></Grid.Col>
+        <Grid.Col span={4}></Grid.Col>
+        <Grid.Col span={4}></Grid.Col>
+        <Grid.Col span={4}></Grid.Col>
+        <Grid.Col span={4}></Grid.Col>
       </Grid>
-    </Container>
+    </Container> */}
+    </>
   );
 };
 
