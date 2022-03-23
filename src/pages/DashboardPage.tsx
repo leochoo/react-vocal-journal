@@ -10,6 +10,7 @@ import { CardGradient } from "../components/samples/CardGradient";
 import { Stats } from "fs";
 import { StatsControls } from "../components/samples/StatsControls";
 import { StatsGridIcons } from "../components/samples/StatsGridIcons";
+import { create } from "domain";
 
 // Vocal Acoustic Analysis - Jitter, Shimmer and HNR Parameters
 // João Paulo Teixeira*, Carla Oliveira, Carla Lopes
@@ -92,73 +93,57 @@ const statsGridData = {
   ],
 };
 
+const useStyles = createStyles((theme) => ({
+  card: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    // boxShadow: "0px 0px 10px palegreen",
+  },
+  chart: {
+    position: "relative",
+    margin: "auto",
+    width: "35vw",
+    height: "45vh",
+  },
+}));
+
 const DashboardPage = () => {
+  const { classes } = useStyles();
   return (
     <Container size="xl" px="xs">
       <Text style={{ marginBottom: "3vh", fontSize: "2rem" }}>Dashboard</Text>
       <StatsControls />
-      {/* <StatsGridIcons {...statsGridData} />  */}
+      {/* <StatsGridIcons {...statsGridData} /> */}
       <TableReviews data={data} />
 
       <Grid>
-        <Grid.Col
-          style={{ boxShadow: "0px 0px 10px palegreen" }}
-          sm={12}
-          lg={4}
-        >
-          <Center>
-            <CardGradient {...jitterDescription} />
-          </Center>
+        <Grid.Col className={classes.card} style={{}} sm={12} lg={4}>
+          <CardGradient {...jitterDescription} />
         </Grid.Col>
-        <Grid.Col
-          sm={12}
-          lg={8}
-          style={{
-            position: "relative",
-            margin: "auto",
-            width: "35vw",
-            height: "45vh",
-          }}
-        >
+        <Grid.Col className={classes.chart} sm={12} lg={8}>
           <LineChart
             titleText={"Jitter"}
             datetime={datetime_list}
             dataset={jitter_list}
           />
         </Grid.Col>
-        <Grid.Col sm={12} lg={4}>
+
+        <Grid.Col className={classes.card} sm={12} lg={4}>
           <CardGradient {...shimmerDescription} />
         </Grid.Col>
-
-        <Grid.Col
-          sm={12}
-          lg={8}
-          style={{
-            position: "relative",
-            margin: "auto",
-            width: "35vw",
-            height: "45vh",
-          }}
-        >
+        <Grid.Col className={classes.chart} sm={12} lg={8}>
           <LineChart
             titleText={"Shimmer"}
             datetime={datetime_list}
             dataset={shimmer_list}
           />
         </Grid.Col>
-        <Grid.Col sm={12} lg={4}>
+
+        <Grid.Col className={classes.card} sm={12} lg={4}>
           <CardGradient {...hnrDescription} />
         </Grid.Col>
-        <Grid.Col
-          sm={12}
-          lg={8}
-          style={{
-            position: "relative",
-            margin: "auto",
-            width: "35vw",
-            height: "45vh",
-          }}
-        >
+        <Grid.Col className={classes.chart} sm={12} lg={8}>
           <LineChart
             titleText={"HNR"}
             datetime={datetime_list}
