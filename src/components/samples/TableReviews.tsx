@@ -49,8 +49,7 @@ export function TableReviews({ data }: TableReviewsProps) {
         <td>{row.jitter}</td>
         <td>{row.shimmer}</td>
         <td>{row.hnr}</td>
-        <td>{Intl.NumberFormat().format(totalReviews)}</td>
-        <td>
+        {/* <td>
           <Group position="apart">
             <Text size="xs" color="teal" weight={700}>
               {positiveReviews.toFixed(0)}%
@@ -78,7 +77,7 @@ export function TableReviews({ data }: TableReviewsProps) {
               },
             ]}
           />
-        </td>
+        </td> */}
       </tr>
     );
   });
@@ -97,8 +96,7 @@ export function TableReviews({ data }: TableReviewsProps) {
             <th>Jitter</th>
             <th>Shimmer</th>
             <th>HNR</th>
-            <th>Reviews distribution</th>
-            <th>Progress</th>
+            {/* <th>Progress</th> */}
           </tr>
         </thead>
         <tbody>{rows}</tbody>

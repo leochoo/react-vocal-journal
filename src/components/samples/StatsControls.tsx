@@ -13,6 +13,9 @@ import {
   Run,
   ChevronDown,
   ChevronUp,
+  ArrowAutofitWidth,
+  ArrowAutofitHeight,
+  Music,
 } from "tabler-icons-react";
 
 const useStyles = createStyles((theme) => ({
@@ -50,14 +53,14 @@ const useStyles = createStyles((theme) => ({
   label: {
     textTransform: "uppercase",
     fontWeight: 700,
-    fontSize: theme.fontSizes.xs,
+    fontSize: theme.fontSizes.md,
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
     color: theme.colors.gray[6],
     lineHeight: 1.2,
   },
 
   value: {
-    fontSize: theme.fontSizes.sm,
+    fontSize: theme.fontSizes.md,
     fontWeight: 700,
     color: theme.black,
   },
@@ -132,9 +135,9 @@ const useStyles = createStyles((theme) => ({
 }));
 
 const data = [
-  { icon: Run, label: "Running" },
-  { icon: Swimming, label: "Swimming" },
-  { icon: Bike, label: "Bike" },
+  { icon: ArrowAutofitWidth, label: "Pitch Stability (Jitter)" },
+  { icon: ArrowAutofitHeight, label: "Volumen Stability (Shimmer)" },
+  { icon: Music, label: "Harmonics (HNR)" },
 ];
 
 export function StatsControls() {
@@ -149,14 +152,13 @@ export function StatsControls() {
       p="xs"
       key={stat.label}
     >
-      <stat.icon size={32} className={classes.icon} />
+      <stat.icon size={40} className={classes.icon} />
       <div>
         <Text className={classes.label}>{stat.label}</Text>
         <Text size="xs" className={classes.count}>
           <span className={classes.value}>
-            {Math.floor(Math.random() * 6 + 4)}km
-          </span>{" "}
-          / 10km
+            {Math.floor(Math.random() * 6 + 4)}
+          </span>
         </Text>
       </div>
     </Paper>
