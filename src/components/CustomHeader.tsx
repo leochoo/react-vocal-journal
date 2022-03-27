@@ -56,7 +56,7 @@ export const CustomHeader = ({
             mr="xl"
           />
         </MediaQuery>
-        <Anchor component={Link} to="/">
+        <Anchor component={Link} to="/login">
           <Group className={classes.header} position="apart">
             <Image width={150} src={VocalJournalDarkLogo} alt="Vocal Journal" />
             <Code sx={{ fontWeight: 700 }}>v0.1.0</Code>

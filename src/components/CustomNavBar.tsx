@@ -158,24 +158,14 @@ export function CustomNavBar({ opened, setOpened }: Props): JSX.Element {
       <Navbar.Section grow>{links}</Navbar.Section>
 
       <Navbar.Section className={classes.footer}>
-        <UserButton name={"John Lennon"} email={"test@test.com"} />
-        <a
-          href="#"
-          className={classes.link}
-          onClick={(event) => event.preventDefault()}
-        >
-          <SwitchHorizontal className={classes.linkIcon} />
-          <span>Change account</span>
-        </a>
+        <Link to="/profile" className={classes.link}>
+          <UserButton name={"John Lennon"} email={"test@test.com"} />
+        </Link>
 
-        <a
-          href="#"
-          className={classes.link}
-          onClick={(event) => event.preventDefault()}
-        >
+        <Group className={classes.link} onClick={() => {}}>
           <Logout className={classes.linkIcon} />
           <span>Logout</span>
-        </a>
+        </Group>
       </Navbar.Section>
     </Navbar>
   );
