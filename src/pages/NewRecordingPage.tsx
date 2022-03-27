@@ -104,9 +104,9 @@ const NewRecordingPage = () => {
               }}
             >
               <Radio value="a" label="a" />
-              <Radio value="e" label="e" />
+              {/* <Radio value="e" label="e" /> */}
               <Radio value="i" label="i" />
-              <Radio value="o" label="o" />
+              {/* <Radio value="o" label="o" /> */}
               <Radio value="u" label="u" />
             </RadioGroup>
 
