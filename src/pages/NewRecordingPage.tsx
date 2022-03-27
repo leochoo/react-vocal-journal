@@ -125,11 +125,12 @@ const NewRecordingPage = () => {
               label="Condition"
               classNames={{ label: classes.inputLabel }}
               style={{ marginBottom: 30 }}
+              required
             >
               <Slider
                 color="red"
-                label="mood"
                 step={25}
+                label={null}
                 marks={[
                   { value: 0, label: "Bad" },
                   { value: 25, label: "So-so" },
