@@ -89,7 +89,7 @@ const NewRecordingPage = () => {
       <div>
         <Title className={classes.title}>New Recording</Title>
         <Text className={classes.description} mt="sm" mb={30}>
-          Description
+          Create or upload a new recording.
         </Text>
       </div>
       <Grid grow>
