@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   AppShell,
   Burger,
@@ -34,7 +34,6 @@ function App() {
 
   function ProtectedRoute({ children }: { children: JSX.Element }) {
     let location = useLocation();
-    console.log(user);
 
     if (!user) {
       // Redirect them to the /login page, but save the current location they were

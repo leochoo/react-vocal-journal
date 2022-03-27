@@ -23,6 +23,7 @@ import { GoogleButton } from "../components/SocialButtons";
 import vocalJournalLogo from "../assets/logo-only.png";
 import { useSignInWithGoogle } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 
 export default function LoginPage(props: PaperProps<"div">) {
   const [signInWithGoogle, user, loading, error] = useSignInWithGoogle(auth);
@@ -42,6 +43,15 @@ export default function LoginPage(props: PaperProps<"div">) {
     },
   });
 
+  let location = useLocation();
+  let navigate = useNavigate();
+
+  const login = () => {
+    signInWithGoogle().then((user) => {
+      navigate("/dashboard", { replace: true });
+    });
+  };
+
   return (
     <Container>
       <Center>
@@ -58,7 +68,7 @@ export default function LoginPage(props: PaperProps<"div">) {
       </Title>
       <Paper radius="md" p="xl" withBorder {...props}>
         <Center>
-          <GoogleButton radius="xl" onClick={() => signInWithGoogle()}>
+          <GoogleButton radius="xl" onClick={login}>
             Continue with Google
           </GoogleButton>
         </Center>
