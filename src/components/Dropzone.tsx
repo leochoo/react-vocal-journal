@@ -33,7 +33,7 @@ const useStyles = createStyles((theme) => ({
     position: "absolute",
     width: 250,
     left: "calc(50% - 125px)",
-    bottom: -20,
+    // bottom: 20,
   },
 }));
 
@@ -84,18 +84,18 @@ export function DropzoneButton() {
               Drag&apos;n&apos;drop files here to upload. We can accept only{" "}
               <i>wav, .mp3, .m4a</i> files that are less than 30mb in size.
             </Text>
+
+            <Button
+              className={classes.control}
+              size="md"
+              radius="xl"
+              onClick={() => openRef.current()}
+            >
+              Select files
+            </Button>
           </div>
         )}
       </Dropzone>
-
-      <Button
-        className={classes.control}
-        size="md"
-        radius="xl"
-        onClick={() => openRef.current()}
-      >
-        Select files
-      </Button>
     </div>
   );
 }

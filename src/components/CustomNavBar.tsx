@@ -27,6 +27,8 @@ import { Link } from "react-router-dom";
 import VocalJournalDarkLogo from "../assets/logo-light.png";
 import { UserButton } from "./UserButton";
 import { MoonIcon } from "@radix-ui/react-icons";
+import { auth } from "../../firebase";
+import { signOut } from "firebase/auth";
 
 const useStyles = createStyles((theme, _params, getRef) => {
   const icon = getRef("icon");
@@ -105,7 +107,7 @@ const useStyles = createStyles((theme, _params, getRef) => {
 const data = [
   { link: "/dashboard", label: "Dashboard", icon: Dashboard },
   { link: "/new-recording", label: "New Recording", icon: Microphone2 },
-  { link: "/calendar", label: "Calendar", icon: Calendar },
+  // { link: "/calendar", label: "Calendar", icon: Calendar },
   // { link: "", label: "SSH Keys", icon: Key },
   // { link: "", label: "Databases", icon: DatabaseImport },
   // { link: "", label: "Authentication", icon: TwoFA },
@@ -116,6 +118,10 @@ interface Props {
   opened: boolean;
   setOpened: (opened: boolean) => void;
 }
+
+const logout = () => {
+  signOut(auth);
+};
 
 export function CustomNavBar({ opened, setOpened }: Props): JSX.Element {
   const { classes, cx } = useStyles();
@@ -128,7 +134,6 @@ export function CustomNavBar({ opened, setOpened }: Props): JSX.Element {
       className={cx(classes.link, {
         [classes.linkActive]: item.label === active,
       })}
-      href={item.link}
       key={item.label}
       onClick={(event) => {
         // event.preventDefault();
@@ -158,24 +163,14 @@ export function CustomNavBar({ opened, setOpened }: Props): JSX.Element {
       <Navbar.Section grow>{links}</Navbar.Section>
 
       <Navbar.Section className={classes.footer}>
-        <UserButton name={"John Lennon"} email={"test@test.com"} />
-        <a
-          href="#"
-          className={classes.link}
-          onClick={(event) => event.preventDefault()}
-        >
-          <SwitchHorizontal className={classes.linkIcon} />
-          <span>Change account</span>
-        </a>
+        <Link to="/profile" className={classes.link}>
+          <UserButton name={"John Lennon"} email={"test@test.com"} />
+        </Link>
 
-        <a
-          href="#"
-          className={classes.link}
-          onClick={(event) => event.preventDefault()}
-        >
+        <Group className={classes.link} onClick={logout}>
           <Logout className={classes.linkIcon} />
           <span>Logout</span>
-        </a>
+        </Group>
       </Navbar.Section>
     </Navbar>
   );
