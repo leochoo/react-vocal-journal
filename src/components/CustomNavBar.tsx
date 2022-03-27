@@ -27,6 +27,8 @@ import { Link } from "react-router-dom";
 import VocalJournalDarkLogo from "../assets/logo-light.png";
 import { UserButton } from "./UserButton";
 import { MoonIcon } from "@radix-ui/react-icons";
+import { auth } from "../../firebase";
+import { signOut } from "firebase/auth";
 
 const useStyles = createStyles((theme, _params, getRef) => {
   const icon = getRef("icon");
@@ -117,6 +119,10 @@ interface Props {
   setOpened: (opened: boolean) => void;
 }
 
+const logout = () => {
+  signOut(auth);
+};
+
 export function CustomNavBar({ opened, setOpened }: Props): JSX.Element {
   const { classes, cx } = useStyles();
   const [active, setActive] = useState("Billing");
@@ -128,7 +134,6 @@ export function CustomNavBar({ opened, setOpened }: Props): JSX.Element {
       className={cx(classes.link, {
         [classes.linkActive]: item.label === active,
       })}
-      href={item.link}
       key={item.label}
       onClick={(event) => {
         // event.preventDefault();
@@ -162,7 +167,7 @@ export function CustomNavBar({ opened, setOpened }: Props): JSX.Element {
           <UserButton name={"John Lennon"} email={"test@test.com"} />
         </Link>
 
-        <Group className={classes.link} onClick={() => {}}>
+        <Group className={classes.link} onClick={logout}>
           <Logout className={classes.linkIcon} />
           <span>Logout</span>
         </Group>

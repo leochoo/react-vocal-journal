@@ -21,8 +21,12 @@ import {
 // import { GoogleIcon } from "../components/GoogleIcon";
 import { GoogleButton } from "../components/SocialButtons";
 import vocalJournalLogo from "../assets/logo-only.png";
+import { useSignInWithGoogle } from "react-firebase-hooks/auth";
+import { auth } from "../../firebase";
 
-export function LoginPage(props: PaperProps<"div">) {
+export default function LoginPage(props: PaperProps<"div">) {
+  const [signInWithGoogle, user, loading, error] = useSignInWithGoogle(auth);
+
   const [type, toggle] = useToggle("login", ["login", "register"]);
   const form = useForm({
     initialValues: {
@@ -54,7 +58,9 @@ export function LoginPage(props: PaperProps<"div">) {
       </Title>
       <Paper radius="md" p="xl" withBorder {...props}>
         <Center>
-          <GoogleButton radius="xl">Continue with Google</GoogleButton>
+          <GoogleButton radius="xl" onClick={() => signInWithGoogle()}>
+            Continue with Google
+          </GoogleButton>
         </Center>
 
         <Divider

@@ -19,25 +19,51 @@ import {
   RocketIcon,
 } from "@radix-ui/react-icons";
 import Sample from "./Sample";
-import { Redirect, Route, Switch } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import DashboardPage from "./pages/DashboardPage";
 import CalendarPage from "./pages/CalendarPage";
 import NewRecordingPage from "./pages/NewRecordingPage";
 import ProfilePage from "./pages/ProfilePage";
 import WrapperPage from "./pages/WrapperPage";
-import { LoginPage } from "./pages/LoginPage";
+import LoginPage from "./pages/LoginPage";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../firebase";
 
 function App() {
+  const [user, loading, error] = useAuthState(auth);
+
+  function RequireAuth({ children }: { children: JSX.Element }) {
+    let location = useLocation();
+    console.log(user);
+
+    if (!user) {
+      // Redirect them to the /login page, but save the current location they were
+      // trying to go to when they were redirected. This allows us to send them
+      // along to that page after they login, which is a nicer user experience
+      // than dropping them off on the home page.
+      return <Navigate to="/login" state={{ from: location }} replace />;
+    }
+
+    return children;
+  }
+
   return (
     <WrapperPage>
-      <Switch>
-        <Route exact path="/" component={Sample} />
-        <Route exact path="/login" component={LoginPage} />
-        <Route exact path="/dashboard" component={DashboardPage} />
-        <Route exact path="/new-recording" component={NewRecordingPage} />
-        <Route exact path="/calendar" component={CalendarPage} />
-        <Route exact path="/profile" component={ProfilePage} />
-      </Switch>
+      <Routes>
+        <Route path="/" element={<Sample />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/new-recording" element={<NewRecordingPage />} />
+        <Route path="/calendar" element={<CalendarPage />} />
+        <Route
+          path="/profile"
+          element={
+            <RequireAuth>
+              <ProfilePage />
+            </RequireAuth>
+          }
+        />
+      </Routes>
     </WrapperPage>
   );
 }
