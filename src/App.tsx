@@ -32,7 +32,7 @@ import { auth } from "../firebase";
 function App() {
   const [user, loading, error] = useAuthState(auth);
 
-  function RequireAuth({ children }: { children: JSX.Element }) {
+  function ProtectedRoute({ children }: { children: JSX.Element }) {
     let location = useLocation();
     console.log(user);
 
@@ -52,15 +52,36 @@ function App() {
       <Routes>
         <Route path="/" element={<Sample />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/new-recording" element={<NewRecordingPage />} />
-        <Route path="/calendar" element={<CalendarPage />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/new-recording"
+          element={
+            <ProtectedRoute>
+              <NewRecordingPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/calendar"
+          element={
+            <ProtectedRoute>
+              <CalendarPage />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/profile"
           element={
-            <RequireAuth>
+            <ProtectedRoute>
               <ProfilePage />
-            </RequireAuth>
+            </ProtectedRoute>
           }
         />
       </Routes>
