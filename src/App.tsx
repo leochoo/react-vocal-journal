@@ -20,6 +20,7 @@ import {
 } from "@radix-ui/react-icons";
 import Sample from "./Sample";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import LandingPage from "./pages/LandingPage";
 import DashboardPage from "./pages/DashboardPage";
 import CalendarPage from "./pages/CalendarPage";
 import NewRecordingPage from "./pages/NewRecordingPage";
@@ -43,48 +44,48 @@ function App() {
       return <Navigate to="/login" state={{ from: location }} replace />;
     }
 
-    return children;
+    return <WrapperPage>{children}</WrapperPage>;
   }
 
   return (
-    <WrapperPage>
-      <Routes>
-        <Route path="/" element={<Sample />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <DashboardPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/new-recording"
-          element={
-            <ProtectedRoute>
-              <NewRecordingPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/calendar"
-          element={
-            <ProtectedRoute>
-              <CalendarPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute>
-              <ProfilePage />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </WrapperPage>
+    // <WrapperPage>
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <DashboardPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/new-recording"
+        element={
+          <ProtectedRoute>
+            <NewRecordingPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/calendar"
+        element={
+          <ProtectedRoute>
+            <CalendarPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <ProfilePage />
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
+    // </WrapperPage>
   );
 }
 

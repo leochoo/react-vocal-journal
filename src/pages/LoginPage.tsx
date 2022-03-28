@@ -15,6 +15,7 @@ import {
   Container,
   Title,
   Center,
+  createStyles,
 } from "@mantine/core";
 // import { GoogleLoginButton } from "react-social-login-buttons";
 // import GoogleLogin from "../assets/btn_google_signin_light_normal_web.png";
@@ -23,9 +24,37 @@ import { GoogleButton } from "../components/SocialButtons";
 import vocalJournalLogo from "../assets/logo-only.png";
 import { useSignInWithGoogle } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
+
+const useStyles = createStyles((theme, _params, getRef) => {
+  return {
+    link: {
+      ...theme.fn.focusStyles(),
+      display: "flex",
+      alignItems: "center",
+      textDecoration: "none",
+      fontSize: theme.fontSizes.sm,
+      color:
+        theme.colorScheme === "dark"
+          ? theme.colors.dark[1]
+          : theme.colors.gray[7],
+      padding: `${theme.spacing.xs}px ${theme.spacing.sm}px`,
+      borderRadius: theme.radius.sm,
+      fontWeight: 500,
+
+      "&:hover": {
+        backgroundColor:
+          theme.colorScheme === "dark"
+            ? theme.colors.dark[6]
+            : theme.colors.gray[0],
+        color: theme.colorScheme === "dark" ? theme.white : theme.black,
+      },
+    },
+  };
+});
 
 export default function LoginPage(props: PaperProps<"div">) {
+  const { classes, cx } = useStyles();
   const [signInWithGoogle, user, loading, error] = useSignInWithGoogle(auth);
 
   const [type, toggle] = useToggle("login", ["login", "register"]);
@@ -54,18 +83,21 @@ export default function LoginPage(props: PaperProps<"div">) {
 
   return (
     <Container>
-      <Center>
-        <Image src={vocalJournalLogo} width={200} />
-      </Center>
-      <Title
-        align="center"
-        sx={(theme) => ({
-          fontFamily: `Greycliff CF, ${theme.fontFamily}`,
-          fontWeight: 900,
-        })}
-      >
-        Vocal Journal
-      </Title>
+      {/* <Link to="/" className={classes.li"nk}> */}
+      <Link to="/" style={{ textDecoration: "none", color: "black" }}>
+        <Center>
+          <Image src={vocalJournalLogo} width={200} />
+        </Center>
+        <Title
+          align="center"
+          sx={(theme) => ({
+            fontFamily: `Greycliff CF, ${theme.fontFamily}`,
+            fontWeight: 900,
+          })}
+        >
+          Vocal Journal
+        </Title>
+      </Link>
       <Paper radius="md" p="xl" withBorder {...props}>
         <Center>
           <GoogleButton radius="xl" onClick={login}>
