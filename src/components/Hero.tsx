@@ -14,6 +14,10 @@ const useStyles = createStyles((theme) => ({
   root: {
     backgroundColor: "#11284b",
     backgroundSize: "cover",
+    position: "fixed",
+    top: 0,
+    minWidth: "100%",
+    minHeight: "100%",
     backgroundPosition: "center",
     backgroundImage:
       "linear-gradient(250deg, rgba(130, 201, 30, 0) 0%, #062343 70%), url(https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1169&q=80)",
@@ -65,7 +69,7 @@ const useStyles = createStyles((theme) => ({
     color: theme.white,
     opacity: 0.75,
     maxWidth: 500,
-    fontSize: 24,
+    fontSize: 20,
     [theme.fn.smallerThan("md")]: {
       maxWidth: "100%",
     },
