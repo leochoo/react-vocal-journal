@@ -1,16 +1,10 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import { authReducer } from "./auth/auth.slice";
-import { selectedTodoReducer } from "./selectedTodoSlice/selectedTodoSlice";
-import { todosReducer } from "./todos/todosSlice";
-import { counterReducer } from "./counter/counterSlice";
 import logger from "redux-logger";
 
 // Combining reducers
 const reducer = {
   auth: authReducer,
-  todos: todosReducer,
-  selectedTodo: selectedTodoReducer,
-  counter: counterReducer,
 };
 
 export const store = configureStore({
