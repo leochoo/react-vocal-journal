@@ -24,11 +24,11 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder;
-    // .addCase(login.pending, createMessageAction("logging in"))
-    // .addCase(login.fulfilled, (state) => {
-    //   state.isLoggedIn = true;
-    //   redirectAfterTimeout("/reviewer")();
-    // });
+    .addCase(login.pending, createMessageAction("logging in"))
+    .addCase(login.fulfilled, (state) => {
+      state.isLoggedIn = true;
+      redirectAfterTimeout("/reviewer")();
+    });
   },
 });
 

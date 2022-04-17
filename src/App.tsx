@@ -35,6 +35,7 @@ function App() {
 
   function ProtectedRoute({ children }: { children: JSX.Element }) {
     let location = useLocation();
+    console.log("user", user);
 
     if (!user) {
       // Redirect them to the /login page, but save the current location they were

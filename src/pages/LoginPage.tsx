@@ -25,6 +25,7 @@ import vocalJournalLogo from "../assets/logo-only.png";
 import { useSignInWithGoogle } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 const useStyles = createStyles((theme, _params, getRef) => {
   return {
