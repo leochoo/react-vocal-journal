@@ -1,36 +1,33 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-// import { login } from "./auth.actions";
-
 interface AuthState {
   isLoggedIn: boolean;
+  userName: string;
+  userEmail: string;
 }
 
 const initialState: AuthState = {
   isLoggedIn: false,
+  userName: "",
+  userEmail: "",
 };
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    logout() {
-      localStorage.clear();
-      return initialState;
-    },
-    setIsLoggedIn: (state) => {
+    setUser: (state, action) => {
       state.isLoggedIn = true;
+      state.userName = action.payload.userName;
+      state.userEmail = action.payload.userEmail;
     },
-  },
-  extraReducers: (builder) => {
-    builder;
-    .addCase(login.pending, createMessageAction("logging in"))
-    .addCase(login.fulfilled, (state) => {
-      state.isLoggedIn = true;
-      redirectAfterTimeout("/reviewer")();
-    });
+    logout: (state) => {
+      state.isLoggedIn = false;
+      state.userName = "";
+      state.userEmail = "";
+    },
   },
 });
 
 export const authReducer = authSlice.reducer;
-export const { logout, setIsLoggedIn } = authSlice.actions;
+export const { setUser, logout } = authSlice.actions;
