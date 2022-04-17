@@ -26,6 +26,9 @@ import { useSignInWithGoogle } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { setUser } from "../redux/auth/auth.slice";
+import { useAppDispatch } from "../redux/hooks";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 const useStyles = createStyles((theme, _params, getRef) => {
   return {
@@ -56,7 +59,7 @@ const useStyles = createStyles((theme, _params, getRef) => {
 
 export default function LoginPage(props: PaperProps<"div">) {
   const { classes, cx } = useStyles();
-  const [signInWithGoogle, user, loading, error] = useSignInWithGoogle(auth);
+  // const [signInWithGoogle, user, loading, error] = useSignInWithGoogle(auth);
 
   const [type, toggle] = useToggle("login", ["login", "register"]);
   const form = useForm({
@@ -76,8 +79,18 @@ export default function LoginPage(props: PaperProps<"div">) {
   let location = useLocation();
   let navigate = useNavigate();
 
+  const dispatch = useAppDispatch();
+
   const login = () => {
-    signInWithGoogle().then((user) => {
+    const provider = new GoogleAuthProvider();
+    signInWithPopup(auth, provider).then((result) => {
+      dispatch(
+        setUser({
+          userName: result.user.displayName,
+          userEmail: result.user.email,
+        })
+      );
+
       navigate("/dashboard", { replace: true });
     });
   };
