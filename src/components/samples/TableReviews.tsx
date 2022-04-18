@@ -45,36 +45,42 @@ interface TableReviewsProps {
 export function TableReviews({ data }: TableReviewsProps) {
   const { classes, theme } = useStyles();
 
-  const uid = useAppSelector(selectUid);
-  const analysisQuery = query(
-    collection(db, "analysis"),
-    where("uid", "==", uid)
-    // orderBy("createdAt", "desc")
-  );
+  // let uid = useAppSelector(selectUid);
+  // console.log("uid", uid);
+
+  let user = auth.currentUser;
+  console.log("user", user);
+
   useEffect(() => {
-    const unsubscribe = onSnapshot(analysisQuery, (querySnapshot) => {
-      var _analysis = [];
-      querySnapshot.forEach((doc) => {
-        const analysisObject = {
-          createdAt: doc.data().createdAt,
-          audioURL: doc.data().audioURL,
-          uid: doc.data().uid,
-          displayName: doc.data().displayName,
-          jitter: doc.data().jitter_local,
-          shimmer: doc.data().shimmer_local,
-          hnr: doc.data().HNR,
-        };
+    if (user) {
+      const analysisQuery = query(
+        collection(db, "analysis"),
+        where("uid", "==", auth.currentUser.uid)
+        // orderBy("createdAt", "desc")
+      );
+      const unsubscribe = onSnapshot(analysisQuery, (querySnapshot) => {
+        var _analysis = [];
+        querySnapshot.forEach((doc) => {
+          const analysisObject = {
+            createdAt: doc.data().createdAt,
+            audioURL: doc.data().audioURL,
+            uid: doc.data().uid,
+            displayName: doc.data().displayName,
+            jitter: doc.data().jitter_local,
+            shimmer: doc.data().shimmer_local,
+            hnr: doc.data().HNR,
+          };
 
-        _analysis = [..._analysis, analysisObject];
+          _analysis = [..._analysis, analysisObject];
+        });
+        // analysisList = _analysis;
+        console.log("_analysis", _analysis);
       });
-      // analysisList = _analysis;
-      console.log("_analysis", _analysis);
-    });
-
-    return () => {
-      unsubscribe;
-    };
-  }, []);
+      return () => {
+        unsubscribe;
+      };
+    }
+  }, [user]);
 
   const rows = data.map((row) => {
     return (
