@@ -5,7 +5,9 @@ import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import { MantineProvider } from "@mantine/core";
 import { Provider } from "react-redux";
-import store from "./redux/store";
+import { store } from "./redux/store";
+import { persistor } from "./redux/store";
+import { PersistGate } from "redux-persist/integration/react";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -14,7 +16,9 @@ ReactDOM.render(
         theme={{ fontFamily: "Open Sans", primaryColor: "orange" }}
       >
         <Provider store={store}>
-          <App />
+          <PersistGate loading={null} persistor={persistor}>
+            <App />
+          </PersistGate>
         </Provider>
       </MantineProvider>
     </BrowserRouter>

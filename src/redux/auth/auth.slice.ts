@@ -30,6 +30,7 @@ const authSlice = createSlice({
   },
 });
 
+// maybe i can clean this up using createSelector
 export const selectIsLoggedIn = (state: RootState) => state.auth.isLoggedIn;
 export const selectUserName = (state: RootState) => state.auth.userName;
 export const selectUserEmail = (state: RootState) => state.auth.userEmail;
