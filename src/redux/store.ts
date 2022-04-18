@@ -1,4 +1,9 @@
-import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
+import {
+  configureStore,
+  ThunkAction,
+  Action,
+  createSerializableStateInvariantMiddleware,
+} from "@reduxjs/toolkit";
 import { authReducer } from "./auth/auth.slice";
 import logger from "redux-logger";
 import {
@@ -17,12 +22,17 @@ import storage from "redux-persist/es/storage";
 import { rootReducer } from "./root.reducer";
 import { RootState } from "./root.reducer";
 
+const serializable = createSerializableStateInvariantMiddleware({
+  ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+});
+
 export const store = configureStore({
   reducer: rootReducer,
-  // TODO: getDefaultMiddlware: instead of spread operator, use prepend? or append or sth.
+  // TODO: figuring out the correct way here https://github.com/reduxjs/redux-toolkit/discussions/2257
   // "(Using plain JS array spreads often loses those types.)https://redux.js.org/usage/usage-with-typescript
   // getDefaultMiddleware is necessary to tell Redux that we want to use the default middlewares.
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
+  // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
+  middleware: [serializable, logger],
 });
 
 // export default store;
