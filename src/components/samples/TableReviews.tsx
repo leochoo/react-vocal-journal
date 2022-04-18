@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   createStyles,
   Table,
@@ -8,6 +8,18 @@ import {
   Group,
   ScrollArea,
 } from "@mantine/core";
+import {
+  collection,
+  addDoc,
+  doc,
+  query,
+  where,
+  onSnapshot,
+  orderBy,
+} from "firebase/firestore";
+import { auth, db } from "../../../firebase";
+import { useAppSelector } from "../../redux/hooks";
+import { selectUid } from "../../redux/auth/auth.slice";
 
 const useStyles = createStyles((theme) => ({
   progressBar: {
@@ -33,11 +45,38 @@ interface TableReviewsProps {
 export function TableReviews({ data }: TableReviewsProps) {
   const { classes, theme } = useStyles();
 
-  const rows = data.map((row) => {
-    const totalReviews = row.reviews.negative + row.reviews.positive;
-    const positiveReviews = (row.reviews.positive / totalReviews) * 100;
-    const negativeReviews = (row.reviews.negative / totalReviews) * 100;
+  const uid = useAppSelector(selectUid);
+  const analysisQuery = query(
+    collection(db, "analysis"),
+    where("uid", "==", uid)
+    // orderBy("createdAt", "desc")
+  );
+  useEffect(() => {
+    const unsubscribe = onSnapshot(analysisQuery, (querySnapshot) => {
+      var _analysis = [];
+      querySnapshot.forEach((doc) => {
+        const analysisObject = {
+          createdAt: doc.data().createdAt,
+          audioURL: doc.data().audioURL,
+          uid: doc.data().uid,
+          displayName: doc.data().displayName,
+          jitter: doc.data().jitter_local,
+          shimmer: doc.data().shimmer_local,
+          hnr: doc.data().HNR,
+        };
 
+        _analysis = [..._analysis, analysisObject];
+      });
+      // analysisList = _analysis;
+      console.log("_analysis", _analysis);
+    });
+
+    return () => {
+      unsubscribe;
+    };
+  }, []);
+
+  const rows = data.map((row) => {
     return (
       <tr key={row.datetime}>
         <td>{row.datetime}</td>

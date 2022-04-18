@@ -88,6 +88,7 @@ export default function LoginPage(props: PaperProps<"div">) {
         setActiveUser({
           userName: result.user.displayName,
           userEmail: result.user.email,
+          uid: result.user.uid,
         })
       );
 
