@@ -22,6 +22,7 @@ import {
   InputWrapper,
 } from "@mantine/core";
 import { DropzoneButton } from "../components/Dropzone";
+import { Record } from "../components/Record";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -150,11 +151,12 @@ const NewRecordingPage = () => {
             />
 
             <Group position="right" mt="md">
-              <Button className={classes.control}>Update</Button>
+              <Button className={classes.control}>Submit</Button>
             </Group>
           </div>
         </Grid.Col>
         <Grid.Col md={12} lg={6}>
+          <Record />
           <DropzoneButton />
         </Grid.Col>
       </Grid>
