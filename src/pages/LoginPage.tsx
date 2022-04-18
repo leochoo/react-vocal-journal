@@ -26,7 +26,7 @@ import { useSignInWithGoogle } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { setActiveUser, logout } from "../redux/auth/auth.slice";
+import { setActiveUser } from "../redux/auth/auth.slice";
 import { useAppDispatch } from "../redux/hooks";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 

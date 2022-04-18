@@ -29,6 +29,8 @@ import { UserButton } from "./UserButton";
 import { MoonIcon } from "@radix-ui/react-icons";
 import { auth } from "../../firebase";
 import { signOut } from "firebase/auth";
+import { useAppDispatch } from "../redux/hooks";
+import { setLoggedOutUser } from "../redux/auth/auth.slice";
 
 const useStyles = createStyles((theme, _params, getRef) => {
   const icon = getRef("icon");
@@ -119,10 +121,6 @@ interface Props {
   setOpened: (opened: boolean) => void;
 }
 
-const logout = () => {
-  signOut(auth);
-};
-
 export function CustomNavBar({ opened, setOpened }: Props): JSX.Element {
   const { classes, cx } = useStyles();
   const [active, setActive] = useState("Billing");
@@ -146,6 +144,14 @@ export function CustomNavBar({ opened, setOpened }: Props): JSX.Element {
     </Anchor>
   ));
 
+  const dispatch = useAppDispatch();
+
+  const logout = () => {
+    console.log("logout clicked");
+    signOut(auth).then(() => {
+      dispatch(setLoggedOutUser());
+    });
+  };
   return (
     // <Navbar height={700} width={{ sm: 300 }} p="md">
     <Navbar

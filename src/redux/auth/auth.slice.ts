@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { RootState } from "../store";
+import { RootState } from "../root.reducer";
 
 interface AuthState {
   isLoggedIn: boolean;
@@ -22,7 +22,7 @@ const authSlice = createSlice({
       state.userName = action.payload.userName;
       state.userEmail = action.payload.userEmail;
     },
-    logout: (state) => {
+    setLoggedOutUser: (state) => {
       state.isLoggedIn = false;
       state.userName = "";
       state.userEmail = "";
@@ -36,4 +36,4 @@ export const selectUserName = (state: RootState) => state.auth.userName;
 export const selectUserEmail = (state: RootState) => state.auth.userEmail;
 
 export const authReducer = authSlice.reducer;
-export const { setActiveUser, logout } = authSlice.actions;
+export const { setActiveUser, setLoggedOutUser } = authSlice.actions;
