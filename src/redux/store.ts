@@ -31,8 +31,13 @@ export const store = configureStore({
   // TODO: figuring out the correct way here https://github.com/reduxjs/redux-toolkit/discussions/2257
   // "(Using plain JS array spreads often loses those types.)https://redux.js.org/usage/usage-with-typescript
   // getDefaultMiddleware is necessary to tell Redux that we want to use the default middlewares.
-  // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
-  middleware: [serializable, logger],
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }).concat(logger),
+  // middleware: [serializable, logger],
 });
 
 // export default store;

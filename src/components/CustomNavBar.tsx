@@ -147,7 +147,7 @@ export function CustomNavBar({ opened, setOpened }: Props): JSX.Element {
   const dispatch = useAppDispatch();
 
   const logout = () => {
-    console.log("logout clicked");
+    // console.log("logout clicked");
     signOut(auth).then(() => {
       dispatch(setLoggedOutUser());
     });

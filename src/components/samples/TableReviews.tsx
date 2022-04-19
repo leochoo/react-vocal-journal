@@ -49,7 +49,7 @@ export function TableReviews({ data }: TableReviewsProps) {
   // console.log("uid", uid);
 
   let user = auth.currentUser;
-  console.log("user", user);
+  // console.log("user", user);
 
   useEffect(() => {
     if (user) {
