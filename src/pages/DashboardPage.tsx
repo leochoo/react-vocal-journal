@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Container, Text, Grid, createStyles, Center } from "@mantine/core";
 import CardSample from "../components/samples/CardSample";
 import { RadarChartSample } from "../components/samples/RadarChartSample";
@@ -24,6 +24,7 @@ import {
   DocumentData,
   QueryDocumentSnapshot,
   SnapshotOptions,
+  limit,
 } from "firebase/firestore";
 import { auth, db } from "../../firebase";
 import { selectUid } from "../redux/auth/auth.slice";
@@ -106,16 +107,13 @@ const DashboardPage = () => {
   let uid = useAppSelector(selectUid);
   const analysisQuery = query(
     collection(db, "analysis").withConverter(dataConverter),
-    where("uid", "==", uid)
-    // orderBy("createdAt", "desc")
+    where("uid", "==", uid),
+    limit(25)
+    // orderBy("createdAt")
   );
   const [analysisData] = useCollectionData(analysisQuery);
-  console.log("analysisData", analysisData);
-
-  // const datetime_list = analysisData.map((item) => item.createdAt);
-  // const jitter_list = analysisData.map((item) => item.jitter);
-  // const shimmer_list = analysisData.map((item) => item.shimmer);
-  // const hnr_list = analysisData.map((item) => item.hnr);
+  // const analysisData = null;
+  // or put the collections under each user
 
   const { classes } = useStyles();
   return (
@@ -123,42 +121,51 @@ const DashboardPage = () => {
       <Text style={{ marginBottom: "3vh", fontSize: "2rem" }}>Dashboard</Text>
       <StatsControls />
       {/* <StatsGridIcons {...statsGridData} /> */}
-      {analysisData && <TableReviews data={analysisData} />}
+      {analysisData && (
+        <>
+          <TableReviews data={analysisData} />
+          <Grid>
+            <Grid.Col className={classes.card} style={{}} sm={12} lg={4}>
+              <CardGradient {...jitterDescription} />
+            </Grid.Col>
+            <Grid.Col className={classes.chart} sm={12} lg={8}>
+              <LineChart
+                titleText={"Jitter"}
+                data={analysisData.map((data) => ({
+                  x: data.createdAt,
+                  y: data.jitter,
+                }))}
+              />
+            </Grid.Col>
 
-      {/* <Grid>
-        <Grid.Col className={classes.card} style={{}} sm={12} lg={4}>
-          <CardGradient {...jitterDescription} />
-        </Grid.Col>
-        <Grid.Col className={classes.chart} sm={12} lg={8}>
-          <LineChart
-            titleText={"Jitter"}
-            datetime={datetime_list}
-            dataset={jitter_list}
-          />
-        </Grid.Col>
+            <Grid.Col className={classes.card} sm={12} lg={4}>
+              <CardGradient {...shimmerDescription} />
+            </Grid.Col>
+            <Grid.Col className={classes.chart} sm={12} lg={8}>
+              <LineChart
+                titleText={"Shimmer"}
+                data={analysisData.map((data) => ({
+                  x: data.createdAt,
+                  y: data.shimmer,
+                }))}
+              />
+            </Grid.Col>
 
-        <Grid.Col className={classes.card} sm={12} lg={4}>
-          <CardGradient {...shimmerDescription} />
-        </Grid.Col>
-        <Grid.Col className={classes.chart} sm={12} lg={8}>
-          <LineChart
-            titleText={"Shimmer"}
-            datetime={datetime_list}
-            dataset={shimmer_list}
-          />
-        </Grid.Col>
-
-        <Grid.Col className={classes.card} sm={12} lg={4}>
-          <CardGradient {...hnrDescription} />
-        </Grid.Col>
-        <Grid.Col className={classes.chart} sm={12} lg={8}>
-          <LineChart
-            titleText={"HNR"}
-            datetime={datetime_list}
-            dataset={hnr_list}
-          />
-        </Grid.Col>
-      </Grid> */}
+            <Grid.Col className={classes.card} sm={12} lg={4}>
+              <CardGradient {...hnrDescription} />
+            </Grid.Col>
+            <Grid.Col className={classes.chart} sm={12} lg={8}>
+              <LineChart
+                titleText={"HNR"}
+                data={analysisData.map((data) => ({
+                  x: data.createdAt,
+                  y: data.hnr,
+                }))}
+              />
+            </Grid.Col>
+          </Grid>
+        </>
+      )}
     </Container>
   );
 };

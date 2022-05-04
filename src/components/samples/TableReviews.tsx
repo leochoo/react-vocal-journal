@@ -48,9 +48,14 @@ export function TableReviews({ data }: AnalysisDataProps) {
   const { classes, theme } = useStyles();
 
   // console.log("uid", uid);
-
   let user = auth.currentUser;
   // console.log("user", user);
+
+  // sort data by field "createdAt" descending
+  data.sort((a, b) => {
+    return b.createdAt - a.createdAt;
+  });
+  console.log("data", data);
 
   const rows = data.map((row) => {
     return (
