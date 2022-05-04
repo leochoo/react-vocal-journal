@@ -11,6 +11,23 @@ import { Stats } from "fs";
 import { StatsControls } from "../components/samples/StatsControls";
 import { StatsGridIcons } from "../components/samples/StatsGridIcons";
 import { create } from "domain";
+import { useAppSelector } from "../redux/hooks";
+import { useCollectionData } from "react-firebase-hooks/firestore";
+import {
+  collection,
+  addDoc,
+  doc,
+  query,
+  where,
+  onSnapshot,
+  orderBy,
+  DocumentData,
+  QueryDocumentSnapshot,
+  SnapshotOptions,
+} from "firebase/firestore";
+import { auth, db } from "../../firebase";
+import { selectUid } from "../redux/auth/auth.slice";
+import { stringify } from "querystring";
 
 // Vocal Acoustic Analysis - Jitter, Shimmer and HNR Parameters
 // João Paulo Teixeira*, Carla Oliveira, Carla Lopes
@@ -32,67 +49,6 @@ const hnrDescription = {
     "Harmonic to Noise Ratio (HNR) measures the ratio between periodic and non-periodic components of a speech sound. It has become more and more important in the vocal acoustic analysis to diagnose pathologic voices.",
 };
 
-const data = [
-  {
-    datetime: "1/31/22, 12:21:04 PM",
-    name: "Leo Choo",
-    jitter: 1.2305,
-    shimmer: 0.1695,
-    hnr: 9.047,
-    reviews: {
-      positive: 1000,
-      negative: 500,
-    },
-  },
-  {
-    datetime: "1/14/22, 1:29:56 PM",
-    name: "Leo Choo",
-    jitter: 0.3946,
-    shimmer: 0.02544,
-    hnr: 20.906188,
-    reviews: {
-      positive: 1800,
-      negative: 400,
-    },
-  },
-  {
-    datetime: "1/4/22, 6:08:32 PM",
-    name: "Leo Choo",
-    jitter: 0.13931,
-    shimmer: 0.034156,
-    hnr: 27.81301,
-    reviews: {
-      positive: 2223,
-      negative: 259,
-    },
-  },
-];
-
-const datetime_list = data.map((item) => item.datetime);
-const jitter_list = data.map((item) => item.jitter);
-const shimmer_list = data.map((item) => item.shimmer);
-const hnr_list = data.map((item) => item.hnr);
-
-const statsGridData = {
-  data: [
-    {
-      title: "Revenue",
-      value: "$13,456",
-      diff: 34,
-    },
-    {
-      title: "Profit",
-      value: "$4,145",
-      diff: -13,
-    },
-    {
-      title: "Coupons usage",
-      value: "745",
-      diff: 18,
-    },
-  ],
-};
-
 const useStyles = createStyles((theme) => ({
   card: {
     display: "flex",
@@ -107,17 +63,69 @@ const useStyles = createStyles((theme) => ({
     height: "45vh",
   },
 }));
+interface AnalysisDataProps {
+  audioURL: string;
+  createdAt: number;
+  displayName: string;
+  hnr: number;
+  jitter: number;
+  shimmer: number;
+  uid: string;
+}
+
+const dataConverter = {
+  toFirestore(data: AnalysisDataProps): DocumentData {
+    return {
+      audioURL: data.audioURL,
+      createdAt: data.createdAt,
+      displayName: data.displayName,
+      hnr: data.hnr,
+      jitter: data.jitter,
+      shimmer: data.shimmer,
+      uid: data.uid,
+    };
+  },
+  fromFirestore(
+    snapshot: QueryDocumentSnapshot,
+    options: SnapshotOptions
+  ): AnalysisDataProps {
+    const data = snapshot.data(options)!;
+    return {
+      audioURL: data.audioURL,
+      createdAt: data.createdAt,
+      displayName: data.displayName,
+      hnr: data.HNR,
+      jitter: data.jitter_local,
+      shimmer: data.shimmer_local,
+      uid: data.uid,
+    };
+  },
+};
 
 const DashboardPage = () => {
+  let uid = useAppSelector(selectUid);
+  const analysisQuery = query(
+    collection(db, "analysis").withConverter(dataConverter),
+    where("uid", "==", uid)
+    // orderBy("createdAt", "desc")
+  );
+  const [analysisData] = useCollectionData(analysisQuery);
+  console.log("analysisData", analysisData);
+
+  // const datetime_list = analysisData.map((item) => item.createdAt);
+  // const jitter_list = analysisData.map((item) => item.jitter);
+  // const shimmer_list = analysisData.map((item) => item.shimmer);
+  // const hnr_list = analysisData.map((item) => item.hnr);
+
   const { classes } = useStyles();
   return (
     <Container size="xl" px="xs">
       <Text style={{ marginBottom: "3vh", fontSize: "2rem" }}>Dashboard</Text>
       <StatsControls />
       {/* <StatsGridIcons {...statsGridData} /> */}
-      <TableReviews data={data} />
+      {analysisData && <TableReviews data={analysisData} />}
 
-      <Grid>
+      {/* <Grid>
         <Grid.Col className={classes.card} style={{}} sm={12} lg={4}>
           <CardGradient {...jitterDescription} />
         </Grid.Col>
@@ -150,7 +158,7 @@ const DashboardPage = () => {
             dataset={hnr_list}
           />
         </Grid.Col>
-      </Grid>
+      </Grid> */}
     </Container>
   );
 };
