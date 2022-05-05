@@ -10,6 +10,7 @@ import {
   Button,
 } from "@mantine/core";
 import { GasStation, Gauge, ManualGearbox, Users } from "tabler-icons-react";
+import { useReactMediaRecorder } from "react-media-recorder";
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -61,6 +62,8 @@ const mockdata = [
 
 export function Record() {
   const { classes } = useStyles();
+  const { status, startRecording, stopRecording, mediaBlobUrl } =
+    useReactMediaRecorder({ video: false });
 
   return (
     <Card withBorder radius="md" className={classes.card}>
@@ -71,15 +74,35 @@ export function Record() {
       </Group>
 
       <Card.Section className={classes.section} mt="md">
-        "something here"
+        <Center>
+          <Group direction="column" position="center" mt="md">
+            <div>{status}</div>
+            <audio src={mediaBlobUrl} controls />
+          </Group>
+        </Center>
       </Card.Section>
 
       <Card.Section className={classes.section}>
-        <Group spacing={30}>
-          <Button radius="xl" style={{ flex: 1 }}>
-            Start Recording
-          </Button>
-        </Group>
+        <Center>
+          <Group spacing={30}>
+            {status !== "recording" && (
+              <>
+                {!mediaBlobUrl ? (
+                  <Button radius={"xl"} onClick={startRecording}>
+                    Start Recording
+                  </Button>
+                ) : (
+                  <Button radius={"xl"} onClick={startRecording}>
+                    Redo Recording
+                  </Button>
+                )}
+              </>
+            )}
+            {status == "recording" && (
+              <Button onClick={stopRecording}>Stop Recording</Button>
+            )}
+          </Group>
+        </Center>
       </Card.Section>
     </Card>
   );

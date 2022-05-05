@@ -14,6 +14,7 @@ const useStyles = createStyles((theme) => ({
   wrapper: {
     position: "relative",
     marginBottom: 30,
+    marginTop: 30,
   },
 
   dropzone: {
@@ -82,7 +83,7 @@ export function DropzoneButton() {
             </Text>
             <Text align="center" size="sm" mt="xs" color="dimmed">
               Drag&apos;n&apos;drop files here to upload. We can accept only{" "}
-              <i>wav, .mp3, .m4a</i> files that are less than 30mb in size.
+              <i>wav, .mp3, .m4a</i> files that are less than 10mb in size.
             </Text>
 
             <Button

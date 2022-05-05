@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   createStyles,
   Container,
@@ -20,6 +20,7 @@ import {
   CheckboxGroup,
   Slider,
   InputWrapper,
+  Center,
 } from "@mantine/core";
 import { DropzoneButton } from "../components/Dropzone";
 import { Record } from "../components/Record";
@@ -84,6 +85,7 @@ const useStyles = createStyles((theme) => ({
 }));
 const NewRecordingPage = () => {
   const { classes } = useStyles();
+  const [toggleUpload, setToggleUpload] = useState(false);
 
   return (
     <div className={classes.wrapper}>
@@ -156,8 +158,20 @@ const NewRecordingPage = () => {
           </div>
         </Grid.Col>
         <Grid.Col md={12} lg={6}>
-          <Record />
-          <DropzoneButton />
+          <Center>
+            <Group position="center" mt="md">
+              {toggleUpload ? <DropzoneButton /> : <Record />}
+
+              <Button
+                radius={"xl"}
+                onClick={() => {
+                  setToggleUpload(!toggleUpload);
+                }}
+              >
+                {!toggleUpload ? "Upload File" : "Record"}
+              </Button>
+            </Group>
+          </Center>
         </Grid.Col>
       </Grid>
     </div>
