@@ -82,6 +82,10 @@ const useStyles = createStyles((theme) => ({
   control: {
     backgroundColor: theme.colors[theme.primaryColor][6],
   },
+
+  toggleSwitch: {
+    color: theme.colors.green[0],
+  },
 }));
 const NewRecordingPage = () => {
   const { classes } = useStyles();
@@ -163,7 +167,7 @@ const NewRecordingPage = () => {
               {toggleUpload ? <DropzoneButton /> : <Record />}
 
               <Button
-                radius={"xl"}
+                color={!toggleUpload ? "green" : "red"}
                 onClick={() => {
                   setToggleUpload(!toggleUpload);
                 }}

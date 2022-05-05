@@ -88,18 +88,24 @@ export function Record() {
             {status !== "recording" && (
               <>
                 {!mediaBlobUrl ? (
-                  <Button radius={"xl"} onClick={startRecording}>
+                  <Button color={"red"} radius={"xl"} onClick={startRecording}>
                     Start Recording
                   </Button>
                 ) : (
-                  <Button radius={"xl"} onClick={startRecording}>
+                  <Button
+                    color={"yellow"}
+                    radius={"xl"}
+                    onClick={startRecording}
+                  >
                     Redo Recording
                   </Button>
                 )}
               </>
             )}
             {status == "recording" && (
-              <Button onClick={stopRecording}>Stop Recording</Button>
+              <Button color={"gray"} onClick={stopRecording}>
+                Stop Recording
+              </Button>
             )}
           </Group>
         </Center>
