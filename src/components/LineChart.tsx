@@ -62,8 +62,13 @@ export function LineChart({ titleText, data }: Props) {
   });
   console.log("data", data);
 
-  // convert all x in the data into one list
-  const xList = data.map((item) => item.x);
+  // convert all x in the data into one list, converting milisec to datetime string in japan time
+  const xList = data.map((d) => {
+    const date = new Date(d.x);
+    return date.toLocaleString("ja-JP");
+  });
+  console.log("xList", xList);
+
   // convert all y in the data into one list
   const yList = data.map((item) => item.y);
 

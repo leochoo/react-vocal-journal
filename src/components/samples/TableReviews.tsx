@@ -58,9 +58,11 @@ export function TableReviews({ data }: AnalysisDataProps) {
   console.log("data", data);
 
   const rows = data.map((row) => {
+    const date = new Date(row.createdAt);
+    const dateStr = date.toLocaleString("ja-JP");
     return (
       <tr key={row.createdAt}>
-        <td>{row.createdAt}</td>
+        <td>{dateStr}</td>
         <td>
           <Anchor<"a"> size="sm" onClick={(event) => event.preventDefault()}>
             {row.displayName}
