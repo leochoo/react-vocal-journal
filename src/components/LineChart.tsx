@@ -58,7 +58,7 @@ export function LineChart({ titleText, data }: Props) {
   };
   // sort by descending order
   data.sort((a, b) => {
-    return b.x - a.x;
+    return a.x - b.x;
   });
   console.log("data", data);
 

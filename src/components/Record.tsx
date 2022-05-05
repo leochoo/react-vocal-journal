@@ -61,45 +61,23 @@ const mockdata = [
 
 export function Record() {
   const { classes } = useStyles();
-  const features = mockdata.map((feature) => (
-    <Center key={feature.label}>
-      <feature.icon size={18} className={classes.icon} />
-      <Text size="xs">{feature.label}</Text>
-    </Center>
-  ));
 
   return (
     <Card withBorder radius="md" className={classes.card}>
-      <Card.Section className={classes.imageSection}>
-        {/* <Image src="https://i.imgur.com/ZL52Q2D.png" alt="Tesla Model S" /> */}
-        Record Audio
-      </Card.Section>
-
+      <Card.Section className={classes.imageSection}>Record Audio</Card.Section>
       <Group position="apart" mt="md">
-        <Center>
-          <div>
-            <Text weight={500}>Tesla Model S</Text>
-            <Text size="xs" color="dimmed">
-              Free recharge at any station
-            </Text>
-          </div>
-        </Center>
+        Record vowel /a/ vowel for 2 seconds. Maintain the same pitch until the
+        end.
       </Group>
 
       <Card.Section className={classes.section} mt="md">
-        <Text size="sm" color="dimmed" className={classes.label}>
-          Basic configuration
-        </Text>
-
-        <Group spacing={8} mb={-8}>
-          {features}
-        </Group>
+        "something here"
       </Card.Section>
 
       <Card.Section className={classes.section}>
         <Group spacing={30}>
           <Button radius="xl" style={{ flex: 1 }}>
-            Record
+            Start Recording
           </Button>
         </Group>
       </Card.Section>
