@@ -12,6 +12,7 @@
     "@mantine/core": "^4.0.0",
     "@mantine/dates": "^4.0.0",
     "@mantine/dropzone": "^4.0.0",
+    "@mantine/form": "^4.2.2",
     "@mantine/hooks": "^4.0.0",
     "@radix-ui/react-icons": "^1.1.0",
     "@reduxjs/toolkit": "^1.5.0",
