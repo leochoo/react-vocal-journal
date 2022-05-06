@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   Image,
@@ -62,8 +62,22 @@ const mockdata = [
 
 export function Record() {
   const { classes } = useStyles();
+  // store blob onstop
+  const [mediaBlob, setMediaBlob] = useState(null);
+  const onStopHandler = (blob) => {
+    setMediaBlob(blob);
+  };
   const { status, startRecording, stopRecording, mediaBlobUrl } =
-    useReactMediaRecorder({ video: false });
+    useReactMediaRecorder({
+      video: false,
+      onStop: (blobUrl, blob) => {
+        onStopHandler(blob);
+      },
+    });
+
+  useEffect(() => {
+    console.log("Blob", mediaBlob);
+  }, [mediaBlob]);
 
   return (
     <Card withBorder radius="md" className={classes.card}>

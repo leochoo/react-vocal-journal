@@ -91,6 +91,9 @@ export default function ProfilePage() {
       experience: 1,
       note: "",
     },
+    validate: {
+      email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
+    },
   });
 
   return (
@@ -106,7 +109,7 @@ export default function ProfilePage() {
             <Text className={classes.description} mt="sm" mb={30}>
               Description
             </Text>
-            <Avatar radius="xl" size={300} />
+            <Avatar radius="xl" size={200} />
           </div>
           <div className={classes.form}>
             <TextInput
@@ -114,12 +117,14 @@ export default function ProfilePage() {
               placeholder="John Doe"
               mt="md"
               classNames={{ input: classes.input, label: classes.inputLabel }}
+              {...form.getInputProps("name")}
             />
             <TextInput
               label="Email"
               placeholder="your@email.com"
               required
               classNames={{ input: classes.input, label: classes.inputLabel }}
+              {...form.getInputProps("email")}
             />
             <NumberInput defaultValue={30} label="Age" required />
 
