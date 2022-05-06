@@ -119,10 +119,17 @@ const DashboardPage = () => {
   return (
     <Container size="xl" px="xs">
       <Text style={{ marginBottom: "3vh", fontSize: "2rem" }}>Dashboard</Text>
-      <StatsControls data={analysisData} />
       {/* <StatsGridIcons {...statsGridData} /> */}
       {analysisData && (
         <>
+          {/* <StatsControls
+            data={analysisData.map((data) => ({
+              createdAt: data.createdAt,
+              jitter: data.jitter,
+              shimmer: data.shimmer,
+              hnr: data.hnr,
+            }))}
+          /> */}
           <TableReviews data={analysisData} />
           <Grid>
             <Grid.Col className={classes.card} style={{}} sm={12} lg={4}>

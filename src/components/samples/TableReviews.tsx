@@ -55,7 +55,7 @@ export function TableReviews({ data }: AnalysisDataProps) {
   data.sort((a, b) => {
     return b.createdAt - a.createdAt;
   });
-  console.log("data", data);
+  // console.log("data", data);
 
   const rows = data.map((row) => {
     const date = new Date(row.createdAt);
