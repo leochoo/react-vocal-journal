@@ -52,21 +52,21 @@ export function DropzoneButton({ onFileAttachment }) {
   const theme = useMantineTheme();
   const { classes } = useStyles();
   const openRef = useRef<() => void>(() => {});
-
-  useEffect(() => {
-    console.log("openRef", openRef);
-  }, [openRef]);
+  const uploadedFileHandler = (file) => {
+    onFileAttachment(file);
+  };
 
   return (
     <div className={classes.wrapper}>
       <Dropzone
         openRef={openRef}
-        onDrop={(files) => console.log("accepted files", files)}
-        onReject={(files) => console.log("rejected files", files)}
+        onDrop={(file) => uploadedFileHandler(file)}
+        onReject={(file) => console.log("rejected files", file)}
         className={classes.dropzone}
         radius="md"
         accept={["audio/wav", "audio/mp3", "audio/m4a"]}
         maxSize={30 * 1024 ** 2}
+        multiple={false}
       >
         {(status) => (
           <div style={{ pointerEvents: "none" }}>

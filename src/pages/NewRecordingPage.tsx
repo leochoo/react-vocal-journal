@@ -94,9 +94,11 @@ const NewRecordingPage = () => {
   const { classes } = useStyles();
   const [submitType, setSubmitType] = useState("record");
   const [audioFile, setAudioFile] = useState(null);
+
   useEffect(() => {
     console.log("Audio File", audioFile);
   }, [audioFile]);
+
   return (
     <div className={classes.wrapper}>
       <div>
