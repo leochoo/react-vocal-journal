@@ -48,7 +48,7 @@ function getActiveColor(status: DropzoneStatus, theme: MantineTheme) {
     : theme.black;
 }
 
-export function DropzoneButton() {
+export function DropzoneButton({ onFileAttachment }) {
   const theme = useMantineTheme();
   const { classes } = useStyles();
   const openRef = useRef<() => void>(() => {});

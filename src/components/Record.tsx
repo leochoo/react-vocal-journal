@@ -60,24 +60,19 @@ const mockdata = [
   { label: "Electric", icon: GasStation },
 ];
 
-export function Record() {
+export function Record({ onFileAttachment }) {
   const { classes } = useStyles();
   // store blob onstop
-  const [mediaBlob, setMediaBlob] = useState(null);
-  const onStopHandler = (blob) => {
-    setMediaBlob(blob);
+  const recordedFileHandler = (blob) => {
+    onFileAttachment(blob);
   };
   const { status, startRecording, stopRecording, mediaBlobUrl } =
     useReactMediaRecorder({
       video: false,
       onStop: (blobUrl, blob) => {
-        onStopHandler(blob);
+        recordedFileHandler(blob);
       },
     });
-
-  useEffect(() => {
-    console.log("Blob", mediaBlob);
-  }, [mediaBlob]);
 
   return (
     <Card withBorder radius="md" className={classes.card}>

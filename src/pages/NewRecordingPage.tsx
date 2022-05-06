@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   createStyles,
   Container,
@@ -93,7 +93,10 @@ const useStyles = createStyles((theme) => ({
 const NewRecordingPage = () => {
   const { classes } = useStyles();
   const [submitType, setSubmitType] = useState("record");
-
+  const [audioFile, setAudioFile] = useState(null);
+  useEffect(() => {
+    console.log("Audio File", audioFile);
+  }, [audioFile]);
   return (
     <div className={classes.wrapper}>
       <div>
@@ -191,7 +194,11 @@ const NewRecordingPage = () => {
                 },
               ]}
             />
-            {submitType == "upload" ? <DropzoneButton /> : <Record />}
+            {submitType == "upload" ? (
+              <DropzoneButton onFileAttachment={setAudioFile} />
+            ) : (
+              <Record onFileAttachment={setAudioFile} />
+            )}
           </Group>
         </Grid.Col>
       </Grid>
