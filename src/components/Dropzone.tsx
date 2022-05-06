@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   Text,
   Group,
@@ -53,14 +53,19 @@ export function DropzoneButton({ onFileAttachment }) {
   const { classes } = useStyles();
   const openRef = useRef<() => void>(() => {});
 
+  useEffect(() => {
+    console.log("openRef", openRef);
+  }, [openRef]);
+
   return (
     <div className={classes.wrapper}>
       <Dropzone
         openRef={openRef}
-        onDrop={() => {}}
+        onDrop={(files) => console.log("accepted files", files)}
+        onReject={(files) => console.log("rejected files", files)}
         className={classes.dropzone}
         radius="md"
-        accept={[MIME_TYPES.pdf]}
+        accept={["audio/wav", "audio/mp3", "audio/m4a"]}
         maxSize={30 * 1024 ** 2}
       >
         {(status) => (
