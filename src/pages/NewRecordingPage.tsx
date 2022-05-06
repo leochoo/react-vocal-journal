@@ -172,7 +172,7 @@ const NewRecordingPage = () => {
               onChange={setSubmitType}
               data={[
                 {
-                  value: "recording",
+                  value: "record",
                   label: (
                     <Center>
                       <Microphone size={16} />
@@ -191,7 +191,7 @@ const NewRecordingPage = () => {
                 },
               ]}
             />
-            {submitType == "recording" ? <Record /> : <DropzoneButton />}
+            {submitType == "upload" ? <DropzoneButton /> : <Record />}
           </Group>
         </Grid.Col>
       </Grid>

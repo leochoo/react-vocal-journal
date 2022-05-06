@@ -107,8 +107,8 @@ const DashboardPage = () => {
   let uid = useAppSelector(selectUid);
   const analysisQuery = query(
     collection(db, "analysis").withConverter(dataConverter),
-    where("uid", "==", uid),
-    limit(25)
+    where("uid", "==", uid)
+    // limit(25)
     // orderBy("createdAt")
   );
   const [analysisData] = useCollectionData(analysisQuery);
@@ -119,7 +119,7 @@ const DashboardPage = () => {
   return (
     <Container size="xl" px="xs">
       <Text style={{ marginBottom: "3vh", fontSize: "2rem" }}>Dashboard</Text>
-      <StatsControls />
+      <StatsControls data={analysisData} />
       {/* <StatsGridIcons {...statsGridData} /> */}
       {analysisData && (
         <>

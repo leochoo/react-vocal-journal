@@ -133,17 +133,40 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-const data = [
+const description = [
   { icon: ArrowAutofitWidth, label: "Pitch Stability (Jitter)" },
   { icon: ArrowAutofitHeight, label: "Volume Stability (Shimmer)" },
   { icon: Music, label: "Harmonics to Noise Ratio (HNR)" },
 ];
+interface AnalysisData {
+  data: {
+    audioURL: string;
+    createdAt: number;
+    displayName: string;
+    hnr: number;
+    jitter: number;
+    shimmer: number;
+    uid: string;
+  }[];
+}
 
-export function StatsControls() {
+export function StatsControls({ data }: AnalysisData) {
   const { classes } = useStyles();
   const [date, setDate] = useState(new Date(2021, 9, 24));
 
-  const stats = data.map((stat) => (
+  // const extracted_data = data.map((data) => ({
+  //   createdAt: data.createdAt,
+  //   jitter: data.jitter,
+  //   shimmer: data.shimmer,
+  //   hnr: data.hnr,
+  // }));
+  // // sort extracted_data by descending order
+  // extracted_data.sort((a, b) => {
+  //   return b.createdAt - a.createdAt;
+  // });
+  // console.log("data", data);
+
+  const stats = description.map((stat) => (
     <Paper
       className={classes.stat}
       radius="md"

@@ -22,17 +22,6 @@ ChartJS.register(
   Legend
 );
 
-interface AnalysisData {
-  data: {
-    audioURL: string;
-    createdAt: number;
-    displayName: string;
-    hnr: number;
-    jitter: number;
-    shimmer: number;
-    uid: string;
-  }[];
-}
 interface Props {
   titleText: string;
   data: {
@@ -60,14 +49,14 @@ export function LineChart({ titleText, data }: Props) {
   data.sort((a, b) => {
     return a.x - b.x;
   });
-  console.log("data", data);
+  // console.log("data", data);
 
   // convert all x in the data into one list, converting milisec to datetime string in japan time
   const xList = data.map((d) => {
     const date = new Date(d.x);
     return date.toLocaleString("ja-JP");
   });
-  console.log("xList", xList);
+  // console.log("xList", xList);
 
   // convert all y in the data into one list
   const yList = data.map((item) => item.y);
