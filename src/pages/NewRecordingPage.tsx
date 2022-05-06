@@ -21,9 +21,12 @@ import {
   Slider,
   InputWrapper,
   Center,
+  SegmentedControl,
+  Box,
 } from "@mantine/core";
 import { DropzoneButton } from "../components/Dropzone";
 import { Record } from "../components/Record";
+import { Microphone, Upload } from "tabler-icons-react";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -89,7 +92,7 @@ const useStyles = createStyles((theme) => ({
 }));
 const NewRecordingPage = () => {
   const { classes } = useStyles();
-  const [toggleUpload, setToggleUpload] = useState(false);
+  const [submitType, setSubmitType] = useState("record");
 
   return (
     <div className={classes.wrapper}>
@@ -162,20 +165,34 @@ const NewRecordingPage = () => {
           </div>
         </Grid.Col>
         <Grid.Col md={12} lg={6}>
-          <Center>
-            <Group position="center" mt="md">
-              {toggleUpload ? <DropzoneButton /> : <Record />}
-
-              <Button
-                color={!toggleUpload ? "green" : "red"}
-                onClick={() => {
-                  setToggleUpload(!toggleUpload);
-                }}
-              >
-                {!toggleUpload ? "Upload File" : "Record"}
-              </Button>
-            </Group>
-          </Center>
+          <Group position="center" mt="md">
+            <SegmentedControl
+              color="orange"
+              value={submitType}
+              onChange={setSubmitType}
+              data={[
+                {
+                  value: "recording",
+                  label: (
+                    <Center>
+                      <Microphone size={16} />
+                      <Box ml={10}>録音 Record</Box>
+                    </Center>
+                  ),
+                },
+                {
+                  value: "upload",
+                  label: (
+                    <Center>
+                      <Upload size={16} />
+                      <Box ml={10}>アップロード Upload</Box>
+                    </Center>
+                  ),
+                },
+              ]}
+            />
+            {submitType == "recording" ? <Record /> : <DropzoneButton />}
+          </Group>
         </Grid.Col>
       </Grid>
     </div>
