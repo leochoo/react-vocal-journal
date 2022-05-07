@@ -29,8 +29,9 @@ import { Record } from "../components/Record";
 import { Microphone, Upload } from "tabler-icons-react";
 import { useForm } from "@mantine/form";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth, db } from "../../firebase";
-import { collection, doc, setDoc } from "firebase/firestore";
+import { auth, db, storage } from "../../firebase";
+import { addDoc, collection, doc, setDoc } from "firebase/firestore";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -104,9 +105,10 @@ const NewRecordingPage = () => {
   const [user, loading, error] = useAuthState(auth); // TODO: make this into redux or context?
   const [submitType, setSubmitType] = useState("record");
   const [audioFile, setAudioFile] = useState(null);
+  const [uploadStatus, setUploadStatus] = useState("");
 
-  // slider value
-  const [sliderValue, setSliderValue] = useState(0);
+  // slider value - cannot be linked directly to form so not using it now
+  // const [sliderValue, setSliderValue] = useState(0);
 
   const form = useForm({
     initialValues: {
@@ -122,15 +124,103 @@ const NewRecordingPage = () => {
     },
   });
 
+  // upload audio to Firebase storage and get download url
+  async function upload(audioFile) {
+    const storageRef = ref(
+      storage,
+      "audio/" + user.uid + "/" + Date.now().toString()
+    );
+    const metadata = {
+      contentType: "audio/wav",
+    };
+    const uploadTask = uploadBytesResumable(storageRef, audioFile, metadata);
+    // 'file' comes from the Blob or File API
+    // uploadBytes(storageRef, newAudio).then((snapshot) => {
+    //   console.log("Uploaded a blob or file!");
+    //   uploadStatus = "Uploaded the audio!";
+    // });
+
+    // Register three observers:
+    // 1. 'state_changed' observer, called any time the state changes
+    // 2. Error observer, called on failure
+    // 3. Completion observer, called on successful completion
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        // Observe state change events such as progress, pause, and resume
+        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        console.log("Upload is " + progress + "% done");
+        switch (snapshot.state) {
+          case "paused":
+            console.log("Upload is paused");
+            setUploadStatus("Upload paused ⏸");
+
+            break;
+          case "running":
+            console.log("Upload is running");
+            setUploadStatus("Uploading audio... 🚚");
+
+            break;
+        }
+      },
+      (error) => {
+        // Handle unsuccessful uploads
+        setUploadStatus("Error uploading 🤕");
+      },
+      () => {
+        // Handle successful uploads on complete
+        setUploadStatus("Upload successful! ✅");
+
+        // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          console.log("File available at", downloadURL);
+          // upload to audios collection in firestore
+          saveURL(downloadURL);
+        });
+      }
+    );
+  }
+
+  async function saveURL(downloadURL) {
+    const currTime = Date.now();
+    const newAudioURL = await addDoc(collection(db, "audio"), {
+      createdAt: currTime,
+      audioURL: downloadURL,
+    });
+    console.log("newAudioURL", newAudioURL);
+
+    // clear form and audio
+    form.reset();
+    console.log("form reset", form.values);
+    setAudioFile(null);
+
+    // triggerCloudFunction(currTime, downloadURL);
+
+    // local testing
+    // triggerLocalFunction(downloadURL);
+  }
+
+  // TODO: send this to the backend so it creates the doc with the analyzed value
   async function submitNewRecording(values, audioFile) {
     if (audioFile) {
       console.log("New Recording Submission", values);
       console.log(values);
       const innerAnalysisRef = collection(db, "users", user.uid, "analysis");
       await setDoc(doc(innerAnalysisRef), {
+        ...values,
         createdAt: new Date(),
         updatedAt: new Date(),
       });
+      // upload blob to storage
+      await upload(audioFile);
+
+      // TODO: why is this not executed when declared here?
+      // clear form and audio
+      // form.reset();
+      // console.log("form reset", form.values);
+      // setAudioFile(null);
     } else {
       alert("no audio file!");
     }
@@ -278,6 +368,7 @@ const NewRecordingPage = () => {
                 Submit
               </Button>
             </Group>
+            {uploadStatus}
           </Grid.Col>
         </Grid>
       </form>
