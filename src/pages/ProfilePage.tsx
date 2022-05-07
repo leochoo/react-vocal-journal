@@ -97,11 +97,15 @@ export default function ProfilePage() {
 
   const [user, loading, error] = useAuthState(auth);
 
-  async function updateProfile(user) {
+  async function updateProfile(user, values) {
     const userRef = doc(db, "users", user.uid);
     const docSnap = await getDoc(userRef);
     if (docSnap.exists()) {
       await updateDoc(userRef, {
+        // displayName: user.displayName,
+        // email: user.email,
+        age: values.age,
+        experience: values.experience,
         updatedAt: new Date(),
       });
       console.log("Updated user info");
@@ -116,30 +120,20 @@ export default function ProfilePage() {
       });
       console.log("New User to firestore");
     }
-    const innerAnalysisRef = collection(db, "users", user.uid, "innerAnalysis");
-    const innerAnalysisSnap = await getDocs(innerAnalysisRef);
+  }
 
-    if (!innerAnalysisSnap.empty) {
-      console.log("User already has inner analysis");
-      await setDoc(doc(innerAnalysisRef), {
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      });
-      innerAnalysisSnap.forEach((doc) => {
-        console.log(doc.id, "=>", doc.data());
-      });
-    } else {
-      console.log("User does not have inner analysis");
-      await setDoc(doc(innerAnalysisRef), {
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      });
-    }
+  async function addSubCollection(user) {
+    const innerAnalysisRef = collection(db, "users", user.uid, "analysis");
+
+    await setDoc(doc(innerAnalysisRef), {
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
   }
 
   const handleSubmit = (values: typeof form.values) => {
     console.log(values);
-    updateProfile(user);
+    updateProfile(user, values);
   };
   const form = useForm({
     initialValues: {
