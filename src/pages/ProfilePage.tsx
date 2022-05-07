@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   createStyles,
   Text,
@@ -112,11 +112,14 @@ export default function ProfilePage() {
       console.log("Updated user info");
     } else {
       await setDoc(userRef, {
+        createdAt: new Date(),
         displayName: user.displayName,
         email: user.email,
         photoURL: user.photoURL,
         uid: user.uid,
-        createdAt: new Date(),
+        age: values.age,
+        gender: values.gender,
+        experience: values.experience,
         updatedAt: new Date(),
       });
       console.log("New User to firestore");
@@ -125,7 +128,6 @@ export default function ProfilePage() {
 
   async function addSubCollection(user) {
     const innerAnalysisRef = collection(db, "users", user.uid, "analysis");
-
     await setDoc(doc(innerAnalysisRef), {
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -140,14 +142,33 @@ export default function ProfilePage() {
     initialValues: {
       name: "",
       email: "",
-      age: 30,
+      age: "",
       gender: "",
-      experience: 1,
+      experience: "",
     },
     validate: {
       email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
     },
   });
+
+  async function fillForm(user) {
+    const userRef = doc(db, "users", user.uid);
+    const docSnap = await getDoc(userRef);
+    // set initial values
+    if (docSnap.exists()) {
+      form.setValues({
+        name: docSnap.data().displayName,
+        email: docSnap.data().email,
+        age: docSnap.data().age,
+        gender: docSnap.data().gender,
+        experience: docSnap.data().experience,
+      });
+    }
+  }
+
+  useEffect(() => {
+    fillForm(user);
+  }, [user]);
 
   return (
     <div className={classes.wrapper}>
@@ -179,12 +200,7 @@ export default function ProfilePage() {
               classNames={{ input: classes.input, label: classes.inputLabel }}
               {...form.getInputProps("email")}
             />
-            <NumberInput
-              defaultValue={30}
-              label="Age"
-              required
-              {...form.getInputProps("age")}
-            />
+            <NumberInput label="Age" required {...form.getInputProps("age")} />
 
             <RadioGroup
               label="Gender"
@@ -200,7 +216,6 @@ export default function ProfilePage() {
             </RadioGroup>
 
             <NumberInput
-              defaultValue={1}
               style={{ marginTop: 10 }}
               label="Experience (Years)"
               required
