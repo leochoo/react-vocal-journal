@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   createStyles,
   Text,
@@ -105,49 +105,65 @@ export default function ProfilePage() {
         // displayName: user.displayName,
         // email: user.email,
         age: values.age,
+        gender: values.gender,
         experience: values.experience,
         updatedAt: new Date(),
       });
       console.log("Updated user info");
     } else {
       await setDoc(userRef, {
+        createdAt: new Date(),
         displayName: user.displayName,
         email: user.email,
         photoURL: user.photoURL,
         uid: user.uid,
-        createdAt: new Date(),
+        age: values.age,
+        gender: values.gender,
+        experience: values.experience,
         updatedAt: new Date(),
       });
       console.log("New User to firestore");
     }
   }
 
-  async function addSubCollection(user) {
-    const innerAnalysisRef = collection(db, "users", user.uid, "analysis");
+  const form = useForm({
+    initialValues: {
+      name: "",
+      email: "",
+      age: "",
+      gender: "",
+      experience: "",
+    },
+    validate: {
+      email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
+    },
+  });
 
-    await setDoc(doc(innerAnalysisRef), {
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
+  async function fillForm(user) {
+    const userRef = doc(db, "users", user.uid);
+    const docSnap = await getDoc(userRef);
+    // set initial values
+    if (docSnap.exists()) {
+      form.setValues({
+        name: docSnap.data().displayName,
+        email: docSnap.data().email,
+        age: docSnap.data().age,
+        gender: docSnap.data().gender,
+        experience: docSnap.data().experience,
+      });
+    }
   }
 
   const handleSubmit = (values: typeof form.values) => {
     console.log(values);
     updateProfile(user, values);
   };
-  const form = useForm({
-    initialValues: {
-      name: "",
-      email: "",
-      age: 30,
-      gender: "",
-      experience: 1,
-      note: "",
-    },
-    validate: {
-      email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
-    },
-  });
+
+  useEffect(() => {
+    if (user) {
+      fillForm(user);
+    }
+  }, [user]);
 
   return (
     <div className={classes.wrapper}>
@@ -179,7 +195,7 @@ export default function ProfilePage() {
               classNames={{ input: classes.input, label: classes.inputLabel }}
               {...form.getInputProps("email")}
             />
-            <NumberInput defaultValue={30} label="Age" required />
+            <NumberInput label="Age" required {...form.getInputProps("age")} />
 
             <RadioGroup
               label="Gender"
@@ -188,16 +204,17 @@ export default function ProfilePage() {
               classNames={{
                 label: classes.inputLabel,
               }}
+              {...form.getInputProps("gender")}
             >
               <Radio value="male" label="Male" />
               <Radio value="female" label="Female" />
             </RadioGroup>
 
             <NumberInput
-              defaultValue={1}
               style={{ marginTop: 10 }}
               label="Experience (Years)"
               required
+              {...form.getInputProps("experience")}
             />
 
             <Group position="right" mt="md">

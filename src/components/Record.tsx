@@ -53,13 +53,6 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-const mockdata = [
-  { label: "4 passengers", icon: Users },
-  { label: "100 km/h in 4 seconds", icon: Gauge },
-  { label: "Automatic gearbox", icon: ManualGearbox },
-  { label: "Electric", icon: GasStation },
-];
-
 export function Record({ onFileAttachment }) {
   const { classes } = useStyles();
   // store blob onstop
