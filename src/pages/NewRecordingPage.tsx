@@ -105,12 +105,20 @@ const NewRecordingPage = () => {
   const [submitType, setSubmitType] = useState("record");
   const [audioFile, setAudioFile] = useState(null);
 
+  // slider value
+  const [sliderValue, setSliderValue] = useState(0);
+
   const form = useForm({
     initialValues: {
-      vowel: "",
-      pitch: "",
-      condition: "",
+      vowel: undefined,
+      pitch: undefined,
+      condition: undefined,
       note: "",
+    },
+    validate: {
+      vowel: (value) => (value ? undefined : "Vowel is required"),
+      pitch: (value) => (value ? undefined : "Pitch is required"),
+      condition: (value) => (value ? undefined : "Condition is required"),
     },
   });
 
@@ -176,22 +184,36 @@ const NewRecordingPage = () => {
                 classNames={{ label: classes.inputLabel }}
                 {...form.getInputProps("pitch")}
               >
-                <Radio value="low" label="low" />
-                <Radio value="medium" label="medium" />
-                <Radio value="high" label="high" />
+                <Radio value="low" label="Low" />
+                <Radio value="mid" label="Mid" />
+                <Radio value="high" label="High" />
               </RadioGroup>
 
-              <InputWrapper
+              <RadioGroup
                 label="Condition"
+                required
+                style={{ marginTop: 10 }}
+                classNames={{ label: classes.inputLabel }}
+                {...form.getInputProps("condition")}
+              >
+                <Radio value="bad" label="Bad" />
+                <Radio value="mediocre" label="Mediocre" />
+                <Radio value="okay" label="Okay" />
+                <Radio value="good" label="Good" />
+                <Radio value="great" label="Great" />
+              </RadioGroup>
+
+              {/* <InputWrapper
+                
                 classNames={{ label: classes.inputLabel }}
                 style={{ marginBottom: 30 }}
                 required
                 {...form.getInputProps("condition")}
               >
                 <Slider
+                  label={null}
                   color="red"
                   step={25}
-                  label={null}
                   marks={[
                     { value: 0, label: "Bad" },
                     { value: 25, label: "So-so" },
@@ -199,8 +221,10 @@ const NewRecordingPage = () => {
                     { value: 75, label: "Good" },
                     { value: 100, label: "Great" },
                   ]}
+                  value={sliderValue}
+                  onChange={(value) => setSliderValue(value)}
                 />
-              </InputWrapper>
+              </InputWrapper> */}
 
               <Textarea
                 label="Note"
