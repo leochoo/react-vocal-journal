@@ -19,6 +19,19 @@ import {
 } from "@mantine/core";
 import { BrandTwitter, BrandYoutube, BrandInstagram } from "tabler-icons-react";
 import { useForm } from "@mantine/form";
+import { selectIsLoggedIn } from "../redux/auth/auth.slice";
+import { useAppSelector } from "../redux/hooks";
+import { useDocumentOnce } from "react-firebase-hooks/firestore";
+import { auth, db } from "../../firebase";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -81,7 +94,49 @@ const useStyles = createStyles((theme) => ({
 
 export default function ProfilePage() {
   const { classes } = useStyles();
-  const handleSubmit = (values: typeof form.values) => console.log(values);
+
+  const [user, loading, error] = useAuthState(auth);
+
+  async function updateProfile(user) {
+    const userRef = doc(db, "users", user.uid);
+    const docSnap = await getDoc(userRef);
+    if (docSnap.exists()) {
+      await updateDoc(userRef, {
+        updatedAt: new Date(),
+      });
+      console.log("Updated user info");
+    } else {
+      await setDoc(userRef, {
+        displayName: user.displayName,
+        email: user.email,
+        photoURL: user.photoURL,
+        uid: user.uid,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+      console.log("New User to firestore");
+    }
+    const innerAnalysisRef = collection(db, "users", user.uid, "innerAnalysis");
+    const innerAnalysisSnap = await getDocs(innerAnalysisRef);
+
+    if (!innerAnalysisSnap.empty) {
+      console.log("User already has inner analysis");
+      innerAnalysisSnap.forEach((doc) => {
+        console.log(doc.id, "=>", doc.data());
+      });
+    } else {
+      console.log("User does not have inner analysis");
+      // await setDoc(innerAnalysisRef, {
+      //   createdAt: new Date(),
+      //   updatedAt: new Date(),
+      // });
+    }
+  }
+
+  const handleSubmit = (values: typeof form.values) => {
+    console.log(values);
+    updateProfile(user);
+  };
   const form = useForm({
     initialValues: {
       name: "",
