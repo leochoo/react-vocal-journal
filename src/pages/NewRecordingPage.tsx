@@ -27,6 +27,10 @@ import {
 import { DropzoneButton } from "../components/Dropzone";
 import { Record } from "../components/Record";
 import { Microphone, Upload } from "tabler-icons-react";
+import { useForm } from "@mantine/form";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth, db } from "../../firebase";
+import { collection, doc, setDoc } from "firebase/firestore";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -82,18 +86,56 @@ const useStyles = createStyles((theme) => ({
     color: theme.black,
   },
 
+  temporary: {
+    backgroundColor: theme.colors.cyan[6],
+  },
+
   control: {
-    backgroundColor: theme.colors[theme.primaryColor][6],
+    backgroundColor: theme.colors.blue[6],
   },
 
   toggleSwitch: {
     color: theme.colors.green[0],
   },
 }));
+
 const NewRecordingPage = () => {
   const { classes } = useStyles();
+  const [user, loading, error] = useAuthState(auth); // TODO: make this into redux or context?
   const [submitType, setSubmitType] = useState("record");
   const [audioFile, setAudioFile] = useState(null);
+
+  const form = useForm({
+    initialValues: {
+      vowel: "",
+      pitch: "",
+      condition: "",
+      note: "",
+    },
+  });
+
+  async function submitNewRecording(values, audioFile) {
+    if (audioFile) {
+      console.log("New Recording Submission", values);
+      console.log(values);
+      const innerAnalysisRef = collection(db, "users", user.uid, "analysis");
+      await setDoc(doc(innerAnalysisRef), {
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+    } else {
+      alert("no audio file!");
+    }
+  }
+
+  const handleSubmit = (values: typeof form.values) => {
+    submitNewRecording(values, audioFile);
+  };
+
+  // 一時保存
+  const temporarySave = async () => {
+    console.log("temporary saving");
+  };
 
   useEffect(() => {
     console.log("Audio File", audioFile);
@@ -107,103 +149,114 @@ const NewRecordingPage = () => {
           Create or upload a new recording.
         </Text>
       </div>
-      <Grid grow>
-        <Grid.Col md={12} lg={6}>
-          <div className={classes.form}>
-            <RadioGroup
-              label="Vowel"
-              required
-              style={{ marginTop: 10 }}
-              classNames={{
-                label: classes.inputLabel,
-              }}
-            >
-              <Radio value="a" label="a" />
-              {/* <Radio value="e" label="e" /> */}
-              <Radio value="i" label="i" />
-              {/* <Radio value="o" label="o" /> */}
-              <Radio value="u" label="u" />
-            </RadioGroup>
+      <form onSubmit={form.onSubmit(handleSubmit)}>
+        <Grid grow>
+          <Grid.Col md={12} lg={6}>
+            <div className={classes.form}>
+              <RadioGroup
+                label="Vowel"
+                required
+                style={{ marginTop: 10 }}
+                classNames={{
+                  label: classes.inputLabel,
+                }}
+                {...form.getInputProps("vowel")}
+              >
+                <Radio value="a" label="a" />
+                {/* <Radio value="e" label="e" /> */}
+                <Radio value="i" label="i" />
+                {/* <Radio value="o" label="o" /> */}
+                <Radio value="u" label="u" />
+              </RadioGroup>
 
-            <RadioGroup
-              label="Pitch"
-              required
-              style={{ marginTop: 10 }}
-              classNames={{ label: classes.inputLabel }}
-            >
-              <Radio value="low" label="low" />
-              <Radio value="medium" label="medium" />
-              <Radio value="high" label="high" />
-            </RadioGroup>
+              <RadioGroup
+                label="Pitch"
+                required
+                style={{ marginTop: 10 }}
+                classNames={{ label: classes.inputLabel }}
+                {...form.getInputProps("pitch")}
+              >
+                <Radio value="low" label="low" />
+                <Radio value="medium" label="medium" />
+                <Radio value="high" label="high" />
+              </RadioGroup>
 
-            <InputWrapper
-              label="Condition"
-              classNames={{ label: classes.inputLabel }}
-              style={{ marginBottom: 30 }}
-              required
-            >
-              <Slider
-                color="red"
-                step={25}
-                label={null}
-                marks={[
-                  { value: 0, label: "Bad" },
-                  { value: 25, label: "So-so" },
-                  { value: 50, label: "Okay" },
-                  { value: 75, label: "Good" },
-                  { value: 100, label: "Great" },
+              <InputWrapper
+                label="Condition"
+                classNames={{ label: classes.inputLabel }}
+                style={{ marginBottom: 30 }}
+                required
+                {...form.getInputProps("condition")}
+              >
+                <Slider
+                  color="red"
+                  step={25}
+                  label={null}
+                  marks={[
+                    { value: 0, label: "Bad" },
+                    { value: 25, label: "So-so" },
+                    { value: 50, label: "Okay" },
+                    { value: 75, label: "Good" },
+                    { value: 100, label: "Great" },
+                  ]}
+                />
+              </InputWrapper>
+
+              <Textarea
+                label="Note"
+                placeholder="Notes"
+                minRows={4}
+                mt="md"
+                classNames={{ input: classes.input, label: classes.inputLabel }}
+                {...form.getInputProps("note")}
+              />
+            </div>
+          </Grid.Col>
+          <Grid.Col md={12} lg={6}>
+            <Group position="center" mt="md">
+              <SegmentedControl
+                color="orange"
+                value={submitType}
+                onChange={setSubmitType}
+                data={[
+                  {
+                    value: "record",
+                    label: (
+                      <Center>
+                        <Microphone size={16} />
+                        <Box ml={10}>録音 Record</Box>
+                      </Center>
+                    ),
+                  },
+                  {
+                    value: "upload",
+                    label: (
+                      <Center>
+                        <Upload size={16} />
+                        <Box ml={10}>アップロード Upload</Box>
+                      </Center>
+                    ),
+                  },
                 ]}
               />
-            </InputWrapper>
-
-            <Textarea
-              label="Note"
-              placeholder="Notes"
-              minRows={4}
-              mt="md"
-              classNames={{ input: classes.input, label: classes.inputLabel }}
-            />
+              {submitType == "upload" ? (
+                <DropzoneButton onFileAttachment={setAudioFile} />
+              ) : (
+                <Record onFileAttachment={setAudioFile} />
+              )}
+            </Group>
 
             <Group position="right" mt="md">
-              <Button className={classes.control}>Submit</Button>
+              {/* <Button className={classes.temporary} onClick={temporarySave}>
+                一時保存
+              </Button> */}
+              <Button type="submit" className={classes.control}>
+                Submit
+              </Button>
             </Group>
-          </div>
-        </Grid.Col>
-        <Grid.Col md={12} lg={6}>
-          <Group position="center" mt="md">
-            <SegmentedControl
-              color="orange"
-              value={submitType}
-              onChange={setSubmitType}
-              data={[
-                {
-                  value: "record",
-                  label: (
-                    <Center>
-                      <Microphone size={16} />
-                      <Box ml={10}>録音 Record</Box>
-                    </Center>
-                  ),
-                },
-                {
-                  value: "upload",
-                  label: (
-                    <Center>
-                      <Upload size={16} />
-                      <Box ml={10}>アップロード Upload</Box>
-                    </Center>
-                  ),
-                },
-              ]}
-            />
-            {submitType == "upload" ? (
-              <DropzoneButton onFileAttachment={setAudioFile} />
-            ) : (
-              <Record onFileAttachment={setAudioFile} />
-            )}
-          </Group>
-        </Grid.Col>
-      </Grid>
+          </Grid.Col>
+        </Grid>
+      </form>
     </div>
   );
 };

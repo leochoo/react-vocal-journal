@@ -126,14 +126,6 @@ export default function ProfilePage() {
     }
   }
 
-  async function addSubCollection(user) {
-    const innerAnalysisRef = collection(db, "users", user.uid, "analysis");
-    await setDoc(doc(innerAnalysisRef), {
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
-  }
-
   const form = useForm({
     initialValues: {
       name: "",
