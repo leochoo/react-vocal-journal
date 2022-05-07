@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   Image,
@@ -10,6 +10,7 @@ import {
   Button,
 } from "@mantine/core";
 import { GasStation, Gauge, ManualGearbox, Users } from "tabler-icons-react";
+import { useReactMediaRecorder } from "react-media-recorder";
 
 const useStyles = createStyles((theme) => ({
   card: {
@@ -59,49 +60,64 @@ const mockdata = [
   { label: "Electric", icon: GasStation },
 ];
 
-export function Record() {
+export function Record({ onFileAttachment }) {
   const { classes } = useStyles();
-  const features = mockdata.map((feature) => (
-    <Center key={feature.label}>
-      <feature.icon size={18} className={classes.icon} />
-      <Text size="xs">{feature.label}</Text>
-    </Center>
-  ));
+  // store blob onstop
+  const recordedFileHandler = (blob) => {
+    onFileAttachment(blob);
+  };
+  const { status, startRecording, stopRecording, mediaBlobUrl } =
+    useReactMediaRecorder({
+      video: false,
+      onStop: (blobUrl, blob) => {
+        recordedFileHandler(blob);
+      },
+    });
 
   return (
     <Card withBorder radius="md" className={classes.card}>
-      <Card.Section className={classes.imageSection}>
-        {/* <Image src="https://i.imgur.com/ZL52Q2D.png" alt="Tesla Model S" /> */}
-        Record Audio
-      </Card.Section>
-
+      <Card.Section className={classes.imageSection}>Record Audio</Card.Section>
       <Group position="apart" mt="md">
-        <Center>
-          <div>
-            <Text weight={500}>Tesla Model S</Text>
-            <Text size="xs" color="dimmed">
-              Free recharge at any station
-            </Text>
-          </div>
-        </Center>
+        Record vowel /a/ vowel for 2 seconds. Maintain the same pitch until the
+        end.
       </Group>
 
       <Card.Section className={classes.section} mt="md">
-        <Text size="sm" color="dimmed" className={classes.label}>
-          Basic configuration
-        </Text>
-
-        <Group spacing={8} mb={-8}>
-          {features}
-        </Group>
+        <Center>
+          <Group direction="column" position="center" mt="md">
+            <div>{status}</div>
+            <audio src={mediaBlobUrl} controls />
+          </Group>
+        </Center>
       </Card.Section>
 
       <Card.Section className={classes.section}>
-        <Group spacing={30}>
-          <Button radius="xl" style={{ flex: 1 }}>
-            Record
-          </Button>
-        </Group>
+        <Center>
+          <Group spacing={30}>
+            {status !== "recording" && (
+              <>
+                {!mediaBlobUrl ? (
+                  <Button color={"red"} radius={"xl"} onClick={startRecording}>
+                    Start Recording
+                  </Button>
+                ) : (
+                  <Button
+                    color={"yellow"}
+                    radius={"xl"}
+                    onClick={startRecording}
+                  >
+                    Redo Recording
+                  </Button>
+                )}
+              </>
+            )}
+            {status == "recording" && (
+              <Button color={"gray"} onClick={stopRecording}>
+                Stop Recording
+              </Button>
+            )}
+          </Group>
+        </Center>
       </Card.Section>
     </Card>
   );

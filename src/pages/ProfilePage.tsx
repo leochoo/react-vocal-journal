@@ -18,6 +18,20 @@ import {
   CheckboxGroup,
 } from "@mantine/core";
 import { BrandTwitter, BrandYoutube, BrandInstagram } from "tabler-icons-react";
+import { useForm } from "@mantine/form";
+import { selectIsLoggedIn } from "../redux/auth/auth.slice";
+import { useAppSelector } from "../redux/hooks";
+import { useDocumentOnce } from "react-firebase-hooks/firestore";
+import { auth, db } from "../../firebase";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -81,100 +95,119 @@ const useStyles = createStyles((theme) => ({
 export default function ProfilePage() {
   const { classes } = useStyles();
 
+  const [user, loading, error] = useAuthState(auth);
+
+  async function updateProfile(user, values) {
+    const userRef = doc(db, "users", user.uid);
+    const docSnap = await getDoc(userRef);
+    if (docSnap.exists()) {
+      await updateDoc(userRef, {
+        // displayName: user.displayName,
+        // email: user.email,
+        age: values.age,
+        experience: values.experience,
+        updatedAt: new Date(),
+      });
+      console.log("Updated user info");
+    } else {
+      await setDoc(userRef, {
+        displayName: user.displayName,
+        email: user.email,
+        photoURL: user.photoURL,
+        uid: user.uid,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+      console.log("New User to firestore");
+    }
+  }
+
+  async function addSubCollection(user) {
+    const innerAnalysisRef = collection(db, "users", user.uid, "analysis");
+
+    await setDoc(doc(innerAnalysisRef), {
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+  }
+
+  const handleSubmit = (values: typeof form.values) => {
+    console.log(values);
+    updateProfile(user, values);
+  };
+  const form = useForm({
+    initialValues: {
+      name: "",
+      email: "",
+      age: 30,
+      gender: "",
+      experience: 1,
+      note: "",
+    },
+    validate: {
+      email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
+    },
+  });
+
   return (
     <div className={classes.wrapper}>
-      <SimpleGrid
-        cols={2}
-        spacing={50}
-        breakpoints={[{ maxWidth: "md", cols: 1 }]}
-      >
-        <div>
-          <Title className={classes.title}>Profile Page</Title>
-          <Text className={classes.description} mt="sm" mb={30}>
-            Description
-          </Text>
-          <Avatar radius="xl" size={300} />
-        </div>
-        <div className={classes.form}>
-          <TextInput
-            label="Email"
-            placeholder="your@email.com"
-            required
-            classNames={{ input: classes.input, label: classes.inputLabel }}
-          />
+      <form onSubmit={form.onSubmit(handleSubmit)}>
+        <SimpleGrid
+          cols={2}
+          spacing={50}
+          breakpoints={[{ maxWidth: "md", cols: 1 }]}
+        >
+          <div>
+            <Title className={classes.title}>Profile Page</Title>
+            <Text className={classes.description} mt="sm" mb={30}>
+              Description
+            </Text>
+            <Avatar radius="xl" size={200} />
+          </div>
+          <div className={classes.form}>
+            <TextInput
+              label="Name"
+              placeholder="John Doe"
+              mt="md"
+              classNames={{ input: classes.input, label: classes.inputLabel }}
+              {...form.getInputProps("name")}
+            />
+            <TextInput
+              label="Email"
+              placeholder="your@email.com"
+              required
+              classNames={{ input: classes.input, label: classes.inputLabel }}
+              {...form.getInputProps("email")}
+            />
+            <NumberInput defaultValue={30} label="Age" required />
 
-          <TextInput
-            label="Name"
-            placeholder="John Doe"
-            mt="md"
-            classNames={{ input: classes.input, label: classes.inputLabel }}
-          />
-          <NumberInput defaultValue={30} label="Age" required />
+            <RadioGroup
+              label="Gender"
+              required
+              style={{ marginTop: 10 }}
+              classNames={{
+                label: classes.inputLabel,
+              }}
+            >
+              <Radio value="male" label="Male" />
+              <Radio value="female" label="Female" />
+            </RadioGroup>
 
-          <RadioGroup
-            label="Gender"
-            required
-            style={{ marginTop: 10 }}
-            classNames={{
-              label: classes.inputLabel,
-            }}
-          >
-            <Radio value="male" label="Male" />
-            <Radio value="female" label="Female" />
-          </RadioGroup>
+            <NumberInput
+              defaultValue={1}
+              style={{ marginTop: 10 }}
+              label="Experience (Years)"
+              required
+            />
 
-          <RadioGroup
-            label="Level"
-            required
-            style={{ marginTop: 10 }}
-            classNames={{ label: classes.inputLabel }}
-          >
-            <Radio value="amateur" label="Amateur" />
-            <Radio value="professional" label="Professional" />
-          </RadioGroup>
-
-          <NumberInput
-            defaultValue={1}
-            style={{ marginTop: 10 }}
-            label="Experience (Years)"
-            required
-          />
-
-          <RadioGroup
-            label="Voice Disorder"
-            required
-            style={{ marginTop: 10 }}
-            classNames={{ label: classes.inputLabel }}
-          >
-            <Radio value="0" label="No" />
-            <Radio value="1" label="Yes" />
-          </RadioGroup>
-          <TextInput
-            label="Name of voice disorder"
-            placeholder="Name of the voice disorder"
-            mt="md"
-            classNames={{ input: classes.input, label: classes.inputLabel }}
-          />
-
-          <NumberInput
-            defaultValue={2010}
-            style={{ marginTop: 10 }}
-            label="Year Diagnosed"
-          />
-
-          <Textarea
-            label="Note"
-            placeholder="Notes"
-            minRows={4}
-            mt="md"
-            classNames={{ input: classes.input, label: classes.inputLabel }}
-          />
-
-          <Group position="right" mt="md">
-            <Button className={classes.control}>Update</Button>
-          </Group>
-        </div>
-      </SimpleGrid>
+            <Group position="right" mt="md">
+              <Button type="submit" className={classes.control}>
+                Update
+              </Button>
+            </Group>
+          </div>
+        </SimpleGrid>
+      </form>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   createStyles,
   Container,
@@ -20,9 +20,13 @@ import {
   CheckboxGroup,
   Slider,
   InputWrapper,
+  Center,
+  SegmentedControl,
+  Box,
 } from "@mantine/core";
 import { DropzoneButton } from "../components/Dropzone";
 import { Record } from "../components/Record";
+import { Microphone, Upload } from "tabler-icons-react";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -81,9 +85,19 @@ const useStyles = createStyles((theme) => ({
   control: {
     backgroundColor: theme.colors[theme.primaryColor][6],
   },
+
+  toggleSwitch: {
+    color: theme.colors.green[0],
+  },
 }));
 const NewRecordingPage = () => {
   const { classes } = useStyles();
+  const [submitType, setSubmitType] = useState("record");
+  const [audioFile, setAudioFile] = useState(null);
+
+  useEffect(() => {
+    console.log("Audio File", audioFile);
+  }, [audioFile]);
 
   return (
     <div className={classes.wrapper}>
@@ -156,8 +170,38 @@ const NewRecordingPage = () => {
           </div>
         </Grid.Col>
         <Grid.Col md={12} lg={6}>
-          <Record />
-          <DropzoneButton />
+          <Group position="center" mt="md">
+            <SegmentedControl
+              color="orange"
+              value={submitType}
+              onChange={setSubmitType}
+              data={[
+                {
+                  value: "record",
+                  label: (
+                    <Center>
+                      <Microphone size={16} />
+                      <Box ml={10}>録音 Record</Box>
+                    </Center>
+                  ),
+                },
+                {
+                  value: "upload",
+                  label: (
+                    <Center>
+                      <Upload size={16} />
+                      <Box ml={10}>アップロード Upload</Box>
+                    </Center>
+                  ),
+                },
+              ]}
+            />
+            {submitType == "upload" ? (
+              <DropzoneButton onFileAttachment={setAudioFile} />
+            ) : (
+              <Record onFileAttachment={setAudioFile} />
+            )}
+          </Group>
         </Grid.Col>
       </Grid>
     </div>

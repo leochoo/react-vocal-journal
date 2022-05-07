@@ -7,7 +7,7 @@ import WrapperPage from "../pages/WrapperPage";
 export function ProtectedRoute({ children }: { children: JSX.Element }) {
   let location = useLocation();
   const isLoggedIn = useAppSelector(selectIsLoggedIn);
-  console.log("isLoggedIn", isLoggedIn);
+  // console.log("isLoggedIn", isLoggedIn);
 
   return isLoggedIn ? (
     <WrapperPage>{children}</WrapperPage>

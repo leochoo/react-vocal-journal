@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   createStyles,
   Table,
@@ -20,6 +20,7 @@ import {
 import { auth, db } from "../../../firebase";
 import { useAppSelector } from "../../redux/hooks";
 import { selectUid } from "../../redux/auth/auth.slice";
+import { useCollectionData } from "react-firebase-hooks/firestore";
 
 const useStyles = createStyles((theme) => ({
   progressBar: {
@@ -31,98 +32,45 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-interface TableReviewsProps {
+interface AnalysisDataProps {
   data: {
-    datetime: string;
-    name: string;
+    audioURL: string;
+    createdAt: number;
+    displayName: string;
+    hnr: number;
     jitter: number;
     shimmer: number;
-    hnr: number;
-    reviews: { positive: number; negative: number };
+    uid: string;
   }[];
 }
 
-export function TableReviews({ data }: TableReviewsProps) {
+export function TableReviews({ data }: AnalysisDataProps) {
   const { classes, theme } = useStyles();
 
-  // let uid = useAppSelector(selectUid);
   // console.log("uid", uid);
-
   let user = auth.currentUser;
-  console.log("user", user);
+  // console.log("user", user);
 
-  useEffect(() => {
-    if (user) {
-      const analysisQuery = query(
-        collection(db, "analysis"),
-        where("uid", "==", auth.currentUser.uid)
-        // orderBy("createdAt", "desc")
-      );
-      const unsubscribe = onSnapshot(analysisQuery, (querySnapshot) => {
-        var _analysis = [];
-        querySnapshot.forEach((doc) => {
-          const analysisObject = {
-            createdAt: doc.data().createdAt,
-            audioURL: doc.data().audioURL,
-            uid: doc.data().uid,
-            displayName: doc.data().displayName,
-            jitter: doc.data().jitter_local,
-            shimmer: doc.data().shimmer_local,
-            hnr: doc.data().HNR,
-          };
-
-          _analysis = [..._analysis, analysisObject];
-        });
-        // analysisList = _analysis;
-        console.log("_analysis", _analysis);
-      });
-      return () => {
-        unsubscribe;
-      };
-    }
-  }, [user]);
+  // sort data by field "createdAt" descending
+  data.sort((a, b) => {
+    return b.createdAt - a.createdAt;
+  });
+  // console.log("data", data);
 
   const rows = data.map((row) => {
+    const date = new Date(row.createdAt);
+    const dateStr = date.toLocaleString("ja-JP");
     return (
-      <tr key={row.datetime}>
-        <td>{row.datetime}</td>
+      <tr key={row.createdAt}>
+        <td>{dateStr}</td>
         <td>
           <Anchor<"a"> size="sm" onClick={(event) => event.preventDefault()}>
-            {row.name}
+            {row.displayName}
           </Anchor>
         </td>
         <td>{row.jitter}</td>
         <td>{row.shimmer}</td>
         <td>{row.hnr}</td>
-        {/* <td>
-          <Group position="apart">
-            <Text size="xs" color="teal" weight={700}>
-              {positiveReviews.toFixed(0)}%
-            </Text>
-            <Text size="xs" color="red" weight={700}>
-              {negativeReviews.toFixed(0)}%
-            </Text>
-          </Group>
-          <Progress
-            classNames={{ bar: classes.progressBar }}
-            sections={[
-              {
-                value: positiveReviews,
-                color:
-                  theme.colorScheme === "dark"
-                    ? theme.colors.teal[9]
-                    : theme.colors.teal[6],
-              },
-              {
-                value: negativeReviews,
-                color:
-                  theme.colorScheme === "dark"
-                    ? theme.colors.red[9]
-                    : theme.colors.red[6],
-              },
-            ]}
-          />
-        </td> */}
       </tr>
     );
   });
