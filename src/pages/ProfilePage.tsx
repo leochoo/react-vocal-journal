@@ -147,14 +147,6 @@ export default function ProfilePage() {
               required
             />
 
-            <Textarea
-              label="Note"
-              placeholder="Notes"
-              minRows={4}
-              mt="md"
-              classNames={{ input: classes.input, label: classes.inputLabel }}
-            />
-
             <Group position="right" mt="md">
               <Button type="submit" className={classes.control}>
                 Update
