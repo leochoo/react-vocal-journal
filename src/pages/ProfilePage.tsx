@@ -105,6 +105,7 @@ export default function ProfilePage() {
         // displayName: user.displayName,
         // email: user.email,
         age: values.age,
+        gender: values.gender,
         experience: values.experience,
         updatedAt: new Date(),
       });
@@ -142,7 +143,6 @@ export default function ProfilePage() {
       age: 30,
       gender: "",
       experience: 1,
-      note: "",
     },
     validate: {
       email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
@@ -179,7 +179,12 @@ export default function ProfilePage() {
               classNames={{ input: classes.input, label: classes.inputLabel }}
               {...form.getInputProps("email")}
             />
-            <NumberInput defaultValue={30} label="Age" required />
+            <NumberInput
+              defaultValue={30}
+              label="Age"
+              required
+              {...form.getInputProps("age")}
+            />
 
             <RadioGroup
               label="Gender"
@@ -188,6 +193,7 @@ export default function ProfilePage() {
               classNames={{
                 label: classes.inputLabel,
               }}
+              {...form.getInputProps("gender")}
             >
               <Radio value="male" label="Male" />
               <Radio value="female" label="Female" />
@@ -198,6 +204,7 @@ export default function ProfilePage() {
               style={{ marginTop: 10 }}
               label="Experience (Years)"
               required
+              {...form.getInputProps("experience")}
             />
 
             <Group position="right" mt="md">
