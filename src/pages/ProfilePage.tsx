@@ -121,15 +121,19 @@ export default function ProfilePage() {
 
     if (!innerAnalysisSnap.empty) {
       console.log("User already has inner analysis");
+      await setDoc(doc(innerAnalysisRef), {
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
       innerAnalysisSnap.forEach((doc) => {
         console.log(doc.id, "=>", doc.data());
       });
     } else {
       console.log("User does not have inner analysis");
-      // await setDoc(innerAnalysisRef, {
-      //   createdAt: new Date(),
-      //   updatedAt: new Date(),
-      // });
+      await setDoc(doc(innerAnalysisRef), {
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
     }
   }
 
