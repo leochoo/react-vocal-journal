@@ -134,10 +134,6 @@ export default function ProfilePage() {
     });
   }
 
-  const handleSubmit = (values: typeof form.values) => {
-    console.log(values);
-    updateProfile(user, values);
-  };
   const form = useForm({
     initialValues: {
       name: "",
@@ -166,8 +162,15 @@ export default function ProfilePage() {
     }
   }
 
+  const handleSubmit = (values: typeof form.values) => {
+    console.log(values);
+    updateProfile(user, values);
+  };
+
   useEffect(() => {
-    fillForm(user);
+    if (user) {
+      fillForm(user);
+    }
   }, [user]);
 
   return (
