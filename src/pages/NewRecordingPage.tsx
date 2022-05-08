@@ -186,10 +186,10 @@ const NewRecordingPage = () => {
   async function saveURL(downloadURL) {
     const currTime = Date.now();
 
-    // triggerCloudFunction(currTime, downloadURL);
+    triggerCloudFunction(currTime, downloadURL);
 
     // local testing
-    triggerLocalFunction(currTime, downloadURL);
+    // triggerLocalFunction(currTime, downloadURL);
 
     // clear form and audio
     // below is ran but the UI doesn't change.
