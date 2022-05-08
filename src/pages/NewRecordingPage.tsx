@@ -188,15 +188,15 @@ const NewRecordingPage = () => {
 
     triggerCloudFunction(currTime, downloadURL);
 
+    // local testing
+    // triggerLocalFunction(currTime, downloadURL);
+
     // clear form and audio
     // below is ran but the UI doesn't change.
     // perhaps that needs a re-render.
     form.reset();
     console.log("form reset", form.values);
     setAudioFile(null);
-
-    // local testing
-    // triggerLocalFunction(downloadURL);
   }
 
   async function triggerCloudFunction(currTime, downloadURL) {
@@ -224,6 +224,36 @@ const NewRecordingPage = () => {
     const data = await response.json();
     // const data = await response.body.values;
     console.log("CLOUD data: ", data);
+  }
+
+  // TEST function for a local flask server
+  async function triggerLocalFunction(currTime, downloadURL) {
+    console.log("LOCAL triggered");
+    // console.log("downloadURL", downloadURL);
+    const localURL = "http://127.0.0.1:5001";
+    const response = await fetch(localURL, {
+      method: "POST",
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "*",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        createdAt: currTime,
+        updatedAt: currTime, // TODO: need to fix later
+        audioURL: downloadURL,
+        uid: user.uid,
+        displayName: user.displayName,
+        vowel: form.values.vowel,
+        pitch: form.values.pitch,
+        condition: form.values.condition,
+        note: form.values.note,
+      }),
+    });
+    const data = await response.json();
+    console.log("LOCAL data: ", data);
+    // const data = await response.body.values;
   }
 
   // TODO: send this to the backend so it creates the doc with the analyzed value

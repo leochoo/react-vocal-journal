@@ -67,15 +67,15 @@ def handle_request():
     print("request_json", request_json)
 
     # for debugging
-    if request_json and 'message' in request_json:
-        print("Testing", request_json['message'])
-        # return_message = {"data": request_json['message']}
+    # if request_json and 'message' in request_json:
+    #     print("Testing", request_json['message'])
+    #     # return_message = {"data": request_json['message']}
 
     # parse request parameters
     result = analyze(request_json)
-    print("Analysis result", result)
+    # print("Analysis result", result)
     return_message = {"data": result}
-    print("return message:", return_message)
+    # print("return message:", return_message)
 
     return (return_message, 200, headers)
 
@@ -85,11 +85,18 @@ def get_file_path(filename):
 
 
 def analyze(postObject):
+    print("IN ANALYZE FUNCTION")
     # 1. Preprocessing
     createdAt = postObject["createdAt"]
+    updatedAt = postObject["updatedAt"]
     audioURL = postObject["audioURL"]
     uid = postObject["uid"]
     displayName = postObject["displayName"]
+    vowel = postObject["vowel"]
+    pitch = postObject["pitch"]
+    condition = postObject["condition"]
+    note = postObject["note"]
+
     # Download sound file
     input_name = "input.wav"
     input_path = get_file_path(input_name)
@@ -110,8 +117,9 @@ def analyze(postObject):
 
     # Read sound file
     sound = parselmouth.Sound(output_path)  # sound object from wav file
-    pitch = sound.to_pitch()
-    pulses = parselmouth.praat.call([sound, pitch], "To PointProcess (cc)")
+    sound_to_pitch = sound.to_pitch()
+    pulses = parselmouth.praat.call(
+        [sound, sound_to_pitch], "To PointProcess (cc)")
 
     # Get Jitter, Shimmer, HNR, MFCC
 
@@ -123,26 +131,36 @@ def analyze(postObject):
     shimmer_local = parselmouth.praat.call(
         [sound, pulses], "Get shimmer (local)", 0, 0, 0.0001, 0.02, 1.3, 1.6)
 
-    # HNR / harmonics to noise ratio
+    # HNR
     harmonicity = parselmouth.praat.call(
         sound, "To Harmonicity (cc)", 0.01, 75, 0.1, 1.0)
     hnr = parselmouth.praat.call(harmonicity, "Get mean", 0, 0)
 
-    # jitter shimmer hnr object
-    jsh_obj = {
+    # add jitter shimmer hnr to analysis object
+    analysis_object = {
         "createdAt": createdAt,
+        "updatedAt": updatedAt,
+        "audioURL": audioURL,
         "uid": uid,
         "displayName": displayName,
+        "note": note,
+        "vowel": vowel,
+        "pitch": pitch,
+        "condition": condition,
         "jitter_local": jitter_local,
         "shimmer_local": shimmer_local,
         "HNR": hnr
     }
 
     # update firestore document
-    doc_ref = db.collection(u'analysis')
-    # print("doc_ref", doc_ref)
-    doc_ref.add(jsh_obj)
+    userRef = db.collection(u'users').document(uid)
+    analysisRef = userRef.collection(u'analysis')
 
-    print("Jitter result:", jitter_local)
+    docs = analysisRef.stream()
+    for doc in docs:
+        print(f'{doc.id} => {doc.to_dict()}')
 
-    return jsh_obj
+    print("RESULT HERE", analysis_object)
+    analysisRef.add(analysis_object)
+
+    return analysis_object
