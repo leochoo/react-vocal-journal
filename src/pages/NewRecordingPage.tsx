@@ -185,11 +185,8 @@ const NewRecordingPage = () => {
 
   async function saveURL(downloadURL) {
     const currTime = Date.now();
-    const newAudioURL = await addDoc(collection(db, "audio"), {
-      createdAt: currTime,
-      audioURL: downloadURL,
-    });
-    console.log("newAudioURL", newAudioURL);
+
+    triggerCloudFunction(currTime, downloadURL);
 
     // clear form and audio
     // below is ran but the UI doesn't change.
@@ -197,8 +194,6 @@ const NewRecordingPage = () => {
     form.reset();
     console.log("form reset", form.values);
     setAudioFile(null);
-
-    // triggerCloudFunction(currTime, downloadURL);
 
     // local testing
     // triggerLocalFunction(downloadURL);
@@ -215,12 +210,14 @@ const NewRecordingPage = () => {
       },
       body: JSON.stringify({
         createdAt: currTime,
-        lastUpdated: currTime, // TODO: need to fix later
+        updatedAt: currTime, // TODO: need to fix later
         audioURL: downloadURL,
         uid: user.uid,
         displayName: user.displayName,
-        label: "",
-        notes: "",
+        vowel: form.values.vowel,
+        pitch: form.values.pitch,
+        condition: form.values.condition,
+        note: form.values.note,
       }),
     });
     // console.log(response);
@@ -230,16 +227,16 @@ const NewRecordingPage = () => {
   }
 
   // TODO: send this to the backend so it creates the doc with the analyzed value
-  async function submitNewRecording(values, audioFile) {
+  async function submitNewRecording(audioFile) {
     if (audioFile) {
-      console.log("New Recording Submission", values);
-      console.log(values);
-      const innerAnalysisRef = collection(db, "users", user.uid, "analysis");
-      await setDoc(doc(innerAnalysisRef), {
-        ...values,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      });
+      console.log("New Recording Submission", form.values);
+      console.log(form.values);
+      // const innerAnalysisRef = collection(db, "users", user.uid, "analysis");
+      // await setDoc(doc(innerAnalysisRef), {
+      //   ...form.values,
+      //   createdAt: new Date(),
+      //   updatedAt: new Date(),
+      // });
       // upload blob to storage
       await upload(audioFile);
 
@@ -253,8 +250,8 @@ const NewRecordingPage = () => {
     }
   }
 
-  const handleSubmit = (values: typeof form.values) => {
-    submitNewRecording(values, audioFile);
+  const handleSubmit = () => {
+    submitNewRecording(audioFile);
   };
 
   // 一時保存

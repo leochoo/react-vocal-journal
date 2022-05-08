@@ -63,11 +63,13 @@ def get_file_path(filename):
 def analyze(postObject):
     # 1. Preprocessing
     createdAt = postObject["createdAt"]
-    lastUpdated = postObject["lastUpdated"]
+    updatedAt = postObject["updatedAt"]
     audioURL = postObject["audioURL"]
     uid = postObject["uid"]
     displayName = postObject["displayName"]
-    label = postObject["label"]
+    vowel = postObject["vowel"]
+    pitch = postObject["pitch"]
+    condition = postObject["condition"]
     notes = postObject["notes"]
 
     # Download sound file
@@ -111,21 +113,21 @@ def analyze(postObject):
     # add jitter shimmer hnr to analysis object
     analysis_object = {
         "createdAt": createdAt,
-        "lastUpdated": lastUpdated,
+        "updatedAt": updatedAt,
         "audioURL": audioURL,
         "uid": uid,
         "displayName": displayName,
-        "label": label,
         "notes": notes,
+        "vowel": vowel,
+        "pitch": pitch,
+        "condition": condition,
         "jitter_local": jitter_local,
         "shimmer_local": shimmer_local,
         "HNR": hnr
     }
 
     # update firestore document
-    doc_ref = db.collection(u'analysis')
+    doc_ref = db.collection(u'users').document(uid).collection(u'analysis')
     doc_ref.add(analysis_object)
-
-    print("Jitter result:", jitter_local)
 
     return analysis_object
