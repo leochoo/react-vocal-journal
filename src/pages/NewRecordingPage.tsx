@@ -192,6 +192,8 @@ const NewRecordingPage = () => {
     console.log("newAudioURL", newAudioURL);
 
     // clear form and audio
+    // below is ran but the UI doesn't change.
+    // perhaps that needs a re-render.
     form.reset();
     console.log("form reset", form.values);
     setAudioFile(null);
@@ -200,6 +202,31 @@ const NewRecordingPage = () => {
 
     // local testing
     // triggerLocalFunction(downloadURL);
+  }
+
+  async function triggerCloudFunction(currTime, downloadURL) {
+    console.log("CLOUD triggered");
+    const url =
+      "https://asia-northeast1-vocal-journal.cloudfunctions.net/parselmouth";
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        createdAt: currTime,
+        lastUpdated: currTime, // TODO: need to fix later
+        audioURL: downloadURL,
+        uid: user.uid,
+        displayName: user.displayName,
+        label: "",
+        notes: "",
+      }),
+    });
+    // console.log(response);
+    const data = await response.json();
+    // const data = await response.body.values;
+    console.log("CLOUD data: ", data);
   }
 
   // TODO: send this to the backend so it creates the doc with the analyzed value

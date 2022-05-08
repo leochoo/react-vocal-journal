@@ -25,5 +25,13 @@ dist-ssr
 
 .env
 
+
 .firebase
 firebase.js
+
+
+# gcp
+.key
+__pycache__/
+
+
