@@ -61,6 +61,7 @@ def get_file_path(filename):
 
 
 def analyze(postObject):
+    print("IN ANALYZE FUNCTION")
     # 1. Preprocessing
     createdAt = postObject["createdAt"]
     updatedAt = postObject["updatedAt"]
@@ -70,7 +71,7 @@ def analyze(postObject):
     vowel = postObject["vowel"]
     pitch = postObject["pitch"]
     condition = postObject["condition"]
-    notes = postObject["notes"]
+    note = postObject["note"]
 
     # Download sound file
     input_name = "input.wav"
@@ -92,8 +93,9 @@ def analyze(postObject):
 
     # Read sound file
     sound = parselmouth.Sound(output_path)  # sound object from wav file
-    pitch = sound.to_pitch()
-    pulses = parselmouth.praat.call([sound, pitch], "To PointProcess (cc)")
+    sound_to_pitch = sound.to_pitch()
+    pulses = parselmouth.praat.call(
+        [sound, sound_to_pitch], "To PointProcess (cc)")
 
     # Get Jitter, Shimmer, HNR, MFCC
 
@@ -117,7 +119,7 @@ def analyze(postObject):
         "audioURL": audioURL,
         "uid": uid,
         "displayName": displayName,
-        "notes": notes,
+        "note": note,
         "vowel": vowel,
         "pitch": pitch,
         "condition": condition,
@@ -127,7 +129,14 @@ def analyze(postObject):
     }
 
     # update firestore document
-    doc_ref = db.collection(u'users').document(uid).collection(u'analysis')
-    doc_ref.add(analysis_object)
+    userRef = db.collection(u'users').document(uid)
+    analysisRef = userRef.collection(u'analysis')
+
+    docs = analysisRef.stream()
+    for doc in docs:
+        print(f'{doc.id} => {doc.to_dict()}')
+
+    print("RESULT HERE", analysis_object)
+    analysisRef.add(analysis_object)
 
     return analysis_object
