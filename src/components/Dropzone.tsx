@@ -64,7 +64,7 @@ export function DropzoneButton({ onFileAttachment }) {
         onReject={(file) => console.log("rejected files", file)}
         className={classes.dropzone}
         radius="md"
-        accept={["audio/wav", "audio/mp3", "audio/m4a"]}
+        accept={[".wav", ".mp3", ".m4a"]}
         maxSize={30 * 1024 ** 2}
         multiple={false}
       >

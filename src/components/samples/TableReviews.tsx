@@ -37,6 +37,9 @@ interface AnalysisDataProps {
     audioURL: string;
     createdAt: number;
     displayName: string;
+    pitch: string;
+    vowel: string;
+    condition: string;
     hnr: number;
     jitter: number;
     shimmer: number;
@@ -63,14 +66,12 @@ export function TableReviews({ data }: AnalysisDataProps) {
     return (
       <tr key={row.createdAt}>
         <td>{dateStr}</td>
-        <td>
-          <Anchor<"a"> size="sm" onClick={(event) => event.preventDefault()}>
-            {row.displayName}
-          </Anchor>
-        </td>
+        <td>{row.vowel}</td>
+        <td>{row.pitch}</td>
         <td>{row.jitter}</td>
         <td>{row.shimmer}</td>
         <td>{row.hnr}</td>
+        <td>{row.condition}</td>
       </tr>
     );
   });
@@ -85,10 +86,12 @@ export function TableReviews({ data }: AnalysisDataProps) {
         <thead>
           <tr>
             <th>Time</th>
-            <th>Name</th>
+            <th>Vowel</th>
+            <th>Pitch</th>
             <th>Jitter</th>
             <th>Shimmer</th>
             <th>HNR</th>
+            <th>Condition</th>
             {/* <th>Progress</th> */}
           </tr>
         </thead>

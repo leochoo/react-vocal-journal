@@ -32,6 +32,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db, storage } from "../../firebase";
 import { addDoc, collection, doc, setDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { UploadPlayer } from "../components/UploadPlayer";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -98,13 +99,19 @@ const useStyles = createStyles((theme) => ({
   toggleSwitch: {
     color: theme.colors.green[0],
   },
+
+  audiofileWrapper: {
+    position: "relative",
+    marginBottom: 30,
+    marginTop: 30,
+  },
 }));
 
 const NewRecordingPage = () => {
   const { classes } = useStyles();
   const [user, loading, error] = useAuthState(auth); // TODO: make this into redux or context?
   const [submitType, setSubmitType] = useState("record");
-  const [audioFile, setAudioFile] = useState(null);
+  const [audioFile, setAudioFile] = useState<File[]>(null);
   const [uploadStatus, setUploadStatus] = useState("");
 
   // slider value - cannot be linked directly to form so not using it now
@@ -267,8 +274,12 @@ const NewRecordingPage = () => {
       //   createdAt: new Date(),
       //   updatedAt: new Date(),
       // });
+
+      // convert audio file to blob
+      const audioBlob = new Blob(audioFile);
+
       // upload blob to storage
-      await upload(audioFile);
+      await upload(audioBlob);
 
       // TODO: why is this not executed when declared here?
       // clear form and audio
@@ -408,7 +419,13 @@ const NewRecordingPage = () => {
                 ]}
               />
               {submitType == "upload" ? (
-                <DropzoneButton onFileAttachment={setAudioFile} />
+                <>
+                  {audioFile ? (
+                    <UploadPlayer audioFile={audioFile} />
+                  ) : (
+                    <DropzoneButton onFileAttachment={setAudioFile} />
+                  )}
+                </>
               ) : (
                 <Record onFileAttachment={setAudioFile} />
               )}

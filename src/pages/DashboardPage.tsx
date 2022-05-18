@@ -68,6 +68,9 @@ interface AnalysisDataProps {
   audioURL: string;
   createdAt: number;
   displayName: string;
+  pitch: string;
+  vowel: string;
+  condition: string;
   hnr: number;
   jitter: number;
   shimmer: number;
@@ -80,6 +83,9 @@ const dataConverter = {
       audioURL: data.audioURL,
       createdAt: data.createdAt,
       displayName: data.displayName,
+      pitch: data.pitch,
+      vowel: data.vowel,
+      condition: data.condition,
       hnr: data.hnr,
       jitter: data.jitter,
       shimmer: data.shimmer,
@@ -95,6 +101,9 @@ const dataConverter = {
       audioURL: data.audioURL,
       createdAt: data.createdAt,
       displayName: data.displayName,
+      pitch: data.pitch,
+      vowel: data.vowel,
+      condition: data.condition,
       hnr: data.HNR,
       jitter: data.jitter_local,
       shimmer: data.shimmer_local,
@@ -106,8 +115,7 @@ const dataConverter = {
 const DashboardPage = () => {
   let uid = useAppSelector(selectUid);
   const analysisQuery = query(
-    collection(db, "analysis").withConverter(dataConverter),
-    where("uid", "==", uid)
+    collection(db, "users", uid, "analysis").withConverter(dataConverter)
     // limit(25)
     // orderBy("createdAt")
   );
