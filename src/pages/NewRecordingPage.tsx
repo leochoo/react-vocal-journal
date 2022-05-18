@@ -276,10 +276,12 @@ const NewRecordingPage = () => {
       // });
 
       // convert audio file to blob
-      const audioBlob = new Blob(audioFile);
+      if (submitType == "upload") {
+        audioFile = new Blob(audioFile);
+      }
 
       // upload blob to storage
-      await upload(audioBlob);
+      await upload(audioFile);
 
       // TODO: why is this not executed when declared here?
       // clear form and audio
