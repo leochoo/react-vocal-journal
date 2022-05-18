@@ -29,8 +29,12 @@ import { UserButton } from "./UserButton";
 import { MoonIcon } from "@radix-ui/react-icons";
 import { auth } from "../../firebase";
 import { signOut } from "firebase/auth";
-import { useAppDispatch } from "../redux/hooks";
-import { setLoggedOutUser } from "../redux/auth/auth.slice";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import {
+  selectUserEmail,
+  selectUserName,
+  setLoggedOutUser,
+} from "../redux/auth/auth.slice";
 
 const useStyles = createStyles((theme, _params, getRef) => {
   const icon = getRef("icon");
@@ -125,6 +129,9 @@ export function CustomNavBar({ opened, setOpened }: Props): JSX.Element {
   const { classes, cx } = useStyles();
   const [active, setActive] = useState("Billing");
 
+  const userName = useAppSelector(selectUserName);
+  const userEmail = useAppSelector(selectUserEmail);
+
   const links = data.map((item) => (
     <Anchor
       component={Link}
@@ -170,7 +177,7 @@ export function CustomNavBar({ opened, setOpened }: Props): JSX.Element {
 
       <Navbar.Section className={classes.footer}>
         <Link to="/profile" className={classes.link}>
-          <UserButton name={"John Lennon"} email={"test@test.com"} />
+          <UserButton name={userName} email={userEmail} />
         </Link>
 
         <Group className={classes.link} onClick={logout}>
