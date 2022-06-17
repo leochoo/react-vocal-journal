@@ -21,6 +21,7 @@ import { auth, db } from "../../../firebase";
 import { useAppSelector } from "../../redux/hooks";
 import { selectUid } from "../../redux/auth/auth.slice";
 import { useCollectionData } from "react-firebase-hooks/firestore";
+import TableRow from "../TableRow";
 
 const useStyles = createStyles((theme) => ({
   progressBar: {
@@ -63,17 +64,7 @@ export function TableReviews({ data }: AnalysisDataProps) {
   const rows = data.map((row) => {
     const date = new Date(row.createdAt);
     const dateStr = date.toLocaleString("ja-JP");
-    return (
-      <tr key={row.createdAt}>
-        <td>{dateStr}</td>
-        <td>{row.vowel}</td>
-        <td>{row.pitch}</td>
-        <td>{row.jitter}</td>
-        <td>{row.shimmer}</td>
-        <td>{row.hnr}</td>
-        <td>{row.condition}</td>
-      </tr>
-    );
+    return <TableRow row={row} dateStr={dateStr} />;
   });
 
   return (
@@ -92,7 +83,7 @@ export function TableReviews({ data }: AnalysisDataProps) {
             <th>Shimmer</th>
             <th>HNR</th>
             <th>Condition</th>
-            {/* <th>Progress</th> */}
+            <th>Audio</th>
           </tr>
         </thead>
         <tbody>{rows}</tbody>

@@ -152,7 +152,28 @@ const DashboardPage = () => {
                 }))}
               />
             </Grid.Col>
-
+            <Grid.Col className={classes.chart} sm={12} lg={6}>
+              <LineChart
+                titleText={"/a/"}
+                data={analysisData
+                  .filter((x) => x.vowel == "a")
+                  .map((data) => ({
+                    x: data.createdAt,
+                    y: data.hnr,
+                  }))}
+              />
+            </Grid.Col>
+            <Grid.Col className={classes.chart} sm={12} lg={6}>
+              <LineChart
+                titleText={"/i/"}
+                data={analysisData
+                  .filter((x) => x.vowel == "i")
+                  .map((data) => ({
+                    x: data.createdAt,
+                    y: data.hnr,
+                  }))}
+              />
+            </Grid.Col>
             <Grid.Col className={classes.card} sm={12} lg={4}>
               <CardGradient {...shimmerDescription} />
             </Grid.Col>
