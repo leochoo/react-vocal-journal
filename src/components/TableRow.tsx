@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Collapse, Image } from "@mantine/core";
+import { Button, Collapse, Container, Grid, Image } from "@mantine/core";
 
 const TableRow = ({ row, dateStr }) => {
   const [opened, setOpen] = useState(false);
@@ -25,13 +25,22 @@ const TableRow = ({ row, dateStr }) => {
           </audio>
         </td>
       </tr>
-      {/* This creates a warning but whatever for now. */}
-      <Collapse in={opened}>
-        Pitch
-        <Image width="80vw" src={row.pitchPlot} />
-        Intensity
-        <Image width="80vw" src={row.intensityPlot} />
-      </Collapse>
+      {opened && (
+        <tr>
+          <td colSpan={12}>
+            <Container>
+              <Grid>
+                <Grid.Col xs={12} sm={4} md={4} lg={6}>
+                  <Image src={row.pitchPlot} />
+                </Grid.Col>
+                <Grid.Col xs={12} sm={4} md={4} lg={6}>
+                  <Image src={row.intensityPlot} />
+                </Grid.Col>
+              </Grid>
+            </Container>
+          </td>
+        </tr>
+      )}
     </>
   );
 };
