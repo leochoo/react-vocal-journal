@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Collapse } from "@mantine/core";
+import { Button, Collapse, Image } from "@mantine/core";
 
 const TableRow = ({ row, dateStr }) => {
   const [opened, setOpen] = useState(false);
@@ -7,6 +7,11 @@ const TableRow = ({ row, dateStr }) => {
   return (
     <>
       <tr key={row.createdAt}>
+        <td>
+          {row.pitchPlot && (
+            <Button onClick={() => setOpen((o) => !o)}>見る</Button>
+          )}
+        </td>
         <td>{dateStr}</td>
         <td>{row.vowel}</td>
         <td>{row.pitch}</td>
@@ -19,12 +24,14 @@ const TableRow = ({ row, dateStr }) => {
             <source src={row.audioURL} />
           </audio>
         </td>
-        <td>
-          <Button onClick={() => setOpen((o) => !o)}>グラフ</Button>
-        </td>
       </tr>
-
-      <Collapse in={opened}>My Content</Collapse>
+      {/* This creates a warning but whatever for now. */}
+      <Collapse in={opened}>
+        Pitch
+        <Image width="80vw" src={row.pitchPlot} />
+        Intensity
+        <Image width="80vw" src={row.intensityPlot} />
+      </Collapse>
     </>
   );
 };

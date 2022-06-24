@@ -75,6 +75,8 @@ interface AnalysisDataProps {
   jitter: number;
   shimmer: number;
   uid: string;
+  intensityPlot: string;
+  pitchPlot: string;
 }
 
 const dataConverter = {
@@ -90,6 +92,8 @@ const dataConverter = {
       jitter: data.jitter,
       shimmer: data.shimmer,
       uid: data.uid,
+      intensityPlot: data.intensityPlot,
+      pitchPlot: data.pitchPlot,
     };
   },
   fromFirestore(
@@ -108,6 +112,8 @@ const dataConverter = {
       jitter: data.jitter_local,
       shimmer: data.shimmer_local,
       uid: data.uid,
+      intensityPlot: data.intensityPlot,
+      pitchPlot: data.pitchPlot,
     };
   },
 };

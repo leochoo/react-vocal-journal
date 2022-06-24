@@ -7,6 +7,8 @@ import {
   Text,
   Group,
   ScrollArea,
+  Button,
+  Collapse,
 } from "@mantine/core";
 import {
   collection,
@@ -45,11 +47,14 @@ interface AnalysisDataProps {
     jitter: number;
     shimmer: number;
     uid: string;
+    intensityPlot: string;
+    pitchPlot: string;
   }[];
 }
 
 export function TableReviews({ data }: AnalysisDataProps) {
   const { classes, theme } = useStyles();
+  const [opened, setOpen] = useState(false);
 
   // console.log("uid", uid);
   let user = auth.currentUser;
@@ -61,10 +66,10 @@ export function TableReviews({ data }: AnalysisDataProps) {
   });
   // console.log("data", data);
 
-  const rows = data.map((row) => {
+  const rows = data.map((row, index) => {
     const date = new Date(row.createdAt);
     const dateStr = date.toLocaleString("ja-JP");
-    return <TableRow row={row} dateStr={dateStr} />;
+    return <TableRow key={index} row={row} dateStr={dateStr} />;
   });
 
   return (
@@ -76,6 +81,7 @@ export function TableReviews({ data }: AnalysisDataProps) {
       >
         <thead>
           <tr>
+            <th>Graph</th>
             <th>Time</th>
             <th>Vowel</th>
             <th>Pitch</th>
