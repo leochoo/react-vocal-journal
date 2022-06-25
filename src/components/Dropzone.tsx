@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   Text,
   Group,
@@ -14,6 +14,7 @@ const useStyles = createStyles((theme) => ({
   wrapper: {
     position: "relative",
     marginBottom: 30,
+    marginTop: 30,
   },
 
   dropzone: {
@@ -47,20 +48,25 @@ function getActiveColor(status: DropzoneStatus, theme: MantineTheme) {
     : theme.black;
 }
 
-export function DropzoneButton() {
+export function DropzoneButton({ onFileAttachment }) {
   const theme = useMantineTheme();
   const { classes } = useStyles();
   const openRef = useRef<() => void>(() => {});
+  const uploadedFileHandler = (file) => {
+    onFileAttachment(file);
+  };
 
   return (
     <div className={classes.wrapper}>
       <Dropzone
         openRef={openRef}
-        onDrop={() => {}}
+        onDrop={(file) => uploadedFileHandler(file)}
+        onReject={(file) => console.log("rejected files", file)}
         className={classes.dropzone}
         radius="md"
-        accept={[MIME_TYPES.pdf]}
+        accept={[".wav", ".mp3", ".m4a"]}
         maxSize={30 * 1024 ** 2}
+        multiple={false}
       >
         {(status) => (
           <div style={{ pointerEvents: "none" }}>
@@ -82,7 +88,7 @@ export function DropzoneButton() {
             </Text>
             <Text align="center" size="sm" mt="xs" color="dimmed">
               Drag&apos;n&apos;drop files here to upload. We can accept only{" "}
-              <i>wav, .mp3, .m4a</i> files that are less than 30mb in size.
+              <i>wav, .mp3, .m4a</i> files that are less than 10mb in size.
             </Text>
 
             <Button

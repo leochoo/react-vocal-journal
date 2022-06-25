@@ -133,17 +133,42 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-const data = [
-  { icon: ArrowAutofitWidth, label: "Pitch Stability (Jitter)" },
-  { icon: ArrowAutofitHeight, label: "Volume Stability (Shimmer)" },
-  { icon: Music, label: "Harmonics to Noise Ratio (HNR)" },
+interface AnalysisData {
+  data: {
+    createdAt: number;
+    jitter: number;
+    shimmer: number;
+    hnr: number;
+  }[];
+}
+
+const description = [
+  {
+    icon: ArrowAutofitWidth,
+    label: "Pitch Stability (Jitter)",
+    field: "jitter",
+  },
+  {
+    icon: ArrowAutofitHeight,
+    label: "Volume Stability (Shimmer)",
+    field: "shimmer",
+  },
+  { icon: Music, label: "Harmonics to Noise Ratio (HNR)", field: "hnr" },
 ];
 
-export function StatsControls() {
+export function StatsControls({ data }: AnalysisData) {
   const { classes } = useStyles();
-  const [date, setDate] = useState(new Date(2021, 9, 24));
 
-  const stats = data.map((stat) => (
+  // sort extracted_data by descending order
+  data.sort((a, b) => {
+    return b.createdAt - a.createdAt;
+  });
+  console.log("Extracted Data", data);
+
+  // set most recent value as the current date
+  const [date, setDate] = useState(new Date(data[0].createdAt));
+
+  const stats = description.map((stat) => (
     <Paper
       className={classes.stat}
       radius="md"
@@ -156,7 +181,7 @@ export function StatsControls() {
         <Text className={classes.label}>{stat.label}</Text>
         <Text size="xs" className={classes.count}>
           <span className={classes.value}>
-            {Math.floor(Math.random() * 6 + 4)}
+            {stat.field === "jitter" && Math.floor(Math.random() * 6 + 4)}
           </span>
         </Text>
       </div>

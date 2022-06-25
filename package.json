@@ -5,15 +5,19 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "npm run build && firebase deploy --only hosting:react-voice",
+    "gcp-function-deploy": "gcloud functions deploy parselmouth --region=asia-northeast1 --allow-unauthenticated --project=vocal-journal --entry-point=handle_request --runtime=python39 --trigger-http --source=backend/cloud_functions/parselmouth"
   },
   "dependencies": {
     "@mantine/core": "^4.0.0",
     "@mantine/dates": "^4.0.0",
     "@mantine/dropzone": "^4.0.0",
+    "@mantine/form": "^4.2.2",
     "@mantine/hooks": "^4.0.0",
     "@radix-ui/react-icons": "^1.1.0",
     "@reduxjs/toolkit": "^1.5.0",
+    "@types/firebase": "^3.2.1",
     "chart.js": "^3.7.1",
     "dayjs": "^1.10.8",
     "firebase": "^9.6.9",
@@ -21,11 +25,15 @@
     "react-chartjs-2": "^4.0.1",
     "react-dom": "^17.0.2",
     "react-firebase-hooks": "^5.0.3",
+    "react-media-recorder": "^1.6.4",
     "react-redux": "^7.2.2",
     "react-router-dom": "^6.2.2",
     "redux": "^4.0.5",
+    "redux-logger": "^3.0.6",
+    "redux-persist": "^6.0.0",
     "redux-thunk": "^2.3.0",
-    "tabler-icons-react": "^1.37.0"
+    "tabler-icons-react": "^1.37.0",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@faker-js/faker": "^6.0.0-alpha.7",
@@ -33,6 +41,7 @@
     "@types/react": "^17.0.33",
     "@types/react-dom": "^17.0.10",
     "@types/react-router-dom": "^5.1.6",
+    "@types/uuid": "^8.3.4",
     "@vitejs/plugin-react": "^1.0.7",
     "typescript": "^4.5.4",
     "vite": "^2.8.0"

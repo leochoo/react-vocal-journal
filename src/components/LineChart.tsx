@@ -24,11 +24,13 @@ ChartJS.register(
 
 interface Props {
   titleText: string;
-  datetime: string[];
-  dataset: number[];
+  data: {
+    x: number;
+    y: number;
+  }[];
 }
 
-export function LineChart({ titleText, datetime, dataset }: Props) {
+export function LineChart({ titleText, data }: Props) {
   const options = {
     responsive: true,
     maintainAspectRatio: false,
@@ -43,17 +45,32 @@ export function LineChart({ titleText, datetime, dataset }: Props) {
       },
     },
   };
+  // sort by descending order
+  data.sort((a, b) => {
+    return a.x - b.x;
+  });
+  // console.log("data", data);
 
-  const data = {
-    labels: datetime,
+  // convert all x in the data into one list, converting milisec to datetime string in japan time
+  const xList = data.map((d) => {
+    const date = new Date(d.x);
+    return date.toLocaleString("ja-JP");
+  });
+  // console.log("xList", xList);
+
+  // convert all y in the data into one list
+  const yList = data.map((item) => item.y);
+
+  const chart_data = {
+    labels: xList,
     datasets: [
       {
         label: titleText,
-        data: dataset,
+        data: yList,
         borderColor: "rgb(255, 99, 132)",
         backgroundColor: "rgba(255, 99, 132, 0.5)",
       },
     ],
   };
-  return <Line options={options} data={data} />;
+  return <Line options={options} data={chart_data} />;
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   createStyles,
   Table,
@@ -7,7 +7,23 @@ import {
   Text,
   Group,
   ScrollArea,
+  Button,
+  Collapse,
 } from "@mantine/core";
+import {
+  collection,
+  addDoc,
+  doc,
+  query,
+  where,
+  onSnapshot,
+  orderBy,
+} from "firebase/firestore";
+import { auth, db } from "../../../firebase";
+import { useAppSelector } from "../../redux/hooks";
+import { selectUid } from "../../redux/auth/auth.slice";
+import { useCollectionData } from "react-firebase-hooks/firestore";
+import TableRow from "../TableRow";
 
 const useStyles = createStyles((theme) => ({
   progressBar: {
@@ -19,67 +35,41 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-interface TableReviewsProps {
+interface AnalysisDataProps {
   data: {
-    datetime: string;
-    name: string;
+    audioURL: string;
+    createdAt: number;
+    displayName: string;
+    pitch: string;
+    vowel: string;
+    condition: string;
+    hnr: number;
     jitter: number;
     shimmer: number;
-    hnr: number;
-    reviews: { positive: number; negative: number };
+    uid: string;
+    intensityPlot: string;
+    pitchPlot: string;
   }[];
 }
 
-export function TableReviews({ data }: TableReviewsProps) {
+export function TableReviews({ data }: AnalysisDataProps) {
   const { classes, theme } = useStyles();
+  const [opened, setOpen] = useState(false);
 
-  const rows = data.map((row) => {
-    const totalReviews = row.reviews.negative + row.reviews.positive;
-    const positiveReviews = (row.reviews.positive / totalReviews) * 100;
-    const negativeReviews = (row.reviews.negative / totalReviews) * 100;
+  // console.log("uid", uid);
+  let user = auth.currentUser;
+  // console.log("user", user);
 
-    return (
-      <tr key={row.datetime}>
-        <td>{row.datetime}</td>
-        <td>
-          <Anchor<"a"> size="sm" onClick={(event) => event.preventDefault()}>
-            {row.name}
-          </Anchor>
-        </td>
-        <td>{row.jitter}</td>
-        <td>{row.shimmer}</td>
-        <td>{row.hnr}</td>
-        {/* <td>
-          <Group position="apart">
-            <Text size="xs" color="teal" weight={700}>
-              {positiveReviews.toFixed(0)}%
-            </Text>
-            <Text size="xs" color="red" weight={700}>
-              {negativeReviews.toFixed(0)}%
-            </Text>
-          </Group>
-          <Progress
-            classNames={{ bar: classes.progressBar }}
-            sections={[
-              {
-                value: positiveReviews,
-                color:
-                  theme.colorScheme === "dark"
-                    ? theme.colors.teal[9]
-                    : theme.colors.teal[6],
-              },
-              {
-                value: negativeReviews,
-                color:
-                  theme.colorScheme === "dark"
-                    ? theme.colors.red[9]
-                    : theme.colors.red[6],
-              },
-            ]}
-          />
-        </td> */}
-      </tr>
-    );
+  // sort data by field "createdAt" descending
+  data.sort((a, b) => {
+    return b.createdAt - a.createdAt;
+  });
+  // console.log("data", data);
+
+  const rows = data.map((row, index) => {
+    const date = new Date(row.createdAt);
+    const dateStr = date.toLocaleString("ja-JP");
+    return <TableRow key={index} row={row} dateStr={dateStr} />;
   });
 
   return (
@@ -91,12 +81,15 @@ export function TableReviews({ data }: TableReviewsProps) {
       >
         <thead>
           <tr>
+            <th>Graph</th>
             <th>Time</th>
-            <th>Name</th>
+            <th>Vowel</th>
+            <th>Pitch</th>
             <th>Jitter</th>
             <th>Shimmer</th>
             <th>HNR</th>
-            {/* <th>Progress</th> */}
+            <th>Condition</th>
+            <th>Audio</th>
           </tr>
         </thead>
         <tbody>{rows}</tbody>

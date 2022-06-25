@@ -24,4 +24,14 @@ dist-ssr
 *.sw?
 
 .env
+
+
+.firebase
 firebase.js
+
+
+# gcp
+.key
+__pycache__/
+
+
