@@ -168,6 +168,8 @@ def analyze(postObject):
     displayName = postObject["displayName"]
     vowel = postObject["vowel"]
     pitch = postObject["pitch"]
+    title = postObject["title"]
+    phrase = postObject["phrase"]
     condition = postObject["condition"]
     note = postObject["note"]
 
@@ -229,6 +231,8 @@ def analyze(postObject):
         "note": note,
         "vowel": vowel,
         "pitch": pitch,
+        "title": title,
+        "phrase": phrase,
         "condition": condition,
         "jitter_local": jitter_local,
         "shimmer_local": shimmer_local,
