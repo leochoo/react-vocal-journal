@@ -176,7 +176,13 @@ export function CustomNavBar({ opened, setOpened }: Props): JSX.Element {
       <Navbar.Section grow>{links}</Navbar.Section>
 
       <Navbar.Section className={classes.footer}>
-        <Link to="/profile" className={classes.link}>
+        <Link
+          to="/profile"
+          className={classes.link}
+          onClick={() => {
+            setOpened(false);
+          }}
+        >
           <UserButton name={userName} email={userEmail} />
         </Link>
 
