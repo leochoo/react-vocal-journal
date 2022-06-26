@@ -317,6 +317,35 @@ const NewRecordingPage = () => {
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <Grid grow>
           <Grid.Col md={12} lg={6}>
+            <Group position="center">
+              <SegmentedControl
+                color="orange"
+                value={submitType}
+                onChange={setSubmitType}
+                data={[
+                  {
+                    value: "record",
+                    label: (
+                      <Center>
+                        <Microphone size={16} />
+                        <Box ml={10}>歌 Song</Box>
+                      </Center>
+                    ),
+                  },
+                  {
+                    value: "upload",
+                    label: (
+                      <Center>
+                        <Upload size={16} />
+                        <Box ml={10}>母音 Vowel</Box>
+                      </Center>
+                    ),
+                  },
+                ]}
+              />
+            </Group>
+          </Grid.Col>
+          <Grid.Col md={12} lg={6}>
             <div className={classes.form}>
               <RadioGroup
                 label="Vowel"
@@ -420,6 +449,10 @@ const NewRecordingPage = () => {
                   },
                 ]}
               />
+            </Group>
+          </Grid.Col>
+          <Grid.Col md={12} lg={6}>
+            <Group position="center" mt="md">
               {submitType == "upload" ? (
                 <>
                   {audioFile ? (

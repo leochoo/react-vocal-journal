@@ -38,7 +38,8 @@ const useStyles = createStyles((theme) => ({
   },
 
   section: {
-    padding: theme.spacing.md,
+    paddingTop: theme.spacing.md,
+    paddingBottom: theme.spacing.md,
     borderTop: `1px solid ${
       theme.colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[3]
     }`,
