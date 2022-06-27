@@ -14,17 +14,18 @@ import seaborn as sns
 from google.cloud import storage
 
 # Use a service account
-print("Current direcotry path: ", os.getcwd())
+# print("Current direcotry path: ", os.getcwd())
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = ".key/vocal-journal-firebase-adminsdk-oun5i-107f90e11f.json"
+
 cred = credentials.Certificate(
     ".key/vocal-journal-firebase-adminsdk-oun5i-107f90e11f.json")
+
 firebase_admin.initialize_app(cred)
 
 db = firestore.client()
 
 
 def handle_request(request):
-
     # Set CORS headers for the preflight request
     if request.method == 'OPTIONS':
         # Allows GET requests from any origin with the Content-Type
@@ -53,9 +54,9 @@ def handle_request(request):
 
     # parse request parameters
     result = analyze(request_json)
-    print("Analysis result", result)
+    # print("Analysis result", result)
     return_message = {"data": result}
-    print("return message:", return_message)
+    # print("return message:", return_message)
 
     return (return_message, 200, headers)
 
@@ -150,15 +151,15 @@ def upload_blob(bucket_name, source_file_name, destination_blob_name):
 
     blob.upload_from_filename(source_file_name)
 
-    print(
-        f"File {source_file_name} uploaded to {destination_blob_name}."
-    )
+    # print(
+    #     f"File {source_file_name} uploaded to {destination_blob_name}."
+    # )
 
     return blob.public_url
 
 
 def analyze(postObject):
-    print("IN ANALYZE FUNCTION")
+    # print("IN ANALYZE FUNCTION")
 
     # 1. Preprocessing
     createdAt = postObject["createdAt"]
@@ -177,11 +178,11 @@ def analyze(postObject):
     input_name = "input.wav"
     input_path = get_file_path(input_name)
     urllib.request.urlretrieve(audioURL, input_path)
-    print("input path", input_path)
+    # print("input path", input_path)
     # Name resulting file with the timestamp
     audio_file_name = str(createdAt) + ".wav"
     output_path = get_file_path(audio_file_name)
-    print("output path", output_path)
+    # print("output path", output_path)
 
     # Convert webm to wav
     stream = ffmpeg.input(input_path)
@@ -189,7 +190,7 @@ def analyze(postObject):
     # Save sound file to a temporary directory
     stream = ffmpeg.overwrite_output(stream)
     ffmpeg.run(stream)
-    print("Output: ", magic.from_file(output_path))
+    # print("Output: ", magic.from_file(output_path))
 
     # 2. Analyze
     # Read sound file
@@ -246,16 +247,25 @@ def analyze(postObject):
     analysisRef = userRef.collection(u'analysis')
 
     docs = analysisRef.stream()
-    for doc in docs:
-        print(f'{doc.id} => {doc.to_dict()}')
+    # for doc in docs:
+    #     print(f'{doc.id} => {doc.to_dict()}')
 
-    print("PATHs", input_path, output_path, intensity_plot, pitch_plot)
-    print("RESULT HERE", analysis_object)
+    # print("PATHs", input_path, output_path, intensity_plot, pitch_plot)
+    # print("RESULT HERE", analysis_object)
     analysisRef.add(analysis_object)
+
+    tmp_dir = tempfile.gettempdir()
+    print(os.listdir(tempfile.gettempdir()))
+
+    print("Before delete", tmp_dir, os.path.getsize(tmp_dir))
+    print("Cache", tmp_dir, os.path.getsize(os.path.join(tmp_dir, ".cache")))
 
     os.remove(input_path)
     os.remove(output_path)
     os.remove(intensity_plot)
     os.remove(pitch_plot)
+
+    print("After delete", tmp_dir, os.path.getsize(tmp_dir))
+    print("Cache", tmp_dir, os.path.getsize(os.path.join(tmp_dir, ".cache")))
 
     return analysis_object

@@ -7,7 +7,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "deploy": "npm run build && firebase deploy --only hosting:react-voice",
-    "gcp-function-deploy": "gcloud functions deploy parselmouth2 --region=asia-northeast1 --allow-unauthenticated --project=vocal-journal --entry-point=handle_request --runtime=python39 --trigger-http --source=backend/cloud_functions/parselmouth"
+    "gcp-function-deploy": "gcloud functions deploy parselmouth --region=asia-northeast1 --allow-unauthenticated --project=vocal-journal --entry-point=handle_request --runtime=python39 --trigger-http --source=backend/cloud_functions/parselmouth"
   },
   "dependencies": {
     "@mantine/core": "^4.0.0",
