@@ -348,8 +348,8 @@ const NewRecordingPage = () => {
       </Group>
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <Grid grow>
-          <Grid.Col md={12} lg={6}></Grid.Col>
-          <Grid.Col md={12} lg={6}>
+          <Grid.Col span={12}></Grid.Col>
+          <Grid.Col span={12}>
             <div className={classes.form}>
               {recordingType == "song" ? (
                 <>
@@ -463,7 +463,7 @@ const NewRecordingPage = () => {
               />
             </div>
           </Grid.Col>
-          <Grid.Col md={12} lg={6}>
+          <Grid.Col span={12}>
             <Group position="center" mt="md">
               <SegmentedControl
                 color="orange"
@@ -492,7 +492,7 @@ const NewRecordingPage = () => {
               />
             </Group>
           </Grid.Col>
-          <Grid.Col md={12} lg={6}>
+          <Grid.Col span={12}>
             <Group position="center" mt="md">
               {submitType == "upload" ? (
                 <>
@@ -507,12 +507,12 @@ const NewRecordingPage = () => {
               )}
             </Group>
 
-            <Group position="right" mt="md">
+            <Group position="center" mt="md">
               {/* <Button className={classes.temporary} onClick={temporarySave}>
                 一時保存
               </Button> */}
               <Button type="submit" className={classes.control}>
-                Submit
+                提出 Submit
               </Button>
             </Group>
             {uploadStatus}
