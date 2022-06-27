@@ -177,11 +177,11 @@ def analyze(postObject):
     input_name = "input.wav"
     input_path = get_file_path(input_name)
     urllib.request.urlretrieve(audioURL, input_path)
-    print("inputPath", input_path)
+    print("input path", input_path)
     # Name resulting file with the timestamp
     audio_file_name = str(createdAt) + ".wav"
     output_path = get_file_path(audio_file_name)
-    print("output", audio_file_name)
+    print("output path", output_path)
 
     # Convert webm to wav
     stream = ffmpeg.input(input_path)
@@ -249,7 +249,13 @@ def analyze(postObject):
     for doc in docs:
         print(f'{doc.id} => {doc.to_dict()}')
 
+    print("PATHs", input_path, output_path, intensity_plot, pitch_plot)
     print("RESULT HERE", analysis_object)
     analysisRef.add(analysis_object)
+
+    os.remove(input_path)
+    os.remove(output_path)
+    os.remove(intensity_plot)
+    os.remove(pitch_plot)
 
     return analysis_object
