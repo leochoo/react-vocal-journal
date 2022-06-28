@@ -65,20 +65,29 @@ const DashboardPage = () => {
   const [mostRecent, setMostRecent] = useState<AnalysisDataProps>();
   const [initial, setInitial] = useState<AnalysisDataProps>();
   const [processedData, setProcessedData] = useState<AnalysisDataProps[]>([]);
+  const [songTitleList, setSongTitleList] = useState<string[]>([]);
+  const [phraseList, setPhraseList] = useState<string[]>([]);
 
   let uid = useAppSelector(selectUid);
-
   const analysisData = useContext(DataContext);
 
-  // when recordingType === "song", filter analysisData, so that data.map => data has songTitle and phrase
-  // when recordingType === "vowel", filter analysisData, so that data.map => data has vowel and pitch
-  // const filteredData = analysisData.filter((data) => {
-  //   if (recordingType === "song") {
-  //     return data.title === songTitle && data.phrase === phrase;
-  //   } else if (recordingType === "vowel") {
-  //     return data.vowel === vowel && data.pitch === pitch;
-  //   }
-  // });
+  // get all unique values of songTitleList and phraseList inside processedData
+  useEffect(() => {
+    if (analysisData) {
+      let songTitleList = [];
+      let phraseList = [];
+      analysisData.forEach((data) => {
+        if (!songTitleList.includes(data.title)) {
+          songTitleList.push(data.title);
+        }
+        if (!phraseList.includes(data.phrase)) {
+          phraseList.push(data.phrase);
+        }
+      });
+      setSongTitleList(songTitleList);
+      setPhraseList(phraseList);
+    }
+  }, [analysisData]);
 
   useEffect(() => {
     // sort analysisData and store in ProcessedData
@@ -92,6 +101,7 @@ const DashboardPage = () => {
       // when recordingType === "vowel", filter analysisData, so that data.map => data has vowel and pitch
       const filtered = sorted.filter((data) => {
         if (recordingType === "song") {
+          console.log("Title & Phrase:", songTitle, phrase);
           return (
             data.title === songTitle &&
             data.title !== "" &&
@@ -103,10 +113,14 @@ const DashboardPage = () => {
         }
       });
 
+      // update the state of array of objects processedData with filtered values array of objects
       setProcessedData(filtered);
       setMostRecent(filtered[0]);
       setInitial(filtered[analysisData.length - 1]);
 
+      console.log("filtered", filtered);
+      console.log("mostRecent", mostRecent);
+      console.log("initial", initial);
       console.log("Processed:", processedData);
     }
   }, [analysisData, recordingType, songTitle, phrase, vowel, pitch]);
@@ -153,32 +167,23 @@ const DashboardPage = () => {
             <>
               <Select
                 required
-                creatable
                 searchable
-                getCreateLabel={(query) => `+ 追加 ${query}`}
                 label="Title"
                 placeholder="Pick one"
-                data={[
-                  { value: "react", label: "React" },
-                  { value: "ng", label: "Angular" },
-                  { value: "svelte", label: "Svelte" },
-                  { value: "vue", label: "Vue" },
-                ]}
+                // convert songTitleList to select data fields
+                data={songTitleList.map((title) => {
+                  return { value: title, label: title };
+                })}
                 onChange={setSongTitle}
               />
               <Select
                 required
-                creatable
                 searchable
-                getCreateLabel={(query) => `+ 追加 ${query}`}
                 label="Phrase"
                 placeholder="Pick one"
-                data={[
-                  { value: "react", label: "React" },
-                  { value: "ng", label: "Angular" },
-                  { value: "svelte", label: "Svelte" },
-                  { value: "vue", label: "Vue" },
-                ]}
+                data={phraseList.map((phrase) => {
+                  return { value: phrase, label: phrase };
+                })}
                 onChange={setPhrase}
               />
             </>
@@ -246,7 +251,7 @@ const DashboardPage = () => {
           </Group>
         </Grid.Col>
 
-        {mostRecent && initial && mostRecent !== initial ? (
+        {mostRecent && initial ? (
           <Grid>
             <Grid.Col span={12}>
               <Text size="xl">最新</Text>

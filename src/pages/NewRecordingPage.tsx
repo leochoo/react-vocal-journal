@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   createStyles,
   Container,
@@ -33,6 +33,7 @@ import { auth, db, storage } from "../../firebase";
 import { addDoc, collection, doc, setDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { UploadPlayer } from "../components/UploadPlayer";
+import { DataContext } from "../App";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -114,6 +115,27 @@ const NewRecordingPage = () => {
   const [submitType, setSubmitType] = useState("record");
   const [audioFile, setAudioFile] = useState<File[]>(null);
   const [uploadStatus, setUploadStatus] = useState("");
+
+  const analysisData = useContext(DataContext);
+
+  const [songTitleList, setSongTitleList] = useState<string[]>([]);
+  const [phraseList, setPhraseList] = useState<string[]>([]);
+  useEffect(() => {
+    if (analysisData) {
+      let songTitleList = [];
+      let phraseList = [];
+      analysisData.forEach((data) => {
+        if (!songTitleList.includes(data.title)) {
+          songTitleList.push(data.title);
+        }
+        if (!phraseList.includes(data.phrase)) {
+          phraseList.push(data.phrase);
+        }
+      });
+      setSongTitleList(songTitleList);
+      setPhraseList(phraseList);
+    }
+  }, [analysisData]);
 
   // slider value - cannot be linked directly to form so not using it now
   // const [sliderValue, setSliderValue] = useState(0);
@@ -358,14 +380,14 @@ const NewRecordingPage = () => {
                     creatable
                     searchable
                     getCreateLabel={(query) => `+ 追加 ${query}`}
+                    onCreate={(query) =>
+                      setSongTitleList((current) => [...current, query])
+                    }
                     label="Title"
                     placeholder="Pick one"
-                    data={[
-                      { value: "react", label: "React" },
-                      { value: "ng", label: "Angular" },
-                      { value: "svelte", label: "Svelte" },
-                      { value: "vue", label: "Vue" },
-                    ]}
+                    data={songTitleList.map((title) => {
+                      return { value: title, label: title };
+                    })}
                     {...form.getInputProps("title")}
                   />
                   <Select
@@ -373,14 +395,14 @@ const NewRecordingPage = () => {
                     creatable
                     searchable
                     getCreateLabel={(query) => `+ 追加 ${query}`}
+                    onCreate={(query) =>
+                      setPhraseList((current) => [...current, query])
+                    }
                     label="Phrase"
                     placeholder="Pick one"
-                    data={[
-                      { value: "react", label: "React" },
-                      { value: "ng", label: "Angular" },
-                      { value: "svelte", label: "Svelte" },
-                      { value: "vue", label: "Vue" },
-                    ]}
+                    data={phraseList.map((phrase) => {
+                      return { value: phrase, label: phrase };
+                    })}
                     {...form.getInputProps("phrase")}
                   />
                 </>
