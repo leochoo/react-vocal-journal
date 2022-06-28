@@ -445,11 +445,11 @@ const NewRecordingPage = () => {
                 classNames={{ label: classes.inputLabel }}
                 {...form.getInputProps("condition")}
               >
-                <Radio value="bad" label="Bad" />
-                <Radio value="mediocre" label="Mediocre" />
-                <Radio value="okay" label="Okay" />
-                <Radio value="good" label="Good" />
-                <Radio value="great" label="Great" />
+                <Radio value="bad" label="悪い" />
+                <Radio value="mediocre" label="良くはない" />
+                <Radio value="okay" label="まぁまぁ" />
+                <Radio value="good" label="良い" />
+                <Radio value="great" label="最高" />
               </RadioGroup>
 
               {/* <InputWrapper

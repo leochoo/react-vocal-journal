@@ -32,7 +32,14 @@ import {
 import { auth, db } from "../../firebase";
 import { selectUid } from "../redux/auth/auth.slice";
 import { stringify } from "querystring";
-import { Language, Microphone, Microphone2, Upload } from "tabler-icons-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  Language,
+  Microphone,
+  Microphone2,
+  Upload,
+} from "tabler-icons-react";
 import dayjs from "dayjs";
 import { RadarChartSample } from "../components/samples/RadarChartSample";
 import { BarChart } from "../components/samples/BarChart";
@@ -65,6 +72,7 @@ const DashboardPage = () => {
   const [mostRecent, setMostRecent] = useState<AnalysisDataProps>();
   const [initial, setInitial] = useState<AnalysisDataProps>();
   const [processedData, setProcessedData] = useState<AnalysisDataProps[]>([]);
+  const [filteredData, setFilteredData] = useState<AnalysisDataProps[]>([]);
   const [songTitleList, setSongTitleList] = useState<string[]>([]);
   const [phraseList, setPhraseList] = useState<string[]>([]);
 
@@ -89,10 +97,37 @@ const DashboardPage = () => {
     }
   }, [analysisData]);
 
+  // if recordingType === "song", filter based on songTitle and phrase
+  // if recordingType === "vowel", filter based on vowel and pitch
+  // useEffect(() => {
+  //   if (analysisData) {
+  //     let filtered = analysisData.filter((data) => {
+  //       if (recordingType === "song") {
+  //         return data.title === songTitle && data.phrase === phrase;
+  //       } else if (recordingType === "vowel") {
+  //         return data.vowel === vowel && data.pitch === pitch;
+  //       }
+  //     });
+  //     setFilteredData(filtered);
+  //     console.log("filtered", filteredData);
+  //   }
+  // }, [analysisData, recordingType, songTitle, phrase, vowel, pitch]);
+
+  // const getFilteredData = ()
+
   useEffect(() => {
     // sort analysisData and store in ProcessedData
     // TODO: refactor this to be more efficient
     if (analysisData) {
+      // let filtered = analysisData.filter((data) => {
+      //   if (recordingType === "song") {
+      //     return data.title === songTitle && data.phrase === phrase;
+      //   } else if (recordingType === "vowel") {
+      //     return data.vowel === vowel && data.pitch === pitch;
+      //   }
+      // });
+      // setFilteredData(filtered);
+
       const sorted = analysisData.sort((a, b) => {
         return b.createdAt - a.createdAt;
       });
@@ -121,7 +156,8 @@ const DashboardPage = () => {
 
       setProcessedData(sorted);
       setMostRecent(sorted[0]);
-      setInitial(sorted[analysisData.length - 1]);
+      setInitial(sorted[sorted.length - 1]);
+
       console.log("mostRecent", mostRecent);
       console.log("initial", initial);
       console.log("Processed:", processedData);
@@ -129,7 +165,49 @@ const DashboardPage = () => {
   }, [analysisData, recordingType, songTitle, phrase, vowel, pitch]);
 
   const formatDate = (createdAt: number) => {
-    return dayjs(createdAt).format("YYYY/MM/DD");
+    return dayjs(createdAt).format("YYYY/MM/DD HH:mm:ss");
+  };
+
+  const progressDisplay = (
+    parameter: string,
+    before: number,
+    after: number
+  ) => {
+    // take mostRecent and initial of jitter, shimmer, and hnr, and return the percentage of change.
+    // for jitter and shimmer, if percentage of change is negative, return green. else red.
+    // for HNR, if percetnage of change is positive, return green. else red
+    let change = (after - before) / before;
+    let percentage = Math.round(change * 100);
+    if (parameter === "jitter" || parameter === "shimmer") {
+      if (percentage < 0) {
+        return (
+          <Text color="green">
+            {percentage}% <ArrowDown />
+          </Text>
+        );
+      } else {
+        return (
+          <Text color="red">
+            {percentage}% <ArrowUp />
+          </Text>
+        );
+      }
+    }
+    if (parameter === "hnr") {
+      if (percentage > 0) {
+        return (
+          <Text color="green">
+            {percentage}% <ArrowUp />
+          </Text>
+        );
+      } else {
+        return (
+          <Text color="red">
+            {percentage}% <ArrowDown />
+          </Text>
+        );
+      }
+    }
   };
 
   return (
@@ -217,7 +295,7 @@ const DashboardPage = () => {
           )}
         </Grid.Col>
         <Grid.Col span={12}>
-          <Text size="xl">履歴</Text>
+          {/* <Text size="xl">履歴</Text> */}
           {/* <Accordion multiple>
             {analysisData?.map((data) => {
               const dataLabel = formatDate(data.createdAt);
@@ -257,7 +335,7 @@ const DashboardPage = () => {
         {mostRecent && initial ? (
           <Grid>
             <Grid.Col span={12}>
-              <Text size="xl">最新</Text>
+              <Text size="xl">NOW</Text>
               <Text size="xl">{formatDate(mostRecent.createdAt)}</Text>
               <Group position="center"></Group>
             </Grid.Col>
@@ -280,27 +358,29 @@ const DashboardPage = () => {
             <Grid.Col span={12}>
               <Text size="xl">音程の安定 Jitter</Text>
               <Group position="center">
-                {((mostRecent.jitter - initial.jitter) / initial.jitter) * 100}%
+                {progressDisplay("jitter", initial.jitter, mostRecent.jitter)}
               </Group>
-              <Group position="center">最新 {mostRecent.jitter}</Group>
+              <Group position="center">NOW {mostRecent.jitter}</Group>
               <Group position="center">最初 {initial.jitter}</Group>
             </Grid.Col>
             <Grid.Col span={12}>
               <Text size="xl">音量の安定 Shimmer</Text>
               <Group position="center">
-                {((mostRecent.shimmer - initial.shimmer) / initial.shimmer) *
-                  100}
-                %
+                {progressDisplay(
+                  "shimmer",
+                  initial.shimmer,
+                  mostRecent.shimmer
+                )}
               </Group>
-              <Group position="center">最新 {mostRecent.shimmer}</Group>
+              <Group position="center">NOW {mostRecent.shimmer}</Group>
               <Group position="center">最初 {initial.shimmer}</Group>
             </Grid.Col>
             <Grid.Col span={12}>
               <Text size="xl">倍音 HNR</Text>
               <Group position="center">
-                {((initial.hnr - mostRecent.hnr) / initial.hnr) * 100}%
+                {progressDisplay("hnr", initial.hnr, mostRecent.hnr)}
               </Group>
-              <Group position="center">最新　{mostRecent.hnr}</Group>
+              <Group position="center">NOW {mostRecent.hnr}</Group>
               <Group position="center">最初 {initial.hnr}</Group>
             </Grid.Col>
             <Grid.Col span={12}>
@@ -313,18 +393,15 @@ const DashboardPage = () => {
               </Group>
               <Text size="lg">Before</Text>
               <Group position="center">
-                {" "}
                 <Image src={initial.pitchPlot} />
               </Group>
               <Text size="lg">強度</Text>
               <Text size="lg">Now</Text>
               <Group position="center">
-                {" "}
                 <Image src={mostRecent.intensityPlot} />
               </Group>
               <Text size="lg">Before</Text>
               <Group position="center">
-                {" "}
                 <Image src={initial.intensityPlot} />
               </Group>
             </Grid.Col>

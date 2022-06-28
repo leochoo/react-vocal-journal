@@ -72,8 +72,7 @@ export function Record({ onFileAttachment }) {
     <Card withBorder radius="md" className={classes.card}>
       <Card.Section className={classes.imageSection}>Record Audio</Card.Section>
       <Group position="apart" mt="md">
-        Record vowel /a/ vowel for 2 seconds. Maintain the same pitch until the
-        end.
+        録音の長さは、15秒以内にしてください。
       </Group>
 
       <Card.Section className={classes.section} mt="md">
