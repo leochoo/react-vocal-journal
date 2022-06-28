@@ -99,26 +99,29 @@ const DashboardPage = () => {
 
       // when recordingType === "song", filter analysisData, so that data.map => data has title and phrase
       // when recordingType === "vowel", filter analysisData, so that data.map => data has vowel and pitch
-      const filtered = sorted.filter((data) => {
-        if (recordingType === "song") {
-          console.log("Title & Phrase:", songTitle, phrase);
-          return (
-            data.title === songTitle &&
-            data.title !== "" &&
-            data.phrase === phrase &&
-            data.phrase !== ""
-          );
-        } else if (recordingType === "vowel") {
-          return data.vowel === vowel && data.pitch === pitch;
-        }
-      });
+      // const filtered = sorted.filter((data) => {
+      //   if (recordingType === "song") {
+      //     console.log("Title & Phrase:", songTitle, phrase);
+      //     return (
+      //       data.title === songTitle &&
+      //       data.title !== "" &&
+      //       data.phrase === phrase &&
+      //       data.phrase !== ""
+      //     );
+      //   } else if (recordingType === "vowel") {
+      //     return data.vowel === vowel && data.pitch === pitch;
+      //   }
+      // });
 
-      // update the state of array of objects processedData with filtered values array of objects
-      setProcessedData(filtered);
-      setMostRecent(filtered[0]);
-      setInitial(filtered[analysisData.length - 1]);
+      // // update the state of array of objects processedData with filtered values array of objects
+      // setProcessedData(filtered);
+      // console.log("filtered", filtered);
+      // setMostRecent(filtered[0]);
+      // setInitial(filtered[analysisData.length - 1]);
 
-      console.log("filtered", filtered);
+      setProcessedData(sorted);
+      setMostRecent(sorted[0]);
+      setInitial(sorted[analysisData.length - 1]);
       console.log("mostRecent", mostRecent);
       console.log("initial", initial);
       console.log("Processed:", processedData);
