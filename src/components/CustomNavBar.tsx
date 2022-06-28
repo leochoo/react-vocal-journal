@@ -112,6 +112,7 @@ const useStyles = createStyles((theme, _params, getRef) => {
 
 const data = [
   { link: "/dashboard", label: "Dashboard", icon: Dashboard },
+  { link: "/old-dashboard", label: "Old Dashboard", icon: Dashboard },
   { link: "/new-recording", label: "New Recording", icon: Microphone2 },
   // { link: "/calendar", label: "Calendar", icon: Calendar },
   // { link: "", label: "SSH Keys", icon: Key },

@@ -40,6 +40,7 @@ import {
   SnapshotOptions,
 } from "firebase/firestore";
 import { useCollectionData } from "react-firebase-hooks/firestore";
+import OldDashboardPage from "./pages/OldDashboardPage";
 
 export const DataContext = React.createContext<AnalysisDataProps[]>([]);
 
@@ -126,6 +127,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <DashboardPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/old-dashboard"
+            element={
+              <ProtectedRoute>
+                <OldDashboardPage />
               </ProtectedRoute>
             }
           />
