@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   Container,
   Text,
@@ -10,6 +10,9 @@ import {
   Group,
   Select,
   Accordion,
+  RadioGroup,
+  Radio,
+  Image,
 } from "@mantine/core";
 import { useAppSelector } from "../redux/hooks";
 import { useCollectionData } from "react-firebase-hooks/firestore";
@@ -30,11 +33,18 @@ import { auth, db } from "../../firebase";
 import { selectUid } from "../redux/auth/auth.slice";
 import { stringify } from "querystring";
 import { Language, Microphone, Microphone2, Upload } from "tabler-icons-react";
+import dayjs from "dayjs";
+import { RadarChartSample } from "../components/samples/RadarChartSample";
+import { BarChart } from "../components/samples/BarChart";
+
+import { DataContext } from "../App";
 
 interface AnalysisDataProps {
   audioURL: string;
   createdAt: number;
   displayName: string;
+  title: string;
+  phrase: string;
   pitch: string;
   vowel: string;
   condition: string;
@@ -46,66 +56,64 @@ interface AnalysisDataProps {
   pitchPlot: string;
 }
 
-const dataConverter = {
-  toFirestore(data: AnalysisDataProps): DocumentData {
-    return {
-      audioURL: data.audioURL,
-      createdAt: data.createdAt,
-      displayName: data.displayName,
-      pitch: data.pitch,
-      vowel: data.vowel,
-      condition: data.condition,
-      hnr: data.hnr,
-      jitter: data.jitter,
-      shimmer: data.shimmer,
-      uid: data.uid,
-      intensityPlot: data.intensityPlot,
-      pitchPlot: data.pitchPlot,
-    };
-  },
-  fromFirestore(
-    snapshot: QueryDocumentSnapshot,
-    options: SnapshotOptions
-  ): AnalysisDataProps {
-    const data = snapshot.data(options)!;
-    return {
-      audioURL: data.audioURL,
-      createdAt: data.createdAt,
-      displayName: data.displayName,
-      pitch: data.pitch,
-      vowel: data.vowel,
-      condition: data.condition,
-      hnr: data.HNR,
-      jitter: data.jitter_local,
-      shimmer: data.shimmer_local,
-      uid: data.uid,
-      intensityPlot: data.intensityPlot,
-      pitchPlot: data.pitchPlot,
-    };
-  },
-};
-
 const DashboardPage = () => {
   const [recordingType, setRecordingType] = useState("song");
   const [songTitle, setSongTitle] = useState("");
   const [phrase, setPhrase] = useState("");
+  const [vowel, setVowel] = useState("");
+  const [pitch, setPitch] = useState("");
+  const [mostRecent, setMostRecent] = useState<AnalysisDataProps>();
+  const [initial, setInitial] = useState<AnalysisDataProps>();
+  const [processedData, setProcessedData] = useState<AnalysisDataProps[]>([]);
 
   let uid = useAppSelector(selectUid);
-  const analysisQuery = query(
-    collection(db, "users", uid, "analysis").withConverter(dataConverter)
-    // limit(25)
-    // orderBy("createdAt")
-  );
-  const [analysisData] = useCollectionData(analysisQuery);
+
+  const analysisData = useContext(DataContext);
+
+  // when recordingType === "song", filter analysisData, so that data.map => data has songTitle and phrase
+  // when recordingType === "vowel", filter analysisData, so that data.map => data has vowel and pitch
+  // const filteredData = analysisData.filter((data) => {
+  //   if (recordingType === "song") {
+  //     return data.title === songTitle && data.phrase === phrase;
+  //   } else if (recordingType === "vowel") {
+  //     return data.vowel === vowel && data.pitch === pitch;
+  //   }
+  // });
 
   useEffect(() => {
+    // sort analysisData and store in ProcessedData
+    // TODO: refactor this to be more efficient
     if (analysisData) {
-      analysisData.sort((a, b) => {
+      const sorted = analysisData.sort((a, b) => {
         return b.createdAt - a.createdAt;
       });
-      console.log(analysisData);
+
+      // when recordingType === "song", filter analysisData, so that data.map => data has title and phrase
+      // when recordingType === "vowel", filter analysisData, so that data.map => data has vowel and pitch
+      const filtered = sorted.filter((data) => {
+        if (recordingType === "song") {
+          return (
+            data.title === songTitle &&
+            data.title !== "" &&
+            data.phrase === phrase &&
+            data.phrase !== ""
+          );
+        } else if (recordingType === "vowel") {
+          return data.vowel === vowel && data.pitch === pitch;
+        }
+      });
+
+      setProcessedData(filtered);
+      setMostRecent(filtered[0]);
+      setInitial(filtered[analysisData.length - 1]);
+
+      console.log("Processed:", processedData);
     }
-  }, [analysisData]);
+  }, [analysisData, recordingType, songTitle, phrase, vowel, pitch]);
+
+  const formatDate = (createdAt: number) => {
+    return dayjs(createdAt).format("YYYY/MM/DD");
+  };
 
   return (
     <Container size="xl" px="xs">
@@ -141,73 +149,187 @@ const DashboardPage = () => {
           </Group>
         </Grid.Col>
         <Grid.Col span={12}>
-          <Select
-            required
-            searchable
-            getCreateLabel={(query) => `+ 追加 ${query}`}
-            label="Title"
-            placeholder="Pick one"
-            onChange={setSongTitle}
-            data={[
-              { value: "react", label: "React" },
-              { value: "ng", label: "Angular" },
-              { value: "svelte", label: "Svelte" },
-              { value: "vue", label: "Vue" },
-            ]}
-          />
-          <Select
-            required
-            searchable
-            getCreateLabel={(query) => `+ 追加 ${query}`}
-            label="Phrase"
-            placeholder="Pick one"
-            data={[
-              { value: "react", label: "React" },
-              { value: "ng", label: "Angular" },
-              { value: "svelte", label: "Svelte" },
-              { value: "vue", label: "Vue" },
-            ]}
-            onChange={setPhrase}
-          />
+          {recordingType == "song" ? (
+            <>
+              <Select
+                required
+                creatable
+                searchable
+                getCreateLabel={(query) => `+ 追加 ${query}`}
+                label="Title"
+                placeholder="Pick one"
+                data={[
+                  { value: "react", label: "React" },
+                  { value: "ng", label: "Angular" },
+                  { value: "svelte", label: "Svelte" },
+                  { value: "vue", label: "Vue" },
+                ]}
+                onChange={setSongTitle}
+              />
+              <Select
+                required
+                creatable
+                searchable
+                getCreateLabel={(query) => `+ 追加 ${query}`}
+                label="Phrase"
+                placeholder="Pick one"
+                data={[
+                  { value: "react", label: "React" },
+                  { value: "ng", label: "Angular" },
+                  { value: "svelte", label: "Svelte" },
+                  { value: "vue", label: "Vue" },
+                ]}
+                onChange={setPhrase}
+              />
+            </>
+          ) : (
+            <>
+              <RadioGroup
+                label="Vowel"
+                required
+                style={{ marginTop: 10 }}
+                onChange={setVowel}
+              >
+                <Radio value="a" label="a" />
+                <Radio value="i" label="i" />
+                <Radio value="u" label="u" />
+              </RadioGroup>
+
+              <RadioGroup
+                label="Pitch"
+                required
+                style={{ marginTop: 10 }}
+                onChange={setPitch}
+              >
+                <Radio value="low" label="Low" />
+                <Radio value="mid" label="Mid" />
+                <Radio value="high" label="High" />
+              </RadioGroup>
+            </>
+          )}
         </Grid.Col>
         <Grid.Col span={12}>
-          <Accordion multiple>
-            <Accordion.Item label="Customization">
-              Colors, fonts, shadows and many other parts are customizable to
-              fit your design needs
-            </Accordion.Item>
-
-            <Accordion.Item label="Flexibility">
-              Configure components appearance and behavior with vast amount of
-              settings or overwrite any part of component styles
-            </Accordion.Item>
-
-            <Accordion.Item label="No annoying focus ring">
-              With new :focus-visible pseudo-class focus ring appears only when
-              user navigates with keyboard
-            </Accordion.Item>
-          </Accordion>
+          <Text size="xl">履歴</Text>
+          {/* <Accordion multiple>
+            {analysisData?.map((data) => {
+              const dataLabel = formatDate(data.createdAt);
+              return (
+                <Accordion.Item key={data.createdAt} label={dataLabel}>
+                  <Box>
+                    <Box>
+                      <Text>{data.audioURL}</Text>
+                      <Text>{data.pitch}</Text>
+                      <Text>{data.vowel}</Text>
+                      <Text>{data.condition}</Text>
+                      <Text>{data.hnr}</Text>
+                      <Text>{data.jitter}</Text>
+                      <Text>{data.shimmer}</Text>
+                      <Text>{data.uid}</Text>
+                      <Text>{data.intensityPlot}</Text>
+                      <Text>{data.pitchPlot}</Text>
+                    </Box>
+                  </Box>
+                </Accordion.Item>
+              );
+            })}
+          </Accordion> */}
         </Grid.Col>
         <Grid.Col span={12}>
           <Text size="xl">比較</Text>
-
           <Group position="center">
-            <Text size="lg">{songTitle}</Text>
+            <Text size="lg">
+              {recordingType === "song" ? songTitle : vowel}
+            </Text>
           </Group>
-
           <Group position="center">
-            <Text size="lg">{phrase}</Text>
+            <Text size="lg">{recordingType === "song" ? phrase : pitch}</Text>
           </Group>
         </Grid.Col>
-        <Grid.Col span={12}>
-          <Group position="center"></Group>
-        </Grid.Col>
-        <Grid.Col span={12}>
-          <Group position="center"></Group>
-        </Grid.Col>
-        <Grid.Col span={12}>
-          <Group position="center"></Group>
-        </Grid.Col>
+
+        {mostRecent && initial && mostRecent !== initial ? (
+          <Grid>
+            <Grid.Col span={12}>
+              <Text size="xl">最新</Text>
+              <Text size="xl">{formatDate(mostRecent.createdAt)}</Text>
+              <Group position="center"></Group>
+            </Grid.Col>
+            <Grid.Col span={12}>
+              <Text size="xl">最初</Text>
+              <Text size="xl">{formatDate(initial.createdAt)}</Text>
+              <Group position="center"></Group>
+            </Grid.Col>
+            <Grid.Col span={12}>
+              {/* <Group position="center">
+                <Box style={{ height: "100vw" }}>
+                  <RadarChartSample mostRecent={mostRecent} initial={initial} />
+                  <BarChart
+                    after={mostRecent.jitter}
+                    before={initial.jitter}
+                  />
+                </Box>
+              </Group> */}
+            </Grid.Col>
+            <Grid.Col span={12}>
+              <Text size="xl">音程の安定 Jitter</Text>
+              <Group position="center">
+                {((mostRecent.jitter - initial.jitter) / initial.jitter) * 100}%
+              </Group>
+              <Group position="center">最新 {mostRecent.jitter}</Group>
+              <Group position="center">最初 {initial.jitter}</Group>
+            </Grid.Col>
+            <Grid.Col span={12}>
+              <Text size="xl">音量の安定 Shimmer</Text>
+              <Group position="center">
+                {((mostRecent.shimmer - initial.shimmer) / initial.shimmer) *
+                  100}
+                %
+              </Group>
+              <Group position="center">最新 {mostRecent.shimmer}</Group>
+              <Group position="center">最初 {initial.shimmer}</Group>
+            </Grid.Col>
+            <Grid.Col span={12}>
+              <Text size="xl">倍音 HNR</Text>
+              <Group position="center">
+                {((initial.hnr - mostRecent.hnr) / initial.hnr) * 100}%
+              </Group>
+              <Group position="center">最新　{mostRecent.hnr}</Group>
+              <Group position="center">最初 {initial.hnr}</Group>
+            </Grid.Col>
+            <Grid.Col span={12}>
+              <Text size="xl">スペクトログラム</Text>
+              <Text size="lg">音程</Text>
+              <Text size="lg">Now</Text>
+              <Group position="center">
+                {" "}
+                <Image src={mostRecent.pitchPlot} />
+              </Group>
+              <Text size="lg">Before</Text>
+              <Group position="center">
+                {" "}
+                <Image src={initial.pitchPlot} />
+              </Group>
+              <Text size="lg">強度</Text>
+              <Text size="lg">Now</Text>
+              <Group position="center">
+                {" "}
+                <Image src={mostRecent.intensityPlot} />
+              </Group>
+              <Text size="lg">Before</Text>
+              <Group position="center">
+                {" "}
+                <Image src={initial.intensityPlot} />
+              </Group>
+            </Grid.Col>
+          </Grid>
+        ) : (
+          <Grid.Col span={12}>
+            <Group position="center">
+              <Text size="md">
+                比較を表示するためには履歴が2つ以上必要です。
+              </Text>
+            </Group>
+          </Grid.Col>
+        )}
       </Grid>
     </Container>
   );
