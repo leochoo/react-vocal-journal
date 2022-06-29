@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   createStyles,
   Container,
@@ -26,14 +26,13 @@ import {
 } from "@mantine/core";
 import { DropzoneButton } from "../components/Dropzone";
 import { Record } from "../components/Record";
-import { Microphone, Upload } from "tabler-icons-react";
+import { Language, Microphone, Microphone2, Upload } from "tabler-icons-react";
 import { useForm } from "@mantine/form";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db, storage } from "../../firebase";
 import { addDoc, collection, doc, setDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { UploadPlayer } from "../components/UploadPlayer";
-import { DataContext } from "../pages/WrapperPage";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -114,68 +113,69 @@ const NewRecordingPage = () => {
   const [recordingType, setRecordingType] = useState("song");
   const [submitType, setSubmitType] = useState("record");
   const [audioFile, setAudioFile] = useState<File[]>(null);
+  const [uploadedAudioFile, setUploadedAudioFile] = useState<File[]>(null);
   const [uploadStatus, setUploadStatus] = useState("");
-
-  const analysisData = useContext(DataContext);
-
-  const [songTitleList, setSongTitleList] = useState<string[]>([]);
-  const [phraseList, setPhraseList] = useState<string[]>([]);
-  useEffect(() => {
-    if (analysisData) {
-      let songTitleList = [];
-      let phraseList = [];
-      analysisData.forEach((data) => {
-        if (!songTitleList.includes(data.title)) {
-          songTitleList.push(data.title);
-        }
-        if (!phraseList.includes(data.phrase)) {
-          phraseList.push(data.phrase);
-        }
-      });
-      setSongTitleList(songTitleList);
-      setPhraseList(phraseList);
-    }
-  }, [analysisData]);
-
-  // slider value - cannot be linked directly to form so not using it now
-  // const [sliderValue, setSliderValue] = useState(0);
-
-  const form = useForm({
+  const [validationSchema, setValidationSchema] = useState<any>({
     initialValues: {
-      vowel: undefined,
-      pitch: undefined,
       title: undefined,
       phrase: undefined,
       condition: undefined,
       note: "",
     },
     validate: {
-      vowel: (value) => {
-        if (recordingType === "vowel") {
-          value ? undefined : "Vowel is required";
-        }
-      },
-      pitch: (value) => {
-        if (recordingType === "vowel") {
-          value ? undefined : "Pitch is required";
-        }
-      },
-      title: (value) => {
-        if (recordingType === "song") {
-          value ? undefined : "Title is required";
-        }
-      },
-      phrase: (value) => {
-        if (recordingType === "song") {
-          value ? undefined : "Phrase is required";
-        }
-      },
+      title: (value) => (value ? undefined : "Title is required"),
+      phrase: (value) => (value ? undefined : "Phrase is required"),
       condition: (value) => (value ? undefined : "Condition is required"),
     },
   });
 
+  // slider value - cannot be linked directly to form so not using it now
+  // const [sliderValue, setSliderValue] = useState(0);
+
+  let songSchema = {
+    initialValues: {
+      title: undefined,
+      phrase: undefined,
+      condition: undefined,
+      note: "",
+    },
+    validate: {
+      title: (value) => (value ? undefined : "Title is required"),
+      phrase: (value) => (value ? undefined : "Phrase is required"),
+      condition: (value) => (value ? undefined : "Condition is required"),
+    },
+  };
+
+  let vowelSchema = {
+    initialValues: {
+      vowel: undefined,
+      pitch: undefined,
+      condition: undefined,
+      note: "",
+    },
+    validate: {
+      vowel: (value) => (value ? undefined : "Vowel is required"),
+      pitch: (value) => (value ? undefined : "Pitch is required"),
+      condition: (value) => (value ? undefined : "Condition is required"),
+    },
+  };
+
+  useEffect(() => {
+    if (recordingType === "song") {
+      setValidationSchema(songSchema);
+    } else {
+      setValidationSchema(vowelSchema);
+    }
+  }, [recordingType]);
+
+  useEffect(() => {
+    console.log("val schema", validationSchema);
+  }, [validationSchema]);
+
+  let form = useForm(validationSchema);
+
   // upload audio to Firebase storage and get download url
-  async function upload(audioFile) {
+  async function upload(submittedAudioFile) {
     const storageRef = ref(
       storage,
       "audio/" + user.uid + "/" + Date.now().toString()
@@ -183,7 +183,11 @@ const NewRecordingPage = () => {
     const metadata = {
       contentType: "audio/wav",
     };
-    const uploadTask = uploadBytesResumable(storageRef, audioFile, metadata);
+    const uploadTask = uploadBytesResumable(
+      storageRef,
+      submittedAudioFile,
+      metadata
+    );
     // 'file' comes from the Blob or File API
     // uploadBytes(storageRef, newAudio).then((snapshot) => {
     //   console.log("Uploaded a blob or file!");
@@ -250,12 +254,60 @@ const NewRecordingPage = () => {
   }
 
   async function triggerCloudFunction(currTime, downloadURL) {
+    let bodyContent =
+      recordingType === "song"
+        ? JSON.stringify({
+            recordingType: recordingType,
+            createdAt: currTime,
+            updatedAt: currTime, // TODO: need to fix later
+            audioURL: downloadURL,
+            uid: user.uid,
+            displayName: user.displayName,
+            title: form.values.title,
+            phrase: form.values.phrase,
+            condition: form.values.condition,
+            note: form.values.note,
+          })
+        : JSON.stringify({
+            recordingType: recordingType,
+            createdAt: currTime,
+            updatedAt: currTime, // TODO: need to fix later
+            audioURL: downloadURL,
+            uid: user.uid,
+            displayName: user.displayName,
+            vowel: form.values.vowel,
+            pitch: form.values.pitch,
+            condition: form.values.condition,
+            note: form.values.note,
+          });
+
     console.log("CLOUD triggered");
     const url =
       "https://asia-northeast1-vocal-journal.cloudfunctions.net/parselmouth";
     const response = await fetch(url, {
       method: "POST",
       headers: {
+        "Content-Type": "application/json",
+      },
+      body: bodyContent,
+    });
+    // console.log(response);
+    const data = await response.json();
+    // const data = await response.body.values;
+    console.log("CLOUD data: ", data);
+  }
+
+  // TEST function for a local flask server
+  async function triggerLocalFunction(currTime, downloadURL) {
+    console.log("LOCAL triggered");
+    // console.log("downloadURL", downloadURL);
+    const localURL = "http://127.0.0.1:5001";
+    const response = await fetch(localURL, {
+      method: "POST",
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "*",
+        "Access-Control-Allow-Headers": "Content-Type",
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -266,21 +318,18 @@ const NewRecordingPage = () => {
         displayName: user.displayName,
         vowel: form.values.vowel,
         pitch: form.values.pitch,
-        title: form.values.title,
-        phrase: form.values.phrase,
         condition: form.values.condition,
         note: form.values.note,
       }),
     });
-    // console.log(response);
     const data = await response.json();
+    console.log("LOCAL data: ", data);
     // const data = await response.body.values;
-    console.log("CLOUD data: ", data);
   }
 
   // TODO: send this to the backend so it creates the doc with the analyzed value
-  async function submitNewRecording(audioFile) {
-    if (audioFile) {
+  async function submitNewRecording(submittedAudioFile) {
+    if (submittedAudioFile) {
       console.log("New Recording Submission", form.values);
       console.log(form.values);
       // const innerAnalysisRef = collection(db, "users", user.uid, "analysis");
@@ -290,38 +339,32 @@ const NewRecordingPage = () => {
       //   updatedAt: new Date(),
       // });
 
-      // set certain fields as undefined from the form
-      if (recordingType === "song") {
-        form.values.vowel = "";
-        form.values.pitch = "";
-      } else if (recordingType === "vowel") {
-        form.values.title = "";
-        form.values.phrase = "";
-      }
-
-      console.log("final form values", form.values);
-
       // convert audio file to blob
       if (submitType == "upload") {
-        audioFile = new Blob(audioFile);
+        submittedAudioFile = new Blob(submittedAudioFile);
       }
 
       // upload blob to storage
-      await upload(audioFile);
+      await upload(submittedAudioFile);
 
       // TODO: why is this not executed when declared here?
       // clear form and audio
       // form.reset();
       // console.log("form reset", form.values);
-      // setAudioFile(null);
+      // setsubmittedAudioFile(null);
     } else {
       alert("no audio file!");
     }
   }
 
-  const handleSubmit = (values) => {
-    console.log("values: ", values);
-    submitNewRecording(audioFile);
+  const handleSubmit = () => {
+    console.log("submit pressed");
+    // if (submitType == "record") {
+    //   console.log("record");
+    //   submitNewRecording(audioFile);
+    // } else if (submitType == "upload") {
+    //   submitNewRecording(uploadedAudioFile);
+    // }
   };
 
   // 一時保存
@@ -341,72 +384,40 @@ const NewRecordingPage = () => {
           Create or upload a new recording.
         </Text>
       </div>
-      <Group position="center">
-        <SegmentedControl
-          color="orange"
-          value={recordingType}
-          onChange={setRecordingType}
-          data={[
-            {
-              value: "song",
-              label: (
-                <Center>
-                  <Microphone size={16} />
-                  <Box ml={10}>歌 Song</Box>
-                </Center>
-              ),
-            },
-            {
-              value: "vowel",
-              label: (
-                <Center>
-                  <Upload size={16} />
-                  <Box ml={10}>母音 Vowel</Box>
-                </Center>
-              ),
-            },
-          ]}
-        />
-      </Group>
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <Grid grow>
-          <Grid.Col span={12}></Grid.Col>
-          <Grid.Col span={12}>
+          <Grid.Col md={12} lg={6}>
+            <Group position="center">
+              <SegmentedControl
+                color="orange"
+                value={recordingType}
+                onChange={setRecordingType}
+                data={[
+                  {
+                    value: "song",
+                    label: (
+                      <Center>
+                        <Microphone2 size={16} />
+                        <Box ml={10}>歌 Song</Box>
+                      </Center>
+                    ),
+                  },
+                  {
+                    value: "vowel",
+                    label: (
+                      <Center>
+                        <Language size={16} />
+                        <Box ml={10}>母音 Vowel</Box>
+                      </Center>
+                    ),
+                  },
+                ]}
+              />
+            </Group>
+          </Grid.Col>
+          <Grid.Col md={12} lg={6}>
             <div className={classes.form}>
-              {recordingType == "song" ? (
-                <>
-                  <Select
-                    required
-                    creatable
-                    searchable
-                    getCreateLabel={(query) => `+ 追加 ${query}`}
-                    onCreate={(query) =>
-                      setSongTitleList((current) => [...current, query])
-                    }
-                    label="Title"
-                    placeholder="Pick one"
-                    data={songTitleList.map((title) => {
-                      return { value: title, label: title };
-                    })}
-                    {...form.getInputProps("title")}
-                  />
-                  <Select
-                    required
-                    creatable
-                    searchable
-                    getCreateLabel={(query) => `+ 追加 ${query}`}
-                    onCreate={(query) =>
-                      setPhraseList((current) => [...current, query])
-                    }
-                    label="Phrase"
-                    placeholder="Pick one"
-                    data={phraseList.map((phrase) => {
-                      return { value: phrase, label: phrase };
-                    })}
-                    {...form.getInputProps("phrase")}
-                  />
-                </>
-              ) : (
+              {recordingType === "vowel" ? (
                 <>
                   <RadioGroup
                     label="Vowel"
@@ -436,6 +447,37 @@ const NewRecordingPage = () => {
                     <Radio value="high" label="High" />
                   </RadioGroup>
                 </>
+              ) : (
+                <>
+                  <Select
+                    required
+                    creatable
+                    searchable
+                    getCreateLabel={(query) => `+ 追加 ${query}`}
+                    label="Title"
+                    placeholder="Pick one"
+                    data={[
+                      { value: "react", label: "React" },
+                      { value: "ng", label: "Angular" },
+                      { value: "svelte", label: "Svelte" },
+                      { value: "vue", label: "Vue" },
+                    ]}
+                  />
+                  <Select
+                    required
+                    creatable
+                    searchable
+                    getCreateLabel={(query) => `+ 追加 ${query}`}
+                    label="Phrase"
+                    placeholder="Pick one"
+                    data={[
+                      { value: "react", label: "React" },
+                      { value: "ng", label: "Angular" },
+                      { value: "svelte", label: "Svelte" },
+                      { value: "vue", label: "Vue" },
+                    ]}
+                  />
+                </>
               )}
 
               <RadioGroup
@@ -445,11 +487,11 @@ const NewRecordingPage = () => {
                 classNames={{ label: classes.inputLabel }}
                 {...form.getInputProps("condition")}
               >
-                <Radio value="bad" label="悪い" />
-                <Radio value="mediocre" label="良くはない" />
-                <Radio value="okay" label="まぁまぁ" />
-                <Radio value="good" label="良い" />
-                <Radio value="great" label="最高" />
+                <Radio value="bad" label="Bad" />
+                <Radio value="mediocre" label="Mediocre" />
+                <Radio value="okay" label="Okay" />
+                <Radio value="good" label="Good" />
+                <Radio value="great" label="Great" />
               </RadioGroup>
 
               {/* <InputWrapper
@@ -485,10 +527,10 @@ const NewRecordingPage = () => {
               />
             </div>
           </Grid.Col>
-          <Grid.Col span={12}>
+          <Grid.Col md={12} lg={6}>
             <Group position="center" mt="md">
               <SegmentedControl
-                color="orange"
+                color="red"
                 value={submitType}
                 onChange={setSubmitType}
                 data={[
@@ -514,14 +556,14 @@ const NewRecordingPage = () => {
               />
             </Group>
           </Grid.Col>
-          <Grid.Col span={12}>
+          <Grid.Col md={12} lg={6}>
             <Group position="center" mt="md">
               {submitType == "upload" ? (
                 <>
-                  {audioFile ? (
-                    <UploadPlayer audioFile={audioFile} />
+                  {uploadedAudioFile ? (
+                    <UploadPlayer audioFile={uploadedAudioFile} />
                   ) : (
-                    <DropzoneButton onFileAttachment={setAudioFile} />
+                    <DropzoneButton onFileAttachment={setUploadedAudioFile} />
                   )}
                 </>
               ) : (
@@ -529,12 +571,12 @@ const NewRecordingPage = () => {
               )}
             </Group>
 
-            <Group position="center" mt="md">
+            <Group position="right" mt="md">
               {/* <Button className={classes.temporary} onClick={temporarySave}>
                 一時保存
               </Button> */}
               <Button type="submit" className={classes.control}>
-                提出 Submit
+                Submit
               </Button>
             </Group>
             {uploadStatus}

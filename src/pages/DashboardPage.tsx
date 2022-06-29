@@ -1,16 +1,19 @@
-import React, { useEffect } from "react";
-import { Container, Text, Grid, createStyles, Center } from "@mantine/core";
-import CardSample from "../components/samples/CardSample";
-import { RadarChartSample } from "../components/samples/RadarChartSample";
-import { LineChartSample } from "../components/samples/LineChartSample";
-import { StatsRingCard } from "../components/samples/StatsRingCard";
-import { TableReviews } from "../components/samples/TableReviews";
-import { LineChart } from "../components/LineChart";
-import { CardGradient } from "../components/samples/CardGradient";
-import { Stats } from "fs";
-import { StatsControls } from "../components/samples/StatsControls";
-import { StatsGridIcons } from "../components/samples/StatsGridIcons";
-import { create } from "domain";
+import React, { useEffect, useState, useContext } from "react";
+import {
+  Container,
+  Text,
+  Grid,
+  createStyles,
+  Center,
+  SegmentedControl,
+  Box,
+  Group,
+  Select,
+  Accordion,
+  RadioGroup,
+  Radio,
+  Image,
+} from "@mantine/core";
 import { useAppSelector } from "../redux/hooks";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import {
@@ -29,45 +32,26 @@ import {
 import { auth, db } from "../../firebase";
 import { selectUid } from "../redux/auth/auth.slice";
 import { stringify } from "querystring";
+import {
+  ArrowDown,
+  ArrowUp,
+  Language,
+  Microphone,
+  Microphone2,
+  Upload,
+} from "tabler-icons-react";
+import dayjs from "dayjs";
+import { RadarChartSample } from "../components/samples/RadarChartSample";
+import { BarChart } from "../components/samples/BarChart";
 
-// Vocal Acoustic Analysis - Jitter, Shimmer and HNR Parameters
-// João Paulo Teixeira*, Carla Oliveira, Carla Lopes
-const jitterDescription = {
-  title: "Pitch Stability (Jitter)",
-  description:
-    "Jitter is defined as the parameter of frequency variation from cycle to cycle. Lower jitter means the pitch is stable.",
-};
+import { DataContext } from "../pages/WrapperPage";
 
-const shimmerDescription = {
-  title: "Volume Stability (Shimmer)",
-  description:
-    "Shimmer (local, dB): Represents the average absolute difference of the base 10 logarithm of the difference  between two consecutive periods and it is call ShdB. The limit to detect pathologies is 0.350 dB.",
-};
-
-const hnrDescription = {
-  title: "Harmonics to Noise Ratio (HNR)",
-  description:
-    "Harmonic to Noise Ratio (HNR) measures the ratio between periodic and non-periodic components of a speech sound. It has become more and more important in the vocal acoustic analysis to diagnose pathologic voices.",
-};
-
-const useStyles = createStyles((theme) => ({
-  card: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    // boxShadow: "0px 0px 10px palegreen",
-  },
-  chart: {
-    position: "relative",
-    margin: "auto",
-    width: "35vw",
-    height: "45vh",
-  },
-}));
 interface AnalysisDataProps {
   audioURL: string;
   createdAt: number;
   displayName: string;
+  title: string;
+  phrase: string;
   pitch: string;
   vowel: string;
   condition: string;
@@ -79,135 +63,333 @@ interface AnalysisDataProps {
   pitchPlot: string;
 }
 
-const dataConverter = {
-  toFirestore(data: AnalysisDataProps): DocumentData {
-    return {
-      audioURL: data.audioURL,
-      createdAt: data.createdAt,
-      displayName: data.displayName,
-      pitch: data.pitch,
-      vowel: data.vowel,
-      condition: data.condition,
-      hnr: data.hnr,
-      jitter: data.jitter,
-      shimmer: data.shimmer,
-      uid: data.uid,
-      intensityPlot: data.intensityPlot,
-      pitchPlot: data.pitchPlot,
-    };
-  },
-  fromFirestore(
-    snapshot: QueryDocumentSnapshot,
-    options: SnapshotOptions
-  ): AnalysisDataProps {
-    const data = snapshot.data(options)!;
-    return {
-      audioURL: data.audioURL,
-      createdAt: data.createdAt,
-      displayName: data.displayName,
-      pitch: data.pitch,
-      vowel: data.vowel,
-      condition: data.condition,
-      hnr: data.HNR,
-      jitter: data.jitter_local,
-      shimmer: data.shimmer_local,
-      uid: data.uid,
-      intensityPlot: data.intensityPlot,
-      pitchPlot: data.pitchPlot,
-    };
-  },
-};
-
 const DashboardPage = () => {
-  let uid = useAppSelector(selectUid);
-  const analysisQuery = query(
-    collection(db, "users", uid, "analysis").withConverter(dataConverter)
-    // limit(25)
-    // orderBy("createdAt")
-  );
-  const [analysisData] = useCollectionData(analysisQuery);
-  // const analysisData = null;
-  // or put the collections under each user
+  const [recordingType, setRecordingType] = useState("song");
+  const [songTitle, setSongTitle] = useState("");
+  const [phrase, setPhrase] = useState("");
+  const [vowel, setVowel] = useState("");
+  const [pitch, setPitch] = useState("");
 
-  const { classes } = useStyles();
+  const [sortedData, setSortedData] = useState<AnalysisDataProps[]>([]);
+  const [mostRecent, setMostRecent] = useState<AnalysisDataProps>();
+  const [initial, setInitial] = useState<AnalysisDataProps>();
+  const [filteredData, setFilteredData] = useState<AnalysisDataProps[]>([]);
+
+  const [songTitleList, setSongTitleList] = useState<string[]>([]);
+  const [phraseList, setPhraseList] = useState<string[]>([]);
+
+  const analysisData = useContext(DataContext);
+
+  // get all unique values of songTitleList and phraseList inside SortedData
+  useEffect(() => {
+    if (analysisData) {
+      let songTitleList = [];
+      let phraseList = [];
+      analysisData.forEach((data) => {
+        if (!songTitleList.includes(data.title)) {
+          songTitleList.push(data.title);
+        }
+        if (!phraseList.includes(data.phrase)) {
+          phraseList.push(data.phrase);
+        }
+      });
+      setSongTitleList(songTitleList);
+      setPhraseList(phraseList);
+    }
+  }, [analysisData]);
+
+  useEffect(() => {
+    // sort analysisData and store in SortedData
+    // TODO: refactor this to be more efficient
+    if (analysisData) {
+      const sorted = analysisData.sort((a, b) => {
+        return b.createdAt - a.createdAt;
+      });
+
+      const filtered = sorted.filter((data) => {
+        if (recordingType === "song") {
+          return (
+            data.title === songTitle &&
+            data.title !== "" &&
+            data.phrase === phrase &&
+            data.phrase !== ""
+          );
+        } else if (recordingType === "vowel") {
+          return (
+            data.vowel === vowel &&
+            data.vowel !== "" &&
+            data.pitch === pitch &&
+            data.pitch !== ""
+          );
+        }
+      });
+
+      setSortedData(sorted);
+      setFilteredData(filtered);
+      setMostRecent(filtered[0]);
+      setInitial(filtered[filtered.length - 1]);
+    }
+  }, [analysisData, recordingType, songTitle, phrase, vowel, pitch]);
+
+  useEffect(() => {
+    console.log("mostRecent", mostRecent);
+    console.log("initial", initial);
+    console.log("Sorted Data:", sortedData);
+    console.log("Filtered Data", filteredData);
+  }, [mostRecent, initial, sortedData]);
+
+  const formatDate = (createdAt: number) => {
+    return dayjs(createdAt).format("YYYY/MM/DD HH:mm:ss");
+  };
+
+  const progressDisplay = (
+    parameter: string,
+    before: number,
+    after: number
+  ) => {
+    // take mostRecent and initial of jitter, shimmer, and hnr, and return the percentage of change.
+    // for jitter and shimmer, if percentage of change is negative, return green. else red.
+    // for HNR, if percetnage of change is positive, return green. else red
+    let change = (after - before) / before;
+    let percentage = Math.round(change * 100);
+    if (parameter === "jitter" || parameter === "shimmer") {
+      if (percentage < 0) {
+        return (
+          <Text color="green">
+            {percentage}% <ArrowDown />
+          </Text>
+        );
+      } else {
+        return (
+          <Text color="red">
+            {percentage}% <ArrowUp />
+          </Text>
+        );
+      }
+    }
+    if (parameter === "hnr") {
+      if (percentage > 0) {
+        return (
+          <Text color="green">
+            {percentage}% <ArrowUp />
+          </Text>
+        );
+      } else {
+        return (
+          <Text color="red">
+            {percentage}% <ArrowDown />
+          </Text>
+        );
+      }
+    }
+  };
+
   return (
     <Container size="xl" px="xs">
       <Text style={{ marginBottom: "3vh", fontSize: "2rem" }}>Dashboard</Text>
-      {/* <StatsGridIcons {...statsGridData} /> */}
-      {analysisData && (
-        <>
-          {/* <StatsControls
-            data={analysisData.map((data) => ({
-              createdAt: data.createdAt,
-              jitter: data.jitter,
-              shimmer: data.shimmer,
-              hnr: data.hnr,
-            }))}
-          /> */}
-          <TableReviews data={analysisData} />
-          <Grid>
-            <Grid.Col className={classes.card} style={{}} sm={12} lg={4}>
-              <CardGradient {...jitterDescription} />
-            </Grid.Col>
-            <Grid.Col className={classes.chart} sm={12} lg={8}>
-              <LineChart
-                titleText={"Jitter"}
-                data={analysisData.map((data) => ({
-                  x: data.createdAt,
-                  y: data.jitter,
-                }))}
+      <Grid>
+        <Grid.Col span={12}>
+          <Group position="center">
+            <SegmentedControl
+              color="orange"
+              value={recordingType}
+              onChange={setRecordingType}
+              data={[
+                {
+                  value: "song",
+                  label: (
+                    <Center>
+                      <Microphone2 size={16} />
+                      <Box ml={10}>歌 Song</Box>
+                    </Center>
+                  ),
+                },
+                {
+                  value: "vowel",
+                  label: (
+                    <Center>
+                      <Language size={16} />
+                      <Box ml={10}>母音 Vowel</Box>
+                    </Center>
+                  ),
+                },
+              ]}
+            />
+          </Group>
+        </Grid.Col>
+        <Grid.Col span={12}>
+          {recordingType == "song" ? (
+            <>
+              <Select
+                required
+                searchable
+                label="Title"
+                placeholder="Pick one"
+                // convert songTitleList to select data fields
+                data={songTitleList.map((title) => {
+                  return { value: title, label: title };
+                })}
+                onChange={setSongTitle}
               />
-            </Grid.Col>
-            <Grid.Col className={classes.chart} sm={12} lg={6}>
-              <LineChart
-                titleText={"/a/"}
-                data={analysisData
-                  .filter((x) => x.vowel == "a")
-                  .map((data) => ({
-                    x: data.createdAt,
-                    y: data.hnr,
-                  }))}
+              <Select
+                required
+                searchable
+                label="Phrase"
+                placeholder="Pick one"
+                data={phraseList.map((phrase) => {
+                  return { value: phrase, label: phrase };
+                })}
+                onChange={setPhrase}
               />
-            </Grid.Col>
-            <Grid.Col className={classes.chart} sm={12} lg={6}>
-              <LineChart
-                titleText={"/i/"}
-                data={analysisData
-                  .filter((x) => x.vowel == "i")
-                  .map((data) => ({
-                    x: data.createdAt,
-                    y: data.hnr,
-                  }))}
-              />
-            </Grid.Col>
-            <Grid.Col className={classes.card} sm={12} lg={4}>
-              <CardGradient {...shimmerDescription} />
-            </Grid.Col>
-            <Grid.Col className={classes.chart} sm={12} lg={8}>
-              <LineChart
-                titleText={"Shimmer"}
-                data={analysisData.map((data) => ({
-                  x: data.createdAt,
-                  y: data.shimmer,
-                }))}
-              />
-            </Grid.Col>
+            </>
+          ) : (
+            <>
+              <RadioGroup
+                label="Vowel"
+                required
+                style={{ marginTop: 10 }}
+                onChange={setVowel}
+              >
+                <Radio value="a" label="a" />
+                <Radio value="i" label="i" />
+                <Radio value="u" label="u" />
+              </RadioGroup>
 
-            <Grid.Col className={classes.card} sm={12} lg={4}>
-              <CardGradient {...hnrDescription} />
+              <RadioGroup
+                label="Pitch"
+                required
+                style={{ marginTop: 10 }}
+                onChange={setPitch}
+              >
+                <Radio value="low" label="Low" />
+                <Radio value="mid" label="Mid" />
+                <Radio value="high" label="High" />
+              </RadioGroup>
+            </>
+          )}
+        </Grid.Col>
+        <Grid.Col span={12}>
+          {/* <Text size="xl">履歴</Text> */}
+          {/* <Accordion multiple>
+            {analysisData?.map((data) => {
+              const dataLabel = formatDate(data.createdAt);
+              return (
+                <Accordion.Item key={data.createdAt} label={dataLabel}>
+                  <Box>
+                    <Box>
+                      <Text>{data.audioURL}</Text>
+                      <Text>{data.pitch}</Text>
+                      <Text>{data.vowel}</Text>
+                      <Text>{data.condition}</Text>
+                      <Text>{data.hnr}</Text>
+                      <Text>{data.jitter}</Text>
+                      <Text>{data.shimmer}</Text>
+                      <Text>{data.uid}</Text>
+                      <Text>{data.intensityPlot}</Text>
+                      <Text>{data.pitchPlot}</Text>
+                    </Box>
+                  </Box>
+                </Accordion.Item>
+              );
+            })}
+          </Accordion> */}
+        </Grid.Col>
+        <Grid.Col span={12}>
+          <Text size="xl">比較</Text>
+          <Group position="center">
+            <Text size="lg">
+              {recordingType === "song" ? songTitle : vowel}
+            </Text>
+          </Group>
+          <Group position="center">
+            <Text size="lg">{recordingType === "song" ? phrase : pitch}</Text>
+          </Group>
+        </Grid.Col>
+
+        {filteredData && filteredData.length > 1 ? (
+          <Grid>
+            <Grid.Col span={12}>
+              <Text size="xl">NOW</Text>
+              <Text size="xl">{formatDate(mostRecent.createdAt)}</Text>
+              <Group position="center"></Group>
             </Grid.Col>
-            <Grid.Col className={classes.chart} sm={12} lg={8}>
-              <LineChart
-                titleText={"HNR"}
-                data={analysisData.map((data) => ({
-                  x: data.createdAt,
-                  y: data.hnr,
-                }))}
-              />
+            <Grid.Col span={12}>
+              <Text size="xl">最初</Text>
+              <Text size="xl">{formatDate(initial.createdAt)}</Text>
+              <Group position="center"></Group>
+            </Grid.Col>
+            <Grid.Col span={12}>
+              {/* <Group position="center">
+                <Box style={{ height: "100vw" }}>
+                  <RadarChartSample mostRecent={mostRecent} initial={initial} />
+                  <BarChart
+                    after={mostRecent.jitter}
+                    before={initial.jitter}
+                  />
+                </Box>
+              </Group> */}
+            </Grid.Col>
+            <Grid.Col span={12}>
+              <Text size="xl">音程の安定 Jitter</Text>
+              <Group position="center">
+                {progressDisplay("jitter", initial.jitter, mostRecent.jitter)}
+              </Group>
+              <Group position="center">NOW {mostRecent.jitter}</Group>
+              <Group position="center">最初 {initial.jitter}</Group>
+            </Grid.Col>
+            <Grid.Col span={12}>
+              <Text size="xl">音量の安定 Shimmer</Text>
+              <Group position="center">
+                {progressDisplay(
+                  "shimmer",
+                  initial.shimmer,
+                  mostRecent.shimmer
+                )}
+              </Group>
+              <Group position="center">NOW {mostRecent.shimmer}</Group>
+              <Group position="center">最初 {initial.shimmer}</Group>
+            </Grid.Col>
+            <Grid.Col span={12}>
+              <Text size="xl">倍音 HNR</Text>
+              <Group position="center">
+                {progressDisplay("hnr", initial.hnr, mostRecent.hnr)}
+              </Group>
+              <Group position="center">NOW {mostRecent.hnr}</Group>
+              <Group position="center">最初 {initial.hnr}</Group>
+            </Grid.Col>
+            <Grid.Col span={12}>
+              <Text size="xl">スペクトログラム</Text>
+              <Text size="lg">音程</Text>
+              <Text size="lg">Now</Text>
+              <Group position="center">
+                {" "}
+                <Image src={mostRecent.pitchPlot} />
+              </Group>
+              <Text size="lg">Before</Text>
+              <Group position="center">
+                <Image src={initial.pitchPlot} />
+              </Group>
+              <Text size="lg">強度</Text>
+              <Text size="lg">Now</Text>
+              <Group position="center">
+                <Image src={mostRecent.intensityPlot} />
+              </Group>
+              <Text size="lg">Before</Text>
+              <Group position="center">
+                <Image src={initial.intensityPlot} />
+              </Group>
             </Grid.Col>
           </Grid>
-        </>
-      )}
+        ) : (
+          <Grid.Col span={12}>
+            <Group position="center">
+              <Text size="md">
+                比較を表示するためには履歴が2つ以上必要です。
+              </Text>
+            </Group>
+          </Grid.Col>
+        )}
+      </Grid>
     </Container>
   );
 };

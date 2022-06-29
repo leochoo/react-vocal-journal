@@ -24,19 +24,33 @@ export const options = {
   maintainAspectRatio: false,
 };
 
-export const data = {
-  labels: ["Thing 1", "Thing 2", "Thing 3", "Thing 4", "Thing 5", "Thing 6"],
-  datasets: [
-    {
-      label: "# of Votes",
-      data: [2, 9, 3, 5, 2, 3],
-      backgroundColor: "rgba(255, 99, 132, 0.2)",
-      borderColor: "rgba(255, 99, 132, 1)",
-      borderWidth: 1,
-    },
-  ],
-};
-
-export function RadarChartSample() {
+export function RadarChartSample({ mostRecent, initial }) {
+  const data = {
+    labels: ["Jitter", "Shimmer", "HNR"],
+    datasets: [
+      {
+        label: "AFTER",
+        data: [mostRecent.jitter, mostRecent.shimmer, mostRecent.hnr],
+        fill: true,
+        backgroundColor: "rgba(255, 99, 132, 0.2)",
+        borderColor: "rgb(255, 99, 132)",
+        pointBackgroundColor: "rgb(255, 99, 132)",
+        pointBorderColor: "#fff",
+        pointHoverBackgroundColor: "#fff",
+        pointHoverBorderColor: "rgb(255, 99, 132)",
+      },
+      {
+        label: "BEFORE",
+        data: [initial.jitter, initial.shimmer, initial.hnr],
+        fill: true,
+        backgroundColor: "rgba(54, 162, 235, 0.2)",
+        borderColor: "rgb(54, 162, 235)",
+        pointBackgroundColor: "rgb(54, 162, 235)",
+        pointBorderColor: "#fff",
+        pointHoverBackgroundColor: "#fff",
+        pointHoverBorderColor: "rgb(54, 162, 235)",
+      },
+    ],
+  };
   return <Radar options={options} data={data} />;
 }
