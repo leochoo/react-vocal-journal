@@ -41,8 +41,6 @@ import {
 } from "firebase/firestore";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 
-export const DataContext = React.createContext<AnalysisDataProps[]>([]);
-
 interface AnalysisDataProps {
   audioURL: string;
   createdAt: number;
@@ -60,103 +58,49 @@ interface AnalysisDataProps {
   pitchPlot: string;
 }
 
-const dataConverter = {
-  toFirestore(data: AnalysisDataProps): DocumentData {
-    return {
-      audioURL: data.audioURL,
-      createdAt: data.createdAt,
-      displayName: data.displayName,
-      title: data.title,
-      phrase: data.phrase,
-      pitch: data.pitch,
-      vowel: data.vowel,
-      condition: data.condition,
-      hnr: data.hnr,
-      jitter: data.jitter,
-      shimmer: data.shimmer,
-      uid: data.uid,
-      intensityPlot: data.intensityPlot,
-      pitchPlot: data.pitchPlot,
-    };
-  },
-  fromFirestore(
-    snapshot: QueryDocumentSnapshot,
-    options: SnapshotOptions
-  ): AnalysisDataProps {
-    const data = snapshot.data(options)!;
-    return {
-      audioURL: data.audioURL,
-      createdAt: data.createdAt,
-      displayName: data.displayName,
-      title: data.title,
-      phrase: data.phrase,
-      pitch: data.pitch,
-      vowel: data.vowel,
-      condition: data.condition,
-      hnr: data.HNR,
-      jitter: data.jitter_local,
-      shimmer: data.shimmer_local,
-      uid: data.uid,
-      intensityPlot: data.intensityPlot,
-      pitchPlot: data.pitchPlot,
-    };
-  },
-};
-
 function App() {
   const [user, loading, error] = useAuthState(auth);
   const [userData, setUserData] = useState<AnalysisDataProps>();
-  let uid = useAppSelector(selectUid);
-  const analysisQuery = query(
-    collection(db, "users", uid, "analysis").withConverter(dataConverter)
-    // limit(25)
-    // orderBy("createdAt")
-  );
-  const [analysisData] = useCollectionData(analysisQuery);
 
   return (
-    // <WrapperPage>
     <>
-      <DataContext.Provider value={analysisData}>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <DashboardPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/new-recording"
-            element={
-              <ProtectedRoute>
-                <NewRecordingPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/calendar"
-            element={
-              <ProtectedRoute>
-                <CalendarPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                <ProfilePage />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </DataContext.Provider>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/new-recording"
+          element={
+            <ProtectedRoute>
+              <NewRecordingPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/calendar"
+          element={
+            <ProtectedRoute>
+              <CalendarPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
     </>
-    // </WrapperPage>
   );
 }
 

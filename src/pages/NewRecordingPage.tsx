@@ -33,7 +33,7 @@ import { auth, db, storage } from "../../firebase";
 import { addDoc, collection, doc, setDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { UploadPlayer } from "../components/UploadPlayer";
-import { DataContext } from "../App";
+import { DataContext } from "../pages/WrapperPage";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {

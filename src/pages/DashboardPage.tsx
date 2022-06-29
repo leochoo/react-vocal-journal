@@ -44,7 +44,7 @@ import dayjs from "dayjs";
 import { RadarChartSample } from "../components/samples/RadarChartSample";
 import { BarChart } from "../components/samples/BarChart";
 
-import { DataContext } from "../App";
+import { DataContext } from "../pages/WrapperPage";
 
 interface AnalysisDataProps {
   audioURL: string;
@@ -69,17 +69,18 @@ const DashboardPage = () => {
   const [phrase, setPhrase] = useState("");
   const [vowel, setVowel] = useState("");
   const [pitch, setPitch] = useState("");
+
+  const [sortedData, setSortedData] = useState<AnalysisDataProps[]>([]);
   const [mostRecent, setMostRecent] = useState<AnalysisDataProps>();
   const [initial, setInitial] = useState<AnalysisDataProps>();
-  const [processedData, setProcessedData] = useState<AnalysisDataProps[]>([]);
   const [filteredData, setFilteredData] = useState<AnalysisDataProps[]>([]);
+
   const [songTitleList, setSongTitleList] = useState<string[]>([]);
   const [phraseList, setPhraseList] = useState<string[]>([]);
 
-  let uid = useAppSelector(selectUid);
   const analysisData = useContext(DataContext);
 
-  // get all unique values of songTitleList and phraseList inside processedData
+  // get all unique values of songTitleList and phraseList inside SortedData
   useEffect(() => {
     if (analysisData) {
       let songTitleList = [];
@@ -97,70 +98,21 @@ const DashboardPage = () => {
     }
   }, [analysisData]);
 
-  // if recordingType === "song", filter based on songTitle and phrase
-  // if recordingType === "vowel", filter based on vowel and pitch
-  // useEffect(() => {
-  //   if (analysisData) {
-  //     let filtered = analysisData.filter((data) => {
-  //       if (recordingType === "song") {
-  //         return data.title === songTitle && data.phrase === phrase;
-  //       } else if (recordingType === "vowel") {
-  //         return data.vowel === vowel && data.pitch === pitch;
-  //       }
-  //     });
-  //     setFilteredData(filtered);
-  //     console.log("filtered", filteredData);
-  //   }
-  // }, [analysisData, recordingType, songTitle, phrase, vowel, pitch]);
-
-  // const getFilteredData = ()
-
   useEffect(() => {
-    // sort analysisData and store in ProcessedData
+    // sort analysisData and store in SortedData
     // TODO: refactor this to be more efficient
     if (analysisData) {
-      // let filtered = analysisData.filter((data) => {
-      //   if (recordingType === "song") {
-      //     return data.title === songTitle && data.phrase === phrase;
-      //   } else if (recordingType === "vowel") {
-      //     return data.vowel === vowel && data.pitch === pitch;
-      //   }
-      // });
-      // setFilteredData(filtered);
-
       const sorted = analysisData.sort((a, b) => {
         return b.createdAt - a.createdAt;
       });
 
-      // when recordingType === "song", filter analysisData, so that data.map => data has title and phrase
-      // when recordingType === "vowel", filter analysisData, so that data.map => data has vowel and pitch
-      // const filtered = sorted.filter((data) => {
-      //   if (recordingType === "song") {
-      //     console.log("Title & Phrase:", songTitle, phrase);
-      //     return (
-      //       data.title === songTitle &&
-      //       data.title !== "" &&
-      //       data.phrase === phrase &&
-      //       data.phrase !== ""
-      //     );
-      //   } else if (recordingType === "vowel") {
-      //     return data.vowel === vowel && data.pitch === pitch;
-      //   }
-      // });
-
-      // // update the state of array of objects processedData with filtered values array of objects
-      // setProcessedData(filtered);
-      // console.log("filtered", filtered);
-      // setMostRecent(filtered[0]);
-      // setInitial(filtered[analysisData.length - 1]);
-
-      setProcessedData(sorted);
+      setSortedData(sorted);
       setMostRecent(sorted[0]);
       setInitial(sorted[sorted.length - 1]);
 
       console.log("mostRecent", mostRecent);
       console.log("initial", initial);
-      console.log("Processed:", processedData);
+      console.log("Sorted Data:", sortedData);
     }
   }, [analysisData, recordingType, songTitle, phrase, vowel, pitch]);
 

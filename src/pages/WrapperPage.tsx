@@ -36,6 +36,17 @@ import { useLocation, Link } from "react-router-dom";
 import { CustomHeader } from "../components/CustomHeader";
 import { CustomNavBar } from "../components/CustomNavBar";
 import VocalJournalDarkLogo from "../assets/logo-light.png";
+import { useAppSelector } from "../redux/hooks";
+import { selectUid } from "../redux/auth/auth.slice";
+import {
+  collection,
+  DocumentData,
+  query,
+  QueryDocumentSnapshot,
+  SnapshotOptions,
+} from "firebase/firestore";
+import { useCollectionData } from "react-firebase-hooks/firestore";
+import { db } from "../../firebase";
 
 interface Props {
   children: boolean | ReactChild | ReactFragment | ReactPortal;
@@ -125,42 +136,114 @@ const data = [
   { link: "", label: "Other Settings", icon: Settings },
 ];
 
+interface AnalysisDataProps {
+  audioURL: string;
+  createdAt: number;
+  displayName: string;
+  title: string;
+  phrase: string;
+  pitch: string;
+  vowel: string;
+  condition: string;
+  hnr: number;
+  jitter: number;
+  shimmer: number;
+  uid: string;
+  intensityPlot: string;
+  pitchPlot: string;
+}
+
+const dataConverter = {
+  toFirestore(data: AnalysisDataProps): DocumentData {
+    return {
+      audioURL: data.audioURL,
+      createdAt: data.createdAt,
+      displayName: data.displayName,
+      title: data.title,
+      phrase: data.phrase,
+      pitch: data.pitch,
+      vowel: data.vowel,
+      condition: data.condition,
+      hnr: data.hnr,
+      jitter: data.jitter,
+      shimmer: data.shimmer,
+      uid: data.uid,
+      intensityPlot: data.intensityPlot,
+      pitchPlot: data.pitchPlot,
+    };
+  },
+  fromFirestore(
+    snapshot: QueryDocumentSnapshot,
+    options: SnapshotOptions
+  ): AnalysisDataProps {
+    const data = snapshot.data(options)!;
+    return {
+      audioURL: data.audioURL,
+      createdAt: data.createdAt,
+      displayName: data.displayName,
+      title: data.title,
+      phrase: data.phrase,
+      pitch: data.pitch,
+      vowel: data.vowel,
+      condition: data.condition,
+      hnr: data.HNR,
+      jitter: data.jitter_local,
+      shimmer: data.shimmer_local,
+      uid: data.uid,
+      intensityPlot: data.intensityPlot,
+      pitchPlot: data.pitchPlot,
+    };
+  },
+};
+
+export const DataContext = React.createContext<AnalysisDataProps[]>([]);
+
 const WrapperPage = ({ children }: Props): JSX.Element => {
   const [opened, setOpened] = useState(false);
   const theme = useMantineTheme();
   const { classes, cx } = useStyles();
   const [active, setActive] = useState("");
 
+  let uid = useAppSelector(selectUid);
+  const analysisQuery = query(
+    collection(db, "users", uid, "analysis").withConverter(dataConverter)
+    // limit(25)
+    // orderBy("createdAt")
+  );
+  const [analysisData] = useCollectionData(analysisQuery);
+
   return (
-    <AppShell
-      // navbarOffsetBreakpoint controls when navbar should no longer be offset with padding-left
-      navbarOffsetBreakpoint="sm"
-      // fixed prop on AppShell will be automatically added to Header and Navbar
-      fixed
-      navbar={<CustomNavBar opened={opened} setOpened={setOpened} />}
-      // navbar={
-      //   <Navbar
-      //     p="md"
-      //     // Breakpoint at which navbar will be hidden if hidden prop is true
-      //     hiddenBreakpoint="sm"
-      //     // Hides navbar when viewport size is less than value specified in hiddenBreakpoint
-      //     hidden={!opened}
-      //     // when viewport size is less than theme.breakpoints.sm navbar width is 100%
-      //     // viewport size > theme.breakpoints.sm – width is 300px
-      //     // viewport size > theme.breakpoints.lg – width is 400px
-      //     width={{ sm: 300, lg: 400 }}
-      //   >
-      //     <Text>Application navbar</Text>
-      //   </Navbar>
-      // }
-      header={
-        // <MediaQuery largerThan="sm" styles={{ display: "none" }}>
-        <CustomHeader opened={opened} setOpened={setOpened} />
-        // </MediaQuery>
-      }
-    >
-      {children}
-    </AppShell>
+    <DataContext.Provider value={analysisData}>
+      <AppShell
+        // navbarOffsetBreakpoint controls when navbar should no longer be offset with padding-left
+        navbarOffsetBreakpoint="sm"
+        // fixed prop on AppShell will be automatically added to Header and Navbar
+        fixed
+        navbar={<CustomNavBar opened={opened} setOpened={setOpened} />}
+        // navbar={
+        //   <Navbar
+        //     p="md"
+        //     // Breakpoint at which navbar will be hidden if hidden prop is true
+        //     hiddenBreakpoint="sm"
+        //     // Hides navbar when viewport size is less than value specified in hiddenBreakpoint
+        //     hidden={!opened}
+        //     // when viewport size is less than theme.breakpoints.sm navbar width is 100%
+        //     // viewport size > theme.breakpoints.sm – width is 300px
+        //     // viewport size > theme.breakpoints.lg – width is 400px
+        //     width={{ sm: 300, lg: 400 }}
+        //   >
+        //     <Text>Application navbar</Text>
+        //   </Navbar>
+        // }
+        header={
+          // <MediaQuery largerThan="sm" styles={{ display: "none" }}>
+          <CustomHeader opened={opened} setOpened={setOpened} />
+          // </MediaQuery>
+        }
+      >
+        {children}
+      </AppShell>
+    </DataContext.Provider>
   );
 };
 
