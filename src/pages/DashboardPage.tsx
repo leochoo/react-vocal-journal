@@ -109,12 +109,14 @@ const DashboardPage = () => {
       setSortedData(sorted);
       setMostRecent(sorted[0]);
       setInitial(sorted[sorted.length - 1]);
-
-      console.log("mostRecent", mostRecent);
-      console.log("initial", initial);
-      console.log("Sorted Data:", sortedData);
     }
-  }, [analysisData, recordingType, songTitle, phrase, vowel, pitch]);
+  }, [analysisData]);
+
+  useEffect(() => {
+    console.log("mostRecent", mostRecent);
+    console.log("initial", initial);
+    console.log("Sorted Data:", sortedData);
+  }, [mostRecent, initial, sortedData]);
 
   const formatDate = (createdAt: number) => {
     return dayjs(createdAt).format("YYYY/MM/DD HH:mm:ss");
