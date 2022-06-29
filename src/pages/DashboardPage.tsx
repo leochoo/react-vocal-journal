@@ -106,16 +106,36 @@ const DashboardPage = () => {
         return b.createdAt - a.createdAt;
       });
 
+      const filtered = sorted.filter((data) => {
+        if (recordingType === "song") {
+          return (
+            data.title === songTitle &&
+            data.title !== "" &&
+            data.phrase === phrase &&
+            data.phrase !== ""
+          );
+        } else if (recordingType === "vowel") {
+          return (
+            data.vowel === vowel &&
+            data.vowel !== "" &&
+            data.pitch === pitch &&
+            data.pitch !== ""
+          );
+        }
+      });
+
       setSortedData(sorted);
-      setMostRecent(sorted[0]);
-      setInitial(sorted[sorted.length - 1]);
+      setFilteredData(filtered);
+      setMostRecent(filtered[0]);
+      setInitial(filtered[filtered.length - 1]);
     }
-  }, [analysisData]);
+  }, [analysisData, recordingType, songTitle, phrase, vowel, pitch]);
 
   useEffect(() => {
     console.log("mostRecent", mostRecent);
     console.log("initial", initial);
     console.log("Sorted Data:", sortedData);
+    console.log("Filtered Data", filteredData);
   }, [mostRecent, initial, sortedData]);
 
   const formatDate = (createdAt: number) => {
@@ -286,7 +306,7 @@ const DashboardPage = () => {
           </Group>
         </Grid.Col>
 
-        {mostRecent && initial ? (
+        {filteredData && filteredData.length > 1 ? (
           <Grid>
             <Grid.Col span={12}>
               <Text size="xl">NOW</Text>
