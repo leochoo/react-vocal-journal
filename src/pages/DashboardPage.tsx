@@ -44,6 +44,9 @@ import dayjs from "dayjs";
 import { RadarChartSample } from "../components/samples/RadarChartSample";
 import { BarChart } from "../components/samples/BarChart";
 
+import DownloadLink from "react-download-link";
+import { saveAs } from "file-saver";
+
 import { DataContext } from "../pages/WrapperPage";
 
 interface AnalysisDataProps {
@@ -184,6 +187,14 @@ const DashboardPage = () => {
     }
   };
 
+  const saveFile = () => {
+    saveAs(
+      // "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+      "https://storage.googleapis.com/vocal-journal/images/1656404760303_pitch.png",
+      "singing.png"
+    );
+  };
+
   return (
     <Container size="xl" px="xs">
       <Text style={{ marginBottom: "3vh", fontSize: "2rem" }}>Dashboard</Text>
@@ -269,8 +280,8 @@ const DashboardPage = () => {
           )}
         </Grid.Col>
         <Grid.Col span={12}>
-          {/* <Text size="xl">履歴</Text> */}
-          {/* <Accordion multiple>
+          {/* <Text size="xl">履歴</Text>
+          <Accordion multiple>
             {analysisData?.map((data) => {
               const dataLabel = formatDate(data.createdAt);
               return (
@@ -295,26 +306,36 @@ const DashboardPage = () => {
           </Accordion> */}
         </Grid.Col>
         <Grid.Col span={12}>
-          <Text size="xl">比較</Text>
+          <Text size="xl">Comparison</Text>
           <Group position="center">
             <Text size="lg">
-              {recordingType === "song" ? songTitle : vowel}
+              {recordingType === "song" ? (
+                <Text>Title: {songTitle}</Text>
+              ) : (
+                <Text>Vowel: {vowel}</Text>
+              )}
             </Text>
           </Group>
           <Group position="center">
-            <Text size="lg">{recordingType === "song" ? phrase : pitch}</Text>
+            <Text size="lg">
+              {recordingType === "song" ? (
+                <Text>Phrase: {phrase}</Text>
+              ) : (
+                <Text>Pitch: {pitch}</Text>
+              )}
+            </Text>
           </Group>
         </Grid.Col>
 
         {filteredData && filteredData.length > 1 ? (
           <Grid>
             <Grid.Col span={12}>
-              <Text size="xl">NOW</Text>
+              <Text size="xl">After</Text>
               <Text size="xl">{formatDate(mostRecent.createdAt)}</Text>
               <Group position="center"></Group>
             </Grid.Col>
             <Grid.Col span={12}>
-              <Text size="xl">最初</Text>
+              <Text size="xl">Before</Text>
               <Text size="xl">{formatDate(initial.createdAt)}</Text>
               <Group position="center"></Group>
             </Grid.Col>
@@ -329,16 +350,16 @@ const DashboardPage = () => {
                 </Box>
               </Group> */}
             </Grid.Col>
-            <Grid.Col span={12}>
-              <Text size="xl">音程の安定 Jitter</Text>
+            <Grid.Col span={4}>
+              <Text size="xl">Jitter</Text>
               <Group position="center">
                 {progressDisplay("jitter", initial.jitter, mostRecent.jitter)}
               </Group>
-              <Group position="center">NOW {mostRecent.jitter}</Group>
-              <Group position="center">最初 {initial.jitter}</Group>
+              <Group position="center">After {mostRecent.jitter}</Group>
+              <Group position="center">Before {initial.jitter}</Group>
             </Grid.Col>
-            <Grid.Col span={12}>
-              <Text size="xl">音量の安定 Shimmer</Text>
+            <Grid.Col span={4}>
+              <Text size="xl">Shimmer</Text>
               <Group position="center">
                 {progressDisplay(
                   "shimmer",
@@ -346,38 +367,53 @@ const DashboardPage = () => {
                   mostRecent.shimmer
                 )}
               </Group>
-              <Group position="center">NOW {mostRecent.shimmer}</Group>
-              <Group position="center">最初 {initial.shimmer}</Group>
+              <Group position="center">After {mostRecent.shimmer}</Group>
+              <Group position="center">Before {initial.shimmer}</Group>
             </Grid.Col>
-            <Grid.Col span={12}>
-              <Text size="xl">倍音 HNR</Text>
+            <Grid.Col span={4}>
+              <Text size="xl">HNR</Text>
               <Group position="center">
                 {progressDisplay("hnr", initial.hnr, mostRecent.hnr)}
               </Group>
-              <Group position="center">NOW {mostRecent.hnr}</Group>
-              <Group position="center">最初 {initial.hnr}</Group>
+              <Group position="center">After {mostRecent.hnr}</Group>
+              <Group position="center">Before {initial.hnr}</Group>
+            </Grid.Col>
+
+            <Grid.Col span={12}>
+              <Text size="xl">Spectrogram</Text>
             </Grid.Col>
             <Grid.Col span={12}>
-              <Text size="xl">スペクトログラム</Text>
-              <Text size="lg">音程</Text>
-              <Text size="lg">Now</Text>
+              <Text size="lg">Pitch</Text>
+            </Grid.Col>
+
+            <Grid.Col span={6}>
               <Group position="center">
-                {" "}
-                <Image src={mostRecent.pitchPlot} />
+                <Text size="lg">Before</Text>
               </Group>
-              <Text size="lg">Before</Text>
+              <Image src={initial.pitchPlot} />
+            </Grid.Col>
+            <Grid.Col span={6}>
               <Group position="center">
-                <Image src={initial.pitchPlot} />
+                <Text size="lg">After</Text>
               </Group>
-              <Text size="lg">強度</Text>
-              <Text size="lg">Now</Text>
+              <Image src={mostRecent.pitchPlot} />
+            </Grid.Col>
+
+            <Grid.Col span={12}>
+              <Text size="lg">Intensity</Text>
+            </Grid.Col>
+
+            <Grid.Col span={6}>
               <Group position="center">
-                <Image src={mostRecent.intensityPlot} />
+                <Text size="lg">Before</Text>
               </Group>
-              <Text size="lg">Before</Text>
+              <Image src={initial.intensityPlot} />
+            </Grid.Col>
+            <Grid.Col span={6}>
               <Group position="center">
-                <Image src={initial.intensityPlot} />
+                <Text size="lg">After</Text>
               </Group>
+              <Image src={mostRecent.intensityPlot} />
             </Grid.Col>
           </Grid>
         ) : (

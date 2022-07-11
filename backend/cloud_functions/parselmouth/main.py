@@ -3,7 +3,7 @@ from firebase_admin import firestore
 from firebase_admin import credentials
 import firebase_admin
 import urllib.request
-import magic
+# import magic
 import ffmpeg
 import os
 import tempfile
@@ -19,10 +19,6 @@ os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = ".key/vocal-journal-firebase-admi
 
 cred = credentials.Certificate(
     ".key/vocal-journal-firebase-adminsdk-oun5i-107f90e11f.json")
-
-firebase_admin.initialize_app(cred)
-
-db = firestore.client()
 
 
 def handle_request(request):
@@ -159,6 +155,10 @@ def upload_blob(bucket_name, source_file_name, destination_blob_name):
 
 
 def analyze(postObject):
+
+    firebase_admin.initialize_app(cred)
+    db = firestore.client()
+
     # print("IN ANALYZE FUNCTION")
 
     # 1. Preprocessing

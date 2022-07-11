@@ -14,6 +14,7 @@ import {
   useMantineTheme,
   Image,
   Code,
+  Button,
 } from "@mantine/core";
 import {
   CalendarIcon,
@@ -206,9 +207,16 @@ const WrapperPage = ({ children }: Props): JSX.Element => {
 
   let uid = useAppSelector(selectUid);
   const analysisQuery = query(
-    collection(db, "users", uid, "analysis").withConverter(dataConverter)
-    // limit(25)
-    // orderBy("createdAt")
+    // collection(db, "users", uid, "analysis").withConverter(dataConverter)
+
+    collection(
+      db,
+      "users",
+      "bX6aMzX6Fgegprezm0ylim8SKaf1", // case 1 "Ishiwata"
+      // "R2rj6bnpQ7PWX0N8cqUHWrDRG2F3", // case 2 "15"
+      // "wEzCv6qUwpSkTmJrjnCanc751aE3", // case 3 "藤正"
+      "analysis"
+    ).withConverter(dataConverter)
   );
   const [analysisData] = useCollectionData(analysisQuery);
 
